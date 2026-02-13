@@ -22,9 +22,29 @@
     const { useState, useEffect, useRef } = React;
 
     const CONNECTOR_PATH = "M7.55762 0C9.24192 3.14729 12.5597 5.28906 16.3789 5.28906C20.1981 5.28906 23.5159 3.14729 25.2002 0H32V39H25.248C23.5797 35.8019 20.2357 33.6172 16.3789 33.6172C12.5222 33.6172 9.17806 35.8019 7.50977 39H0V0H7.55762Z";
-    const OV = 15, W = 408, CIR = 60, CON = 32;
-    const PW = W - CIR - CON + OV * 2;
     const HE = "cubic-bezier(0.49,0.01,0.58,1)";
+
+    /* ─── Responsive dimensions hook ─── */
+    function useDims() {
+      const [mobile, setMobile] = useState(window.innerWidth < 480);
+      useEffect(() => {
+        const handler = () => setMobile(window.innerWidth < 480);
+        window.addEventListener("resize", handler);
+        return () => window.removeEventListener("resize", handler);
+      }, []);
+
+      if (mobile) {
+        // 334x48, scale = 48/60 = 0.8
+        const s = 48 / 60;
+        const W = 334, H = 48, CIR = Math.round(60 * s), CON = Math.round(32 * s);
+        const OV = Math.round(15 * s);
+        const PW = W - CIR - CON + OV * 2;
+        return { W, H, CIR, CON, OV, PW, BADGE: 20, FONT: 16, BFONT: 11, CONN_SCALE: s };
+      }
+      const W = 408, H = 60, CIR = 60, CON = 32, OV = 15;
+      const PW = W - CIR - CON + OV * 2;
+      return { W, H, CIR, CON, OV, PW, BADGE: 25, FONT: 17, BFONT: 14, CONN_SCALE: 1 };
+    }
 
     /* ─── Spring ─── */
     function useSpring(target, cfg) {
@@ -56,57 +76,61 @@
       return "rgb(" + Math.round(lerp(p(c1,1),p(c2,1),t)) + "," + Math.round(lerp(p(c1,3),p(c2,3),t)) + "," + Math.round(lerp(p(c1,5),p(c2,5),t)) + ")";
     }
 
-    function Badge({ number, active, hovered }) {
+    function Badge({ number, active, hovered, d }) {
+      const sz = d.BADGE, fs = d.BFONT;
       if (!active) return (
-        <div style={{ width:25,height:25,display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(255,255,255,0.20)",borderRadius:20.5,outline:"1px solid #B5B5B5",outlineOffset:-1,flexShrink:0 }}>
-          <span style={{ color:"#B5B5B5",fontSize:14,fontWeight:700,lineHeight:"16px" }}>{number}</span>
+        <div style={{ width:sz,height:sz,display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(255,255,255,0.20)",borderRadius:sz,outline:"1px solid #B5B5B5",outlineOffset:-1,flexShrink:0 }}>
+          <span style={{ color:"#B5B5B5",fontSize:fs,fontWeight:700,lineHeight:"16px" }}>{number}</span>
         </div>
       );
       return (
-        <div style={{ width:25,height:25,display:"flex",alignItems:"center",justifyContent:"center",
-          background:hovered?"rgba(255,255,255,0.30)":"rgba(255,255,255,0.10)",borderRadius:20.5,
+        <div style={{ width:sz,height:sz,display:"flex",alignItems:"center",justifyContent:"center",
+          background:hovered?"rgba(255,255,255,0.30)":"rgba(255,255,255,0.10)",borderRadius:sz,
           outline:hovered?"1px solid rgba(255,255,255,0.40)":"1px solid rgba(255,255,255,0.20)",
           outlineOffset:-1,flexShrink:0,transition:"background 300ms "+HE+", outline 300ms "+HE }}>
-          <span style={{ color:"#fff",fontSize:14,fontWeight:700,lineHeight:"16px" }}>{number}</span>
+          <span style={{ color:"#fff",fontSize:fs,fontWeight:700,lineHeight:"16px" }}>{number}</span>
         </div>
       );
     }
 
-    function Chk() {
-      return <svg width="26" height="26" viewBox="0 0 26 26" fill="none"><circle cx="13" cy="13" r="12" fill="#222" stroke="#222" strokeWidth="2"/><path d="M8 13.5L11.5 17L18 10" stroke="#22E243" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>;
+    function Chk({ d }) {
+      const sz = Math.round(26 * d.CONN_SCALE);
+      return <svg width={sz} height={sz} viewBox="0 0 26 26" fill="none"><circle cx="13" cy="13" r="12" fill="#222" stroke="#222" strokeWidth="2"/><path d="M8 13.5L11.5 17L18 10" stroke="#22E243" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>;
     }
 
-    function Cn({ color }) {
-      return <svg width="32" height="39" viewBox="0 0 32 39" fill="none" style={{display:"block"}}><path d={CONNECTOR_PATH} fill={color}/></svg>;
+    function Cn({ color, d }) {
+      const w = Math.round(32 * d.CONN_SCALE), h = Math.round(39 * d.CONN_SCALE);
+      return <svg width={w} height={h} viewBox="0 0 32 39" fill="none" style={{display:"block"}}><path d={CONNECTOR_PATH} fill={color}/></svg>;
     }
 
-    function useMorph(step, cfg) {
+    function useMorph(step, cfg, d) {
       const p = useSpring(step===1?0:1, cfg), cp = cl(p);
-      return { p, cp, aW:lerp(PW,CIR,p), aBg:lC("#F7F7F7","#22E243",cp),
-        bW:lerp(CIR,PW,p), bL:lerp(W-CIR,W-PW,p),
+      return { p, cp,
+        aW:lerp(d.PW,d.CIR,p), aBg:lC("#F7F7F7","#22E243",cp),
+        bW:lerp(d.CIR,d.PW,p), bL:lerp(d.W-d.CIR,d.W-d.PW,p),
         bBg:cp<=0.5?lC("#F7F7F7","#222222",cp*2):lC("#222222","#22E243",(cp-0.5)*2),
-        cL:lerp(PW-OV,CIR-OV,p), cC:lC("#F7F7F7","#22E243",cp),
+        cL:lerp(d.PW-d.OV,d.CIR-d.OV,p), cC:lC("#F7F7F7","#22E243",cp),
         aPill:cp<0.3?lerp(1,0,cp/0.3):0, aCheck:cp>0.5?lerp(0,1,(cp-0.5)/0.5):0,
         bBadge:cp<0.3?lerp(1,0,cp/0.3):0, bPill:cp>0.5?lerp(0,1,(cp-0.5)/0.5):0 };
     }
 
-    function MB({ m, hovered, wrapStyle, children }) {
+    function MB({ m, hovered, d, wrapStyle, children }) {
       const inner = (<React.Fragment>
         {children}
-        <div style={{ position:"absolute",top:0,left:0,width:m.aW,height:60,background:m.aBg,borderRadius:100,zIndex:2,overflow:"hidden" }}>
+        <div style={{ position:"absolute",top:0,left:0,width:m.aW,height:d.H,background:m.aBg,borderRadius:100,zIndex:2,overflow:"hidden" }}>
           <div style={{ position:"absolute",inset:0,padding:2,display:"flex",opacity:m.aPill,pointerEvents:"none" }}>
-            <div style={{ flex:1,background:"#222",borderRadius:100,display:"flex",alignItems:"center",justifyContent:"center",gap:8,whiteSpace:"nowrap" }}>
-              <Badge number={1} active hovered={hovered}/><span style={{ color:"#fff",fontSize:17,fontWeight:700 }}>Accept order</span>
+            <div style={{ flex:1,background:"#222",borderRadius:100,display:"flex",alignItems:"center",justifyContent:"center",gap:6,whiteSpace:"nowrap" }}>
+              <Badge number={1} active hovered={hovered} d={d}/><span style={{ color:"#fff",fontSize:d.FONT,fontWeight:700 }}>Accept order</span>
             </div>
           </div>
-          <div style={{ position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",opacity:m.aCheck,pointerEvents:"none" }}><Chk/></div>
+          <div style={{ position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",opacity:m.aCheck,pointerEvents:"none" }}><Chk d={d}/></div>
         </div>
-        <div style={{ position:"absolute",top:"50%",transform:"translateY(-50%)",left:m.cL,zIndex:1 }}><Cn color={m.cC}/></div>
-        <div style={{ position:"absolute",top:0,left:m.bL,width:m.bW,height:60,background:m.bBg,borderRadius:100,zIndex:2,overflow:"hidden" }}>
-          <div style={{ position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",opacity:m.bBadge,pointerEvents:"none",zIndex:1 }}><Badge number={2}/></div>
+        <div style={{ position:"absolute",top:"50%",transform:"translateY(-50%)",left:m.cL,zIndex:1 }}><Cn color={m.cC} d={d}/></div>
+        <div style={{ position:"absolute",top:0,left:m.bL,width:m.bW,height:d.H,background:m.bBg,borderRadius:100,zIndex:2,overflow:"hidden" }}>
+          <div style={{ position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",opacity:m.bBadge,pointerEvents:"none",zIndex:1 }}><Badge number={2} d={d}/></div>
           <div style={{ position:"absolute",inset:0,padding:2,display:"flex",opacity:m.bPill,pointerEvents:"none",zIndex:1 }}>
-            <div style={{ flex:1,background:"#222",borderRadius:100,display:"flex",alignItems:"center",justifyContent:"center",gap:8,whiteSpace:"nowrap" }}>
-              <Badge number={2} active hovered={hovered}/><span style={{ color:"#fff",fontSize:17,fontWeight:700 }}>Confirm Payment</span>
+            <div style={{ flex:1,background:"#222",borderRadius:100,display:"flex",alignItems:"center",justifyContent:"center",gap:6,whiteSpace:"nowrap" }}>
+              <Badge number={2} active hovered={hovered} d={d}/><span style={{ color:"#fff",fontSize:d.FONT,fontWeight:700 }}>Confirm Payment</span>
             </div>
           </div>
         </div>
@@ -115,22 +139,22 @@
     }
 
     /* 1. Spring Morph */
-    function V1({ step, hovered }) { return <MB m={useMorph(step,{stiffness:300,damping:20,mass:1})} hovered={hovered}/>; }
+    function V1({ step, hovered, d }) { return <MB m={useMorph(step,{stiffness:300,damping:20,mass:1},d)} hovered={hovered} d={d}/>; }
 
     /* 2. Rubber Band */
-    function V2({ step, hovered, clickCount }) {
-      const m = useMorph(step,{stiffness:300,damping:20,mass:1});
+    function V2({ step, hovered, clickCount, d }) {
+      const m = useMorph(step,{stiffness:300,damping:20,mass:1},d);
       const [pr,setPr] = useState(false);
       const sx = useSpring(pr?0.92:1,{stiffness:400,damping:15,mass:0.8});
       const sy = useSpring(pr?1.06:1,{stiffness:400,damping:15,mass:0.8});
       useEffect(() => { if(clickCount>0){setPr(true);const t=setTimeout(()=>setPr(false),120);return()=>clearTimeout(t);} },[clickCount]);
-      return <MB m={m} hovered={hovered} wrapStyle={{transform:"scaleX("+sx+") scaleY("+sy+")",transformOrigin:"center"}}/>;
+      return <MB m={m} hovered={hovered} d={d} wrapStyle={{transform:"scaleX("+sx+") scaleY("+sy+")",transformOrigin:"center"}}/>;
     }
 
     /* 3. Pulse Glow */
-    function V3({ step, hovered, clickCount }) {
-      const m = useMorph(step,{stiffness:300,damping:20,mass:1});
-      return <MB m={m} hovered={hovered}>
+    function V3({ step, hovered, clickCount, d }) {
+      const m = useMorph(step,{stiffness:300,damping:20,mass:1},d);
+      return <MB m={m} hovered={hovered} d={d}>
         <style dangerouslySetInnerHTML={{__html:
           "@keyframes gr{0%{transform:scaleX(.95) scaleY(.9);opacity:.7}100%{transform:scaleX(1.08) scaleY(1.3);opacity:0}}"+
           "@keyframes gr2{0%{transform:scaleX(.97) scaleY(.95);opacity:.4}100%{transform:scaleX(1.12) scaleY(1.5);opacity:0}}"
@@ -143,8 +167,8 @@
     }
 
     /* 4. Shockwave */
-    function V4({ step, hovered, clickCount }) {
-      const m = useMorph(step,{stiffness:300,damping:20,mass:1});
+    function V4({ step, hovered, clickCount, d }) {
+      const m = useMorph(step,{stiffness:300,damping:20,mass:1},d);
       const [punch,setPunch] = useState(false);
       const s = useSpring(punch?1.08:1,{stiffness:500,damping:14,mass:0.6});
       useEffect(()=>{if(clickCount>0){setPunch(true);const t=setTimeout(()=>setPunch(false),80);return()=>clearTimeout(t);}},[clickCount]);
@@ -154,62 +178,52 @@
           "@keyframes flash{0%{opacity:0.5}100%{opacity:0}}"
         }}/>
         {clickCount>0&&<React.Fragment>
-          <div key={"s"+clickCount} style={{position:"absolute",left:"50%",top:"50%",width:60,height:60,marginLeft:-30,marginTop:-30,borderRadius:"50%",border:"4px solid #22E243",pointerEvents:"none",zIndex:10,animation:"shock .6s ease-out forwards"}}/>
+          <div key={"s"+clickCount} style={{position:"absolute",left:"50%",top:"50%",width:d.CIR,height:d.CIR,marginLeft:-d.CIR/2,marginTop:-d.CIR/2,borderRadius:"50%",border:"4px solid #22E243",pointerEvents:"none",zIndex:10,animation:"shock .6s ease-out forwards"}}/>
           <div key={"f"+clickCount} style={{position:"absolute",inset:0,borderRadius:100,background:"radial-gradient(circle at 50% 50%, rgba(34,226,67,0.25) 0%, transparent 70%)",pointerEvents:"none",zIndex:3,animation:"flash .4s ease-out forwards"}}/>
         </React.Fragment>}
-        <MB m={m} hovered={hovered} wrapStyle={{transform:"scale("+s+")",transformOrigin:"center"}}/>
+        <MB m={m} hovered={hovered} d={d} wrapStyle={{transform:"scale("+s+")",transformOrigin:"center"}}/>
       </React.Fragment>;
     }
 
     /* 5. Celebration Burst */
-    function V5({ step, hovered, clickCount }) {
-      const m = useMorph(step,{stiffness:300,damping:20,mass:1});
+    function V5({ step, hovered, clickCount, d }) {
+      const m = useMorph(step,{stiffness:300,damping:20,mass:1},d);
       const cs = ["#22E243","#1BD43B","#4AFF6B","#00CC33","#88FF99","#fff","#AAFFBB"];
       return <React.Fragment>
         <style dangerouslySetInnerHTML={{__html:"@keyframes pf{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--tx),var(--ty)) scale(0)}}"}}/>
         {step===2&&clickCount>0&&Array.from({length:18}).map((_,i)=>{
-          const a=(i/18)*Math.PI*2,d=35+Math.random()*55,sz=3+Math.random()*5;
-          return <div key={clickCount+"-"+i} style={{position:"absolute",left:W/2,top:30,width:sz,height:sz,
+          const a=(i/18)*Math.PI*2,dist=35+Math.random()*55,sz=3+Math.random()*5;
+          return <div key={clickCount+"-"+i} style={{position:"absolute",left:d.W/2,top:d.H/2,width:sz,height:sz,
             background:cs[i%cs.length],borderRadius:Math.random()>.4?"50%":"1px",
             animation:"pf "+(0.5+Math.random()*0.3)+"s ease-out "+(i*0.015)+"s forwards",
-            pointerEvents:"none",zIndex:10,"--tx":Math.cos(a)*d+"px","--ty":(Math.sin(a)*d-15)+"px"}}/>})}
-        <MB m={m} hovered={hovered}/>
+            pointerEvents:"none",zIndex:10,"--tx":Math.cos(a)*dist+"px","--ty":(Math.sin(a)*dist-15)+"px"}}/>})}
+        <MB m={m} hovered={hovered} d={d}/>
       </React.Fragment>;
     }
 
-    /* 6. Neon Trail — green neon light traces the outline of the button during transition, leaves a brief afterglow */
-    function V6({ step, hovered, clickCount }) {
-      const m = useMorph(step,{stiffness:280,damping:22,mass:1});
+    /* 6. Neon Trail */
+    function V6({ step, hovered, clickCount, d }) {
+      const m = useMorph(step,{stiffness:280,damping:22,mass:1},d);
       const animating = m.cp > 0.02 && m.cp < 0.98;
-      const glowIntensity = Math.sin(m.cp * Math.PI);
-
+      const gi = Math.sin(m.cp * Math.PI);
       return <React.Fragment>
         <style dangerouslySetInnerHTML={{__html:
-          "@keyframes trace-glow{0%{opacity:0;filter:blur(0px)}15%{opacity:1;filter:blur(0px)}85%{opacity:1;filter:blur(2px)}100%{opacity:0;filter:blur(8px)}}"+
-          "@keyframes neon-flicker{0%,100%{opacity:0.8}50%{opacity:1}25%{opacity:0.6}75%{opacity:0.9}}"
+          "@keyframes tg{0%{opacity:0;filter:blur(0px)}15%{opacity:1;filter:blur(0px)}85%{opacity:1;filter:blur(2px)}100%{opacity:0;filter:blur(8px)}}"+
+          "@keyframes nf{0%,100%{opacity:0.8}50%{opacity:1}25%{opacity:0.6}75%{opacity:0.9}}"
         }}/>
-
-        {/* Neon glow behind button during transition */}
         {animating && <div style={{
-          position:"absolute", inset:-4,
-          borderRadius:100,
-          boxShadow:"0 0 "+(8+glowIntensity*20)+"px "+(2+glowIntensity*8)+"px rgba(34,226,67,"+(0.15+glowIntensity*0.35)+")",
-          pointerEvents:"none", zIndex:0,
-          animation:"neon-flicker 0.15s ease infinite",
+          position:"absolute",inset:-4,borderRadius:100,
+          boxShadow:"0 0 "+(8+gi*20)+"px "+(2+gi*8)+"px rgba(34,226,67,"+(0.15+gi*0.35)+")",
+          pointerEvents:"none",zIndex:0,animation:"nf 0.15s ease infinite",
         }}/>}
-
-        {/* Brief afterglow flash on settle */}
         {clickCount>0 && <div key={"ng"+clickCount} style={{
-          position:"absolute", inset:-3,
-          borderRadius:100,
+          position:"absolute",inset:-3,borderRadius:100,
           border:"1.5px solid rgba(34,226,67,0.6)",
           boxShadow:"0 0 15px 3px rgba(34,226,67,0.3), inset 0 0 15px 3px rgba(34,226,67,0.1)",
-          pointerEvents:"none", zIndex:0,
-          animation:"trace-glow 0.8s ease-out forwards",
+          pointerEvents:"none",zIndex:0,animation:"tg 0.8s ease-out forwards",
         }}/>}
-
-        <MB m={m} hovered={hovered} wrapStyle={{
-          filter: animating ? "drop-shadow(0 0 "+(2+glowIntensity*6)+"px rgba(34,226,67,"+(glowIntensity*0.5)+"))" : "none",
+        <MB m={m} hovered={hovered} d={d} wrapStyle={{
+          filter: animating ? "drop-shadow(0 0 "+(2+gi*6)+"px rgba(34,226,67,"+(gi*0.5)+"))" : "none",
         }}/>
       </React.Fragment>;
     }
@@ -225,6 +239,7 @@
     ];
 
     function App() {
+      const d = useDims();
       const [steps,setSteps]=useState(VS.map(()=>1));
       const [hovs,setHovs]=useState(VS.map(()=>false));
       const [clks,setClks]=useState(VS.map(()=>0));
@@ -268,18 +283,16 @@
                   <div style={{ fontSize:"clamp(11px,1vw,13px)",color:"#aaa",marginTop:1 }}>{desc}</div>
                 </div>
                 <div style={{
-                  width:"100%", maxWidth:W,
-                  height:60,
+                  width:d.W, height:d.H,
                   position:"relative",
-                  display:"flex", alignItems:"center", justifyContent:"center",
                 }}>
                   <div
                     onClick={()=>toggle(i)}
                     onMouseEnter={()=>hov(i,true)}
                     onMouseLeave={()=>hov(i,false)}
-                    style={{ position:"relative", width:W, height:60, cursor:"pointer" }}
+                    style={{ position:"relative", width:d.W, height:d.H, cursor:"pointer" }}
                   >
-                    <C step={steps[i]} hovered={hovs[i]} clickCount={clks[i]}/>
+                    <C step={steps[i]} hovered={hovs[i]} clickCount={clks[i]} d={d}/>
                   </div>
                 </div>
               </div>
