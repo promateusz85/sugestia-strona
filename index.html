@@ -50,7 +50,7 @@ body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradie
 .fe{position:absolute;font-size:22px;pointer-events:none;animation:fu 1.5s ease-out forwards;z-index:20;font-family:sans-serif}
 .tc{font-size:12px;line-height:1.8;min-height:26px;text-align:center;padding:14px 20px 0;max-width:90vw}
 .cu{display:inline-block;width:9px;height:12px;background:#1a1a2e;animation:cb 1s step-end infinite;vertical-align:middle;margin-left:3px}
-.th{font-size:10px;color:rgba(0,0,0,.35);margin-top:14px;animation:tapPulse 1.5s ease-in-out infinite;transition:opacity 1s;letter-spacing:1px}
+.th{font-size:14px;color:rgba(0,0,0,.6);margin-top:14px;animation:tapPulse 1.5s ease-in-out infinite;transition:opacity 1s;letter-spacing:2px;cursor:pointer;user-select:none;-webkit-user-select:none}
 .th.h{opacity:0}
 .cc{position:absolute;top:12px;right:12px;font-size:8px;color:rgba(0,0,0,.12)}
 .zz{position:absolute;top:0;right:-8px;font-size:14px;font-family:'Press Start 2P',cursive;color:#1a1a2e;opacity:0;animation:zf 2s ease-in-out infinite}
@@ -194,6 +194,8 @@ showB(resp.t);spE(resp.e);pa(resp.a);ss(resp.s,2500);
 pau=true;setTimeout(function(){pau=false},1500);rs()}
 $a.addEventListener("click",ht);
 $a.addEventListener("touchend",function(e){e.preventDefault();ht(e)},{passive:false});
+$h.addEventListener("click",ht);
+$h.addEventListener("touchend",function(e){e.preventDefault();ht(e)},{passive:false});
 function ri(){if(slp){si();return}
 var acts=[
 function(){pa("bo")},function(){pa("wi")},function(){pa("no")},function(){blink()},
