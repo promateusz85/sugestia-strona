@@ -977,7 +977,7 @@
   .step-divider {
     width: 10px;
     height: 2px;
-    background: var(--GraphSecondary);
+    background: var(--SurfaceStrong);
     border-radius: 100px;
     flex-shrink: 0;
   }
@@ -1289,6 +1289,7 @@
       align-items: center;
       justify-content: space-between;
       padding: 16px 20px;
+      padding-top: calc(36px + 16px);
       width: 100%;
       background: #FFFFFF;
     }
@@ -1595,6 +1596,7 @@
       align-items: center;
       gap: 12px;
       padding: 16px 20px;
+      padding-top: calc(36px + 16px);
       width: 100%;
       background: #FFFFFF;
     }
@@ -2643,10 +2645,18 @@ document.addEventListener('click',function(e){
   const canvas = document.getElementById('stepperCanvas');
   const ctx = canvas.getContext('2d');
 
-  // roundRect polyfill for iOS Safari
+  // Prevent iOS tap highlight / green flash on canvas touch
+  canvas.style.webkitTapHighlightColor = 'transparent';
+  canvas.style.webkitUserSelect = 'none';
+  canvas.style.userSelect = 'none';
+  canvas.style.touchAction = 'manipulation';
+  canvas.setAttribute('role', 'button');
+  canvas.setAttribute('tabindex', '0');
+
+  // roundRect polyfill for iOS Safari — does NOT call beginPath(), caller must do it
   if (!ctx.roundRect) {
     CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, radii) {
-      const r = Array.isArray(radii) ? radii[0] : (radii || 0);
+      const r = Math.min(Array.isArray(radii) ? radii[0] : (radii || 0), w / 2, h / 2);
       this.moveTo(x + r, y);
       this.lineTo(x + w - r, y);
       this.arcTo(x + w, y, x + w, y + r, r);
@@ -2706,6 +2716,16 @@ document.addEventListener('click',function(e){
   });
   canvas.addEventListener('mouseenter', () => { stepper.hovered = true; drawStepper(); });
   canvas.addEventListener('mouseleave', () => { stepper.hovered = false; drawStepper(); });
+  // Touch: prevent sticky hover on iOS, trigger action immediately on touchend
+  canvas.addEventListener('touchstart', (e) => { e.preventDefault(); stepper.hovered = false; drawStepper(); }, { passive: false });
+  canvas.addEventListener('touchend', (e) => {
+    e.preventDefault();
+    stepper.hovered = false;
+    drawStepper();
+    if (!stepper.disabled) {
+      canvas.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    }
+  }, { passive: false });
 
   function startSpring() {
     if (stepper.running) return;
@@ -2747,12 +2767,12 @@ document.addEventListener('click',function(e){
 
     // Derived values
     const aW = lerp(PW, CIR, p);
-    const aBg = dis && cp < 0.5 ? lerpC("#E5E5E5", "#E5E5E5", 0) : lerpC("#F7F7F7", "#22E243", cp);
+    const aBg = dis && cp < 0.5 ? lerpC("#DFDFDF", "#DFDFDF", 0) : lerpC("#F7F7F7", "#22E243", cp);
     const bW = lerp(CIR, PW, p);
     const bL = lerp(W - CIR, W - PW, p);
-    const bBg = cp <= 0.5 ? lerpC("#F7F7F7", "#222222", cp * 2) : lerpC("#222222", "#22E243", (cp - 0.5) * 2);
+    const bBg = cp <= 0.5 ? lerpC("#DFDFDF", "#222222", cp * 2) : lerpC("#222222", "#22E243", (cp - 0.5) * 2);
     const cL = lerp(PW - OV, CIR - OV, p);
-    const cC = dis && cp < 0.5 ? lerpC("#E5E5E5", "#E5E5E5", 0) : lerpC("#F7F7F7", "#22E243", cp);
+    const cC = dis && cp < 0.5 ? lerpC("#DFDFDF", "#DFDFDF", 0) : lerpC("#DFDFDF", "#22E243", cp);
 
     const aPill = cp < 0.3 ? lerp(1, 0, cp / 0.3) : 0;
     const aCheck = cp > 0.5 ? lerp(0, 1, (cp - 0.5) / 0.5) : 0;
@@ -2830,9 +2850,8 @@ document.addEventListener('click',function(e){
       ctx.globalAlpha = bBadge;
       const bx = bL + bW / 2, by = H / 2;
       ctx.beginPath(); ctx.arc(bx, by, BADGE / 2, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(255,255,255,0.20)'; ctx.fill();
-      ctx.strokeStyle = '#B5B5B5'; ctx.lineWidth = 1; ctx.stroke();
-      ctx.fillStyle = '#B5B5B5';
+      ctx.fillStyle = '#DFDFDF'; ctx.fill();
+      ctx.fillStyle = '#888888';
       ctx.font = `700 ${BFONT}px Nunito, sans-serif`;
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       ctx.fillText('2', bx, by + 1);
