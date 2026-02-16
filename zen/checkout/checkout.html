@@ -1577,7 +1577,10 @@
     body.mobile-card-view #sep-blik-card,
     body.mobile-card-view #sep-card-apple,
     body.mobile-card-view #showAllBtn,
-    body.mobile-card-view .extra-methods {
+    body.mobile-card-view .extra-methods,
+    body.mobile-card-view #zenappItem,
+    body.mobile-card-view #sep-bank-zenapp,
+    body.mobile-card-view #sep-zenapp-bank {
       display: none !important;
     }
 
@@ -1611,6 +1614,12 @@
       border: none;
       box-shadow: none;
       padding: 0;
+      gap: 0;
+    }
+
+    /* Prevent expandable-content from stretching taller than its content on mobile */
+    body.mobile-card-view #cardItem .expandable-content.open {
+      align-items: start;
     }
 
     /* Keep card-panel-inner border visible */
@@ -1702,6 +1711,18 @@
       font-weight: 700;
       text-decoration: underline;
       text-underline-offset: 2px;
+    }
+
+    /* ── Mobile: Expiry + CVV fields fit in row ── */
+    .field-row {
+      gap: 12px;
+    }
+    .field {
+      min-width: 0;
+    }
+    .field input {
+      min-width: 0;
+      width: 100%;
     }
   }
 
@@ -2716,7 +2737,8 @@ document.addEventListener('click',function(e){
 
   const stepper = {
     step: 1, target: 0, value: 0, velocity: 0, disabled: false, hovered: false,
-    stiffness: 300, damping: 20, mass: 1, lastTime: null, running: false
+    stiffness: 300, damping: 20, mass: 1, lastTime: null, running: false,
+    hoverT: 0, hoverRunning: false
   };
 
   canvas.addEventListener('click', () => {
@@ -2755,10 +2777,10 @@ document.addEventListener('click',function(e){
     updateTermsText();
     startSpring();
   });
-  canvas.addEventListener('mouseenter', () => { stepper.hovered = true; drawStepper(); });
-  canvas.addEventListener('mouseleave', () => { stepper.hovered = false; drawStepper(); });
+  canvas.addEventListener('mouseenter', () => { stepper.hovered = true; startHoverAnim(); });
+  canvas.addEventListener('mouseleave', () => { stepper.hovered = false; startHoverAnim(); });
   // Touch: prevent sticky hover on iOS, trigger action immediately on touchend
-  canvas.addEventListener('touchstart', (e) => { e.preventDefault(); stepper.hovered = false; drawStepper(); }, { passive: false });
+  canvas.addEventListener('touchstart', (e) => { e.preventDefault(); stepper.hovered = false; startHoverAnim(); }, { passive: false });
   canvas.addEventListener('touchend', (e) => {
     e.preventDefault();
     stepper.hovered = false;
@@ -2767,6 +2789,30 @@ document.addEventListener('click',function(e){
       canvas.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     }
   }, { passive: false });
+
+  function startHoverAnim() {
+    if (stepper.hoverRunning) return;
+    stepper.hoverRunning = true;
+    const duration = 200; // ms
+    let startTime = null;
+    const startT = stepper.hoverT;
+    const targetT = stepper.hovered ? 1 : 0;
+    function step(ts) {
+      if (!startTime) startTime = ts;
+      const elapsed = ts - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      stepper.hoverT = startT + (targetT - startT) * progress;
+      drawStepper();
+      if (progress < 1) {
+        requestAnimationFrame(step);
+      } else {
+        stepper.hoverT = targetT;
+        stepper.hoverRunning = false;
+        drawStepper();
+      }
+    }
+    requestAnimationFrame(step);
+  }
 
   function startSpring() {
     if (stepper.running) return;
@@ -2846,9 +2892,10 @@ document.addEventListener('click',function(e){
       const bx = aW / 2 - 60, by = H / 2;
       ctx.beginPath();
       ctx.arc(bx, by, BADGE / 2, 0, Math.PI * 2);
-      ctx.fillStyle = stepper.hovered && !dis ? 'rgba(255,255,255,0.30)' : 'rgba(255,255,255,0.10)';
+      const hT1 = dis ? 0 : stepper.hoverT;
+      ctx.fillStyle = `rgba(255,255,255,${0.10 + 0.20 * hT1})`;
       ctx.fill();
-      ctx.strokeStyle = stepper.hovered && !dis ? 'rgba(255,255,255,0.40)' : 'rgba(255,255,255,0.20)';
+      ctx.strokeStyle = `rgba(255,255,255,${0.20 + 0.20 * hT1})`;
       ctx.lineWidth = 1;
       ctx.stroke();
       ctx.fillStyle = '#fff';
@@ -2891,10 +2938,11 @@ document.addEventListener('click',function(e){
       ctx.beginPath(); ctx.arc(bx, by, BADGE / 2, 0, Math.PI * 2);
       ctx.fillStyle = 'transparent';
       ctx.fill();
-      ctx.strokeStyle = stepper.hovered && !dis ? 'rgba(255,255,255,0.70)' : 'rgba(255,255,255,0.35)';
+      const hT2 = dis ? 0 : stepper.hoverT;
+      ctx.strokeStyle = `rgba(255,255,255,${0.35 + 0.35 * hT2})`;
       ctx.lineWidth = 1.5; ctx.stroke();
       // number text
-      ctx.fillStyle = stepper.hovered && !dis ? 'rgba(255,255,255,0.90)' : 'rgba(255,255,255,0.45)';
+      ctx.fillStyle = `rgba(255,255,255,${0.45 + 0.45 * hT2})`;
       ctx.font = `700 ${BFONT}px Nunito, sans-serif`;
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       ctx.fillText('2', bx, by + 1);
@@ -2909,9 +2957,9 @@ document.addEventListener('click',function(e){
       const bCenterX = bL + bW / 2;
       const bx = bCenterX - 80, by = H / 2;
       ctx.beginPath(); ctx.arc(bx, by, BADGE / 2, 0, Math.PI * 2);
-      ctx.fillStyle = stepper.hovered ? 'rgba(255,255,255,0.30)' : 'rgba(255,255,255,0.10)';
+      ctx.fillStyle = `rgba(255,255,255,${0.10 + 0.20 * stepper.hoverT})`;
       ctx.fill();
-      ctx.strokeStyle = stepper.hovered ? 'rgba(255,255,255,0.40)' : 'rgba(255,255,255,0.20)';
+      ctx.strokeStyle = `rgba(255,255,255,${0.20 + 0.20 * stepper.hoverT})`;
       ctx.lineWidth = 1; ctx.stroke();
       ctx.fillStyle = '#fff';
       ctx.font = `700 ${BFONT}px Nunito, sans-serif`;
