@@ -197,20 +197,12 @@
     cursor: pointer;
   }
 
-  /* Sticky button bar – always above keyboard */
+  /* Button row – inside the card, not fixed */
   .btn-row {
-    position: fixed;
-    left: 0; right: 0;
-    bottom: 0;
-    z-index: 200;
     display: flex;
     gap: 12px;
-    padding: 12px 20px;
-    padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
-    background: rgba(255,255,255,0.96);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border-top: 1px solid var(--border);
+    padding: 0;
+    margin-top: 4px;
   }
   .btn {
     flex: 1;
@@ -248,8 +240,7 @@
     text-align: center;
   }
 
-  /* Spacer so card content isn't hidden under sticky bar */
-  .card-spacer { height: 100px; }
+  .card-spacer { display: none; }
 
   /* ─────────────── SCREEN 3: Confirm ─────────────── */
   #screen-confirm .phone-wrap {
@@ -454,7 +445,7 @@
       <div class="merchant-name">super-merchant.com</div>
     </div>
 
-    <div class="amount">455,00 zł</div>
+    <div class="amount" id="blik-amount">455,00 zł</div>
 
     <div class="blik-input-row" id="blik-digits">
       <div class="blik-digit active" data-idx="0"></div>
@@ -471,15 +462,14 @@
 
     <a class="help-link">Gdzie znaleźć kod BLIK?</a>
 
-    <p class="footer-note">Payment processed by ZEN.COM</p>
+    <div class="btn-row" id="btn-row-code" style="margin-top:20px;">
+      <button class="btn btn-cancel" onclick="window.parent.postMessage({ type: 'navigate', to: '/checkout' }, '*')">Anuluj</button>
+      <button class="btn btn-continue" id="btn-continue">Kontynuuj</button>
+    </div>
+
+    <p class="footer-note" style="margin-top:12px;">Payment processed by ZEN.COM</p>
     <div class="card-spacer"></div>
   </div>
-</div>
-
-<!-- Sticky button bar (outside card, always above keyboard) -->
-<div class="btn-row" id="btn-row-code" style="display:none;">
-  <button class="btn btn-cancel" onclick="window.parent.postMessage({ type: 'navigate', to: '/checkout' }, '*')">Anuluj</button>
-  <button class="btn btn-continue" id="btn-continue">Kontynuuj</button>
 </div>
 
 <!-- ─── Screen 3: Confirm ─── -->
@@ -536,6 +526,21 @@
 </div>
 
 <script>
+// ── Load payment amount from sessionStorage ──
+(function() {
+  try {
+    const data = JSON.parse(sessionStorage.getItem('zenPaymentData') || '{}');
+    if (data.amount && data.currency) {
+      const amountEl = document.getElementById('blik-amount');
+      if (amountEl) {
+        // Format: "445,37 zł" (PLN always for BLIK)
+        const formatted = parseFloat(data.amount).toFixed(2).replace('.', ',');
+        amountEl.textContent = formatted + ' zł';
+      }
+    }
+  } catch(e) {}
+})();
+
 // ── Navigate to status page ──
 function navigateToStatus() {
   // Ensure payment data has BLIK method set
@@ -558,9 +563,7 @@ function goTo(id) {
     el.classList.remove('hidden');
     requestAnimationFrame(() => el.classList.add('visible'));
   });
-  // Show sticky btn bar only on code screen
-  const bar = document.getElementById('btn-row-code');
-  if (bar) bar.style.display = (id === 'screen-code') ? 'flex' : 'none';
+  // btn-row-code is inside the card, shown/hidden with screen-code automatically
 }
 
 // ── Screen 1 → 2 auto after 1s ──
@@ -635,29 +638,11 @@ function startConfirm() {
   }, 50);
 }
 
-// ── iOS: move sticky bar above keyboard using visualViewport ──
-function updateBtnBarPosition() {
-  const bar = document.getElementById('btn-row-code');
-  if (!bar || bar.style.display === 'none') return;
-  if (window.visualViewport) {
-    const vv = window.visualViewport;
-    const offsetFromBottom = window.innerHeight - (vv.offsetTop + vv.height);
-    bar.style.bottom = Math.max(0, offsetFromBottom) + 'px';
-  }
-}
-if (window.visualViewport) {
-  window.visualViewport.addEventListener('resize', updateBtnBarPosition);
-  window.visualViewport.addEventListener('scroll', updateBtnBarPosition);
-}
+// ── Scroll digits into view when keyboard opens ──
 hidden.addEventListener('focus', () => {
   setTimeout(() => {
-    updateBtnBarPosition();
     document.getElementById('blik-digits').scrollIntoView({ behavior: 'smooth', block: 'center' });
   }, 300);
-});
-hidden.addEventListener('blur', () => {
-  const bar = document.getElementById('btn-row-code');
-  if (bar) bar.style.bottom = '0px';
 });
 document.addEventListener('keydown', e => {
   const screen = document.querySelector('.screen.visible');

@@ -31,11 +31,13 @@
     min-height: 100dvh;
     display: flex;
     flex-direction: column;
+    overflow-x: hidden;
   }
 
   .page {
     display: flex;
-    width: 1440px;
+    width: 100%;
+    max-width: 1440px;
     margin: 0 auto;
     padding-top: 100px;
     padding-bottom: 60px;
@@ -2319,6 +2321,13 @@ document.addEventListener('click',function(e){
 
     // Mobile: show card detail view
     if (id === 'card') enterMobileCardView();
+
+    // BLIK: auto-select PLN and hide currency tabs
+    if (id === 'blik') {
+      const plnTab = document.querySelector('.currency-tab[data-currency="PLN"]');
+      if (plnTab) selectCurrency(plnTab);
+      document.getElementById('currencyTabs')?.classList.remove('visible');
+    }
   }
 
   function collapseItem(id, instant) {
@@ -2499,7 +2508,7 @@ document.addEventListener('click',function(e){
     if (activeItem) {
       staticRow.style.display = 'none';
       stepperWrap.style.display = 'block';
-      currTabs.classList.add('visible');
+      if (activeItem !== 'blik') currTabs.classList.add('visible');
       bottomBar.classList.add('visible');
       document.getElementById('mobileSteps')?.classList.add('visible');
       const chevron = document.getElementById('mobileCurrChevron');
