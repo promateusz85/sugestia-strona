@@ -346,6 +346,34 @@
     flex-shrink: 0;
     margin-right: 8px;
   }
+  #cardFieldIcon {
+    width: 32px;
+    justify-content: center;
+    position: relative;
+  }
+  #cardFieldIcon svg {
+    position: absolute;
+    transition: opacity 0.2s;
+    flex-shrink: 0;
+  }
+  #cardFieldIcon.brand-active svg {
+    opacity: 0;
+    pointer-events: none;
+  }
+  #cardFieldIcon img {
+    width: 32px;
+    height: 20px;
+    object-fit: contain;
+    display: block;
+    opacity: 0;
+    transform: scale(0.85);
+    transition: opacity 0.2s, transform 0.2s;
+    position: relative;
+  }
+  #cardFieldIcon img.visible {
+    opacity: 1;
+    transform: scale(1);
+  }
 
   .field-action {
     display: flex;
@@ -367,10 +395,20 @@
   }
 
   /* ── Field validation error state ── */
-  .field.error .field-underline { background: #CC3333; }
+  .field.error .field-underline {
+    height: 4px;
+    margin-top: 3px;
+    background: url("data:image/svg+xml,%3Csvg width='504' height='4' viewBox='0 0 504 4' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 3L5.41612 1L10.8322 3L16.2484 1L21.6645 3L27.0806 1L32.4967 3L37.9128 1L43.329 3L48.7451 1L54.1612 3L59.5773 1L64.9934 3L70.4096 1L75.8257 3L81.2418 1L86.6579 3L92.074 1L97.4902 3L102.906 1L108.322 3L113.706 1L119.09 3L124.474 1L129.858 3L135.242 1L140.626 3L146.01 1L151.393 3L156.777 1L162.161 3L167.545 1L172.929 3L178.313 1L183.697 3L189.081 1L194.464 3L199.848 1L205.232 3L210.616 1L216 3L221.416 1L226.832 3L232.248 1L237.664 3L243.081 1L248.497 3L253.913 1L259.329 3L264.745 1L270.161 3L275.577 1L280.993 3L286.41 1L291.826 3L297.242 1L302.658 3L308.074 1L313.49 3L318.906 1L324.322 3L329.706 1L335.09 3L340.474 1L345.858 3L351.242 1L356.626 3L362.01 1L367.393 3L372.777 1L378.161 3L383.545 1L388.929 3L394.313 1L399.697 3L405.081 1L410.465 3L415.848 1L421.232 3L426.616 1L432 3L437.416 1L442.832 3L448.248 1L453.664 3L459.081 1L464.497 3L469.913 1L475.329 3L480.745 1L486.161 3L491.577 1L496.993 3L502.41 1' stroke='%23222222' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") repeat-x left center;
+    transition: none;
+  }
+  .field.error:focus-within .field-underline {
+    height: 4px;
+    margin-top: 3px;
+    background: url("data:image/svg+xml,%3Csvg width='504' height='4' viewBox='0 0 504 4' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 3L5.41612 1L10.8322 3L16.2484 1L21.6645 3L27.0806 1L32.4967 3L37.9128 1L43.329 3L48.7451 1L54.1612 3L59.5773 1L64.9934 3L70.4096 1L75.8257 3L81.2418 1L86.6579 3L92.074 1L97.4902 3L102.906 1L108.322 3L113.706 1L119.09 3L124.474 1L129.858 3L135.242 1L140.626 3L146.01 1L151.393 3L156.777 1L162.161 3L167.545 1L172.929 3L178.313 1L183.697 3L189.081 1L194.464 3L199.848 1L205.232 3L210.616 1L216 3L221.416 1L226.832 3L232.248 1L237.664 3L243.081 1L248.497 3L253.913 1L259.329 3L264.745 1L270.161 3L275.577 1L280.993 3L286.41 1L291.826 3L297.242 1L302.658 3L308.074 1L313.49 3L318.906 1L324.322 3L329.706 1L335.09 3L340.474 1L345.858 3L351.242 1L356.626 3L362.01 1L367.393 3L372.777 1L378.161 3L383.545 1L388.929 3L394.313 1L399.697 3L405.081 1L410.465 3L415.848 1L421.232 3L426.616 1L432 3L437.416 1L442.832 3L448.248 1L453.664 3L459.081 1L464.497 3L469.913 1L475.329 3L480.745 1L486.161 3L491.577 1L496.993 3L502.41 1' stroke='%23222222' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") repeat-x left center;
+  }
   .field-error-msg {
     font-size: 11px;
-    color: #CC3333;
+    color: #222222;
     font-weight: 600;
     margin-top: 4px;
     display: none;
@@ -2031,7 +2069,7 @@ document.addEventListener('click',function(e){
                     <label class="field-label">Card number</label>
                     <div class="field-input-wrap">
                       <div class="field-input-row">
-                        <div class="field-icon">
+                        <div class="field-icon" id="cardFieldIcon">
                           <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                             <rect x="1.5" y="4" width="17" height="12" rx="2" stroke="#727272" stroke-width="1.8" fill="none"/>
                             <rect x="1.5" y="7" width="17" height="3" fill="#727272"/>
@@ -2671,6 +2709,29 @@ document.addEventListener('click',function(e){
       if (cvvEl) cvvEl.maxLength = 3;
       if (tooltipText) tooltipText.textContent = '3-digit security code on the back of your card';
       if (tooltipCode) tooltipCode.textContent = 'CVV';
+    }
+    // Update card icon in input field
+    const iconWrap = document.getElementById('cardFieldIcon');
+    if (iconWrap) {
+      let img = iconWrap.querySelector('img');
+      if (!brand) {
+        // Back to default card SVG icon
+        iconWrap.classList.remove('brand-active');
+        if (img) { img.classList.remove('visible'); setTimeout(() => { if (img) img.remove(); }, 200); }
+      } else {
+        const srcMap = { visa: './icons/icon-visa.svg', mc: './icons/icon-mastercard.svg', amex: '' };
+        const src = srcMap[brand];
+        if (src) {
+          iconWrap.classList.add('brand-active');
+          if (!img) {
+            img = document.createElement('img');
+            img.alt = brand;
+            iconWrap.appendChild(img);
+          }
+          if (img.src !== location.origin + '/' + src.replace('./', '')) img.src = src;
+          requestAnimationFrame(() => requestAnimationFrame(() => img.classList.add('visible')));
+        }
+      }
     }
   }
 
