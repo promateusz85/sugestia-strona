@@ -366,6 +366,61 @@
     margin-top: 5px;
   }
 
+  /* ── Field validation error state ── */
+  .field.error .field-underline { background: #CC3333; }
+  .field-error-msg {
+    font-size: 11px;
+    color: #CC3333;
+    font-weight: 600;
+    margin-top: 4px;
+    display: none;
+    padding-left: 2px;
+  }
+  .field.error .field-error-msg { display: block; }
+
+  /* ── CVV Tooltip ── */
+  .cvv-info { position: relative; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid #A3A3A3; font-size: 11px; font-weight: 700; color: #727272; transition: border-color 0.15s, color 0.15s; user-select: none; }
+  .cvv-info:hover { border-color: #222; color: #222; }
+  .cvv-tooltip-popup {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    right: 0;
+    background: #fff;
+    border: 1px solid #DFDFDF;
+    border-radius: 10px;
+    padding: 12px 14px;
+    width: 200px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    z-index: 100;
+    display: none;
+    pointer-events: none;
+  }
+  .cvv-tooltip-popup.visible { display: block; }
+  .cvv-tooltip-card {
+    width: 100%;
+    height: 60px;
+    border-radius: 6px;
+    background: linear-gradient(135deg, #1c2e4a 0%, #243b6e 100%);
+    position: relative;
+    margin-bottom: 8px;
+    overflow: hidden;
+  }
+  .cvv-tooltip-card-stripe { position: absolute; top: 14px; left: 0; right: 0; height: 14px; background: rgba(0,0,0,0.5); }
+  .cvv-tooltip-card-cvv {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: #fff;
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #222;
+    font-family: monospace;
+    border: 1.5px solid #CC3333;
+  }
+  .cvv-tooltip-text { font-size: 11px; color: #555; font-weight: 500; line-height: 1.4; font-family: 'Nunito', sans-serif; }
+
   .field-row {
     display: flex;
     gap: 20px;
@@ -505,11 +560,6 @@
     line-height: 1;
   }
 
-  /* ── Collapsed card item (non-selected) ── */
-  .payment-item.card-collapsed {
-    /* same as other items */
-  }
-
   .card-brands-inline {
     display: inline-flex;
     padding: 4px 8px;
@@ -518,6 +568,17 @@
     border: 0.5px solid var(--SurfaceStrong);
     align-items: center;
   }
+
+  /* ── Card brand detection opacity ── */
+  .card-brands-inline img, .card-brands-inline svg,
+  .card-brands-mobile img, .card-brands-mobile svg,
+  .brands-chip-small img, .brands-chip-small svg { transition: opacity 0.2s; }
+  .brand-visa .visa-logo { opacity: 1 !important; }
+  .brand-visa .mc-logo, .brand-visa .amex-logo { opacity: 0.25 !important; }
+  .brand-mc .mc-logo { opacity: 1 !important; }
+  .brand-mc .visa-logo, .brand-mc .amex-logo { opacity: 0.25 !important; }
+  .brand-amex .amex-logo { opacity: 1 !important; }
+  .brand-amex .visa-logo, .brand-amex .mc-logo { opacity: 0.25 !important; }
 
   /* ── Bank logos ── */
   .bank-logos {
@@ -1922,17 +1983,17 @@ document.addEventListener('click',function(e){
              <div class="card-panel-inner">
               <a class="text-link" href="javascript:void(0)" onclick="event.preventDefault()">Not your cards?</a>
               <div class="saved-cards-list">
-                <div class="saved-card-row">
+                <div class="saved-card-row" data-last4="5555">
                   <div class="saved-card-img"><svg width="100" height="64" viewBox="0 0 100 64" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="cg1" x1="0" y1="0" x2="100" y2="64" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#1c2e4a"/><stop offset="100%" stop-color="#243b6e"/></linearGradient></defs><rect width="100" height="64" rx="8" fill="url(#cg1)"/><rect x="8" y="22" width="18" height="14" rx="3" fill="#f0c040" opacity="0.9"/><rect x="8" y="26" width="18" height="2" fill="#c8960a" opacity="0.6"/><rect x="10" y="44" width="32" height="3" rx="1.5" fill="white" opacity="0.25"/><rect x="10" y="50" width="20" height="3" rx="1.5" fill="white" opacity="0.2"/><text x="91" y="20" font-family="Arial" font-size="11" font-weight="900" font-style="italic" fill="white" text-anchor="end">VISA</text></svg></div>
                   <span class="saved-card-number">**** 5555</span>
                   <span class="saved-card-current">Current</span>
                 </div>
-                <div class="saved-card-row">
+                <div class="saved-card-row" data-last4="2323">
                   <div class="saved-card-img"><svg width="100" height="64" viewBox="0 0 100 64" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="cg2" x1="0" y1="0" x2="100" y2="64" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#1a0533"/><stop offset="100%" stop-color="#2d1460"/></linearGradient></defs><rect width="100" height="64" rx="8" fill="url(#cg2)"/><rect x="8" y="22" width="18" height="14" rx="3" fill="#f0c040" opacity="0.9"/><rect x="8" y="26" width="18" height="2" fill="#c8960a" opacity="0.6"/><rect x="10" y="44" width="32" height="3" rx="1.5" fill="white" opacity="0.25"/><rect x="10" y="50" width="20" height="3" rx="1.5" fill="white" opacity="0.2"/><circle cx="78" cy="48" r="9" fill="#EB001B" opacity="0.85"/><circle cx="88" cy="48" r="9" fill="#F79E1B" opacity="0.85"/><path d="M83 42a9 9 0 010 12 9 9 0 000-12z" fill="#FF5F00" opacity="0.9"/></svg></div>
                   <span class="saved-card-number">**** 2323</span>
                   <a class="text-link" href="javascript:void(0)" onclick="event.preventDefault(); chooseCard('2323')">Choose</a>
                 </div>
-                <div class="saved-card-row">
+                <div class="saved-card-row" data-last4="4235">
                   <div class="saved-card-img"><svg width="100" height="64" viewBox="0 0 100 64" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="cg3" x1="0" y1="0" x2="100" y2="64" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#0a2a1a"/><stop offset="100%" stop-color="#0e4429"/></linearGradient></defs><rect width="100" height="64" rx="8" fill="url(#cg3)"/><rect x="8" y="22" width="18" height="14" rx="3" fill="#f0c040" opacity="0.9"/><rect x="8" y="26" width="18" height="2" fill="#c8960a" opacity="0.6"/><rect x="10" y="44" width="32" height="3" rx="1.5" fill="white" opacity="0.25"/><rect x="10" y="50" width="20" height="3" rx="1.5" fill="white" opacity="0.2"/><text x="91" y="20" font-family="Arial" font-size="11" font-weight="900" font-style="italic" fill="white" text-anchor="end">VISA</text></svg></div>
                   <span class="saved-card-number">**** 4235</span>
                   <a class="text-link" href="javascript:void(0)" onclick="event.preventDefault(); chooseCard('4235')">Choose</a>
@@ -1980,6 +2041,7 @@ document.addEventListener('click',function(e){
                       </div>
                       <div class="field-underline"></div>
                     </div>
+                    <div class="field-error-msg" id="cardNumberError">Enter a valid card number</div>
                   </div>
                   <div class="field-row">
                     <div class="field">
@@ -1990,6 +2052,7 @@ document.addEventListener('click',function(e){
                         </div>
                         <div class="field-underline"></div>
                       </div>
+                      <div class="field-error-msg" id="expiryError">Invalid or expired date</div>
                     </div>
                     <div class="field">
                       <label class="field-label">CVC / CVV</label>
@@ -1997,11 +2060,20 @@ document.addEventListener('click',function(e){
                         <div class="field-input-row">
                           <input type="text" id="cvv" placeholder="CVV" maxlength="4" inputmode="numeric" autocomplete="cc-csc">
                           <div class="field-action">
-                            <div class="cvv-info" title="3 or 4 digit code on your card"><span>?</span></div>
+                            <div class="cvv-info" id="cvvInfoBtn"><span>?</span>
+                              <div class="cvv-tooltip-popup" id="cvvTooltip">
+                                <div class="cvv-tooltip-card">
+                                  <div class="cvv-tooltip-card-stripe"></div>
+                                  <div class="cvv-tooltip-card-cvv" id="cvvTooltipCode">CVV</div>
+                                </div>
+                                <div class="cvv-tooltip-text" id="cvvTooltipText">3-digit security code on the back of your card</div>
+                              </div>
+                            </div>
                           </div>
                         </div>
                         <div class="field-underline"></div>
                       </div>
+                      <div class="field-error-msg" id="cvvError">Invalid CVV code</div>
                     </div>
                   </div>
                 </div>
@@ -2266,8 +2338,8 @@ document.addEventListener('click',function(e){
         </div>
 
         <!-- State 2: Method selected — spring stepper canvas -->
-        <div id="stepperWrap" style="display:none; width:408px; height:60px; position:relative; flex-shrink:0;">
-          <canvas id="stepperCanvas" style="width:408px; height:60px; cursor:pointer; display:block;"></canvas>
+        <div id="stepperWrap" style="display:none; width:100%; max-width:408px; height:60px; position:relative; flex-shrink:0;">
+          <canvas id="stepperCanvas" style="width:100%; height:60px; cursor:pointer; display:block;"></canvas>
         </div>
 
         <div class="terms-text" id="termsText">
@@ -2461,6 +2533,15 @@ document.addEventListener('click',function(e){
   // ── Choose a saved card ──
   function chooseCard(lastFour) {
     document.getElementById('activeCardNumber').textContent = '**** ' + lastFour;
+    // Update card artwork in panelSaved to match selected card
+    const sourceRow = document.querySelector(`#panelList .saved-card-row[data-last4="${lastFour}"]`);
+    if (sourceRow) {
+      const sourceImg = sourceRow.querySelector('.saved-card-img');
+      const targetImg = document.querySelector('#panelSaved .saved-card-img');
+      if (sourceImg && targetImg) {
+        targetImg.innerHTML = sourceImg.innerHTML;
+      }
+    }
     // Update current/choose labels and reorder in card list
     const list = document.querySelector('#panelList .saved-cards-list');
     const rows = Array.from(list.querySelectorAll('.saved-card-row'));
@@ -2544,37 +2625,171 @@ document.addEventListener('click',function(e){
 
       amountEl.classList.remove('updating');
       currencyEl.classList.remove('updating');
+      if (activeItem === 'zenapp') drawStepper();
     }, 190);
   }
 
-  // ── Card number formatting ──
-  const cardInput = document.getElementById('cardNumber');
-  if (cardInput) cardInput.addEventListener('input', function(e) {
-    let val = this.value.replace(/\D/g, '');
-    if (val.length > 16) val = val.slice(0, 16);
-    let formatted = val.replace(/(.{4})/g, '$1 ').trim();
-    this.value = formatted;
-    updateStepperDisabled();
-  });
+  // ── Cached DOM references ──
+  const _cardNumberInput = document.getElementById('cardNumber');
+  const _expiryInput = document.getElementById('expiryDate');
+  const _cvvInput = document.getElementById('cvv');
+  const _stepperWrap = document.getElementById('stepperWrap');
+  const _staticBtnRow = document.getElementById('staticBtnRow');
+  const _currencyTabs = document.getElementById('currencyTabs');
+  const _bottomBar = document.querySelector('.bottom-bar');
+  const _termsText = document.getElementById('termsText');
+  const _totalAmount = document.getElementById('totalAmount');
+  const _totalCurrency = document.getElementById('totalCurrency');
+  const _exchangeRateRow = document.getElementById('exchangeRateRow');
+  const _totalBox = document.querySelector('.total-box');
+  const _totalAmountEl = document.querySelector('.total-amount');
+  const _mobileSteps = document.getElementById('mobileSteps');
+  const _mobileCurrChevron = document.getElementById('mobileCurrChevron');
 
-  // ── Expiry date formatting ──
-  const expiryInput = document.getElementById('expiryDate');
-  if (expiryInput) expiryInput.addEventListener('input', function(e) {
-    let val = this.value.replace(/\D/g, '');
-    if (val.length > 4) val = val.slice(0, 4);
-    if (val.length >= 2) {
-      val = val.slice(0, 2) + ' / ' + val.slice(2);
+  // ── Detected card brand ──
+  let detectedBrand = ''; // '', 'visa', 'mc', 'amex'
+
+  function setCardBrand(brand) {
+    if (detectedBrand === brand) return;
+    detectedBrand = brand;
+    const panels = ['panelSaved', 'panelList', 'panelManual'];
+    panels.forEach(pid => {
+      const p = document.getElementById(pid);
+      if (!p) return;
+      p.classList.remove('brand-visa', 'brand-mc', 'brand-amex');
+      if (brand) p.classList.add('brand-' + brand);
+    });
+    // Also update CVV maxlength + tooltip
+    const cvvEl = document.getElementById('cvv');
+    const tooltipText = document.getElementById('cvvTooltipText');
+    const tooltipCode = document.getElementById('cvvTooltipCode');
+    if (brand === 'amex') {
+      if (cvvEl) cvvEl.maxLength = 4;
+      if (tooltipText) tooltipText.textContent = '4-digit security code on the front of your Amex card';
+      if (tooltipCode) tooltipCode.textContent = 'CID';
+    } else {
+      if (cvvEl) cvvEl.maxLength = 3;
+      if (tooltipText) tooltipText.textContent = '3-digit security code on the back of your card';
+      if (tooltipCode) tooltipCode.textContent = 'CVV';
     }
-    this.value = val;
-    updateStepperDisabled();
-  });
+  }
 
-  // ── CVV input ──
-  const cvvInput = document.getElementById('cvv');
-  if (cvvInput) cvvInput.addEventListener('input', function(e) {
-    this.value = this.value.replace(/\D/g, '').slice(0, 4);
-    updateStepperDisabled();
-  });
+  // ── CVV Tooltip toggle ──
+  const _cvvInfoBtn = document.getElementById('cvvInfoBtn');
+  if (_cvvInfoBtn) {
+    _cvvInfoBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const tip = document.getElementById('cvvTooltip');
+      if (tip) tip.classList.toggle('visible');
+    });
+    document.addEventListener('click', function() {
+      const tip = document.getElementById('cvvTooltip');
+      if (tip) tip.classList.remove('visible');
+    });
+  }
+
+  // ── Field validation helpers ──
+  function setFieldError(fieldEl, errorId, show) {
+    if (!fieldEl) return;
+    if (show) {
+      fieldEl.classList.add('error');
+    } else {
+      fieldEl.classList.remove('error');
+    }
+    const errEl = document.getElementById(errorId);
+    // error msg visibility is controlled by CSS .field.error .field-error-msg { display: block }
+  }
+
+  function validateCardNumber() {
+    const val = _cardNumberInput ? _cardNumberInput.value.replace(/\s/g, '') : '';
+    const field = _cardNumberInput ? _cardNumberInput.closest('.field') : null;
+    const valid = val.length >= 13 && val.length <= 19;
+    setFieldError(field, 'cardNumberError', val.length > 0 && !valid);
+    return valid || val.length === 0;
+  }
+
+  function validateExpiry() {
+    const val = _expiryInput ? _expiryInput.value.replace(/\D/g, '') : '';
+    const field = _expiryInput ? _expiryInput.closest('.field') : null;
+    if (val.length < 4) { setFieldError(field, 'expiryError', false); return val.length === 0; }
+    const mm = parseInt(val.slice(0, 2), 10);
+    const yy = parseInt(val.slice(2, 4), 10);
+    const now = new Date();
+    const curYY = now.getFullYear() % 100;
+    const curMM = now.getMonth() + 1;
+    const valid = mm >= 1 && mm <= 12 && (yy > curYY || (yy === curYY && mm >= curMM));
+    setFieldError(field, 'expiryError', !valid);
+    return valid;
+  }
+
+  function validateCVV() {
+    const val = _cvvInput ? _cvvInput.value : '';
+    const field = _cvvInput ? _cvvInput.closest('.field') : null;
+    const required = detectedBrand === 'amex' ? 4 : 3;
+    const valid = val.length === required;
+    setFieldError(field, 'cvvError', val.length > 0 && !valid);
+    return valid || val.length === 0;
+  }
+
+  // ── Card number formatting + brand detection ──
+  const cardInput = _cardNumberInput;
+  if (cardInput) {
+    cardInput.addEventListener('input', function(e) {
+      let val = this.value.replace(/\D/g, '');
+      // Amex: 15 digits, others: 16
+      const maxLen = (val[0] === '3') ? 15 : 16;
+      if (val.length > maxLen) val = val.slice(0, maxLen);
+      let formatted = val.replace(/(.{4})/g, '$1 ').trim();
+      this.value = formatted;
+      // Brand detection
+      const first = val[0] || '';
+      const firstTwo = val.slice(0, 2);
+      if (first === '4') setCardBrand('visa');
+      else if (first === '5' || first === '2') setCardBrand('mc');
+      else if (firstTwo === '34' || firstTwo === '37') setCardBrand('amex');
+      else setCardBrand('');
+      if (val.length > 0) validateCardNumber();
+      else { const f = cardInput.closest('.field'); if(f) f.classList.remove('error'); }
+      updateStepperDisabled();
+    });
+    cardInput.addEventListener('blur', function() {
+      const val = this.value.replace(/\s/g, '');
+      if (val.length > 0) validateCardNumber();
+    });
+  }
+
+  // ── Expiry date formatting + validation ──
+  const expiryInput = _expiryInput;
+  if (expiryInput) {
+    expiryInput.addEventListener('input', function(e) {
+      let val = this.value.replace(/\D/g, '');
+      if (val.length > 4) val = val.slice(0, 4);
+      if (val.length >= 2) {
+        val = val.slice(0, 2) + ' / ' + val.slice(2);
+      }
+      this.value = val;
+      updateStepperDisabled();
+    });
+    expiryInput.addEventListener('blur', function() {
+      const val = this.value.replace(/\D/g, '');
+      if (val.length > 0) validateExpiry();
+    });
+  }
+
+  // ── CVV input + validation ──
+  const cvvInput = _cvvInput;
+  if (cvvInput) {
+    cvvInput.addEventListener('input', function(e) {
+      const maxLen = detectedBrand === 'amex' ? 4 : 3;
+      this.value = this.value.replace(/\D/g, '').slice(0, maxLen);
+      if (this.value.length > 0) validateCVV();
+      else { const f = cvvInput.closest('.field'); if(f) f.classList.remove('error'); }
+      updateStepperDisabled();
+    });
+    cvvInput.addEventListener('blur', function() {
+      if (this.value.length > 0) validateCVV();
+    });
+  }
 
   // ── Button, currency tabs, bottom bar visibility ──
   let stepperCurrentStep = 1;
@@ -2591,6 +2806,10 @@ document.addEventListener('click',function(e){
       currTabs.classList.add('visible'); // always show; blik-mode controls which tabs are shown
       bottomBar.classList.add('visible');
       document.getElementById('mobileSteps')?.classList.add('visible');
+      if (activeItem === 'zenapp') {
+        bottomBar.classList.remove('visible');
+        document.getElementById('mobileSteps')?.classList.remove('visible');
+      }
       const chevron = document.getElementById('mobileCurrChevron');
       if (chevron) chevron.classList.add('visible');
       document.querySelector('.total-amount')?.classList.add('has-dropdown');
@@ -2621,6 +2840,10 @@ document.addEventListener('click',function(e){
 
   function updateTermsText() {
     const t = document.getElementById('termsText');
+    if (activeItem === 'zenapp') {
+      t.innerHTML = 'By clicking "pay" I accept <a href="javascript:void(0)"> <strong>ZEN.COM</strong> payment terms</a>';
+      return;
+    }
     if (stepperCurrentStep === 2) {
       t.innerHTML = 'By clicking "confirm payment" I accept <a href="javascript:void(0)"> <strong>ZEN.COM</strong> terms</a>';
     } else {
@@ -2658,7 +2881,9 @@ document.addEventListener('click',function(e){
       const num = cardInput ? cardInput.value.replace(/\s/g, '') : '';
       const exp = expiryInput ? expiryInput.value.replace(/\D/g, '') : '';
       const cvv = cvvInput ? cvvInput.value : '';
-      stepper.disabled = !(num.length >= 15 && exp.length === 4 && cvv.length >= 3);
+      const requiredCvv = detectedBrand === 'amex' ? 4 : 3;
+      const minCard = detectedBrand === 'amex' ? 15 : 16;
+      stepper.disabled = !(num.length >= minCard && exp.length === 4 && cvv.length >= requiredCvv);
     } else {
       stepper.disabled = false;
     }
@@ -2741,8 +2966,28 @@ document.addEventListener('click',function(e){
     hoverT: 0, hoverRunning: false
   };
 
+  // Cached icon for zenapp Pay button — white version via blob
+  const _zenPayIcon = new Image();
+  fetch('./icons/processed by.svg')
+    .then(r => r.text())
+    .then(svg => {
+      const white = svg.replace(/fill="[^"]*"/g, 'fill="white"');
+      const blob = new Blob([white], { type: 'image/svg+xml' });
+      _zenPayIcon.src = URL.createObjectURL(blob);
+      _zenPayIcon.onload = () => { if (activeItem === 'zenapp') drawStepper(); };
+    });
+
   canvas.addEventListener('click', () => {
     if (stepper.disabled) return;
+    // ZEN.COM App: single click → navigate directly to zen-payment
+    if (activeItem === 'zenapp') {
+      const paymentData = { method: 'zenapp' };
+      paymentData.currency = document.getElementById('totalCurrency')?.textContent || 'EUR';
+      paymentData.amount = document.getElementById('totalAmount')?.textContent || '100.00';
+      try { sessionStorage.setItem('zenPaymentData', JSON.stringify(paymentData)); } catch(e) {}
+      window.parent.postMessage({ type: 'navigate', to: '/zen-payment' }, '*');
+      return;
+    }
     if (stepper.step === 2) {
       // Step 2 = "Confirm Payment" — save payment info and navigate to status page
       const paymentData = { method: activeItem };
@@ -2852,6 +3097,38 @@ document.addEventListener('click',function(e){
     const cp = clamp(p);
     const dis = stepper.disabled;
 
+    // ── ZEN.COM App: single Pay button ──
+    if (activeItem === 'zenapp') {
+      const amt = document.getElementById('totalAmount')?.textContent || '100.00';
+      const cur = document.getElementById('totalCurrency')?.textContent || 'EUR';
+      // Hover: #222 → #3a3a3a (lighter on hover)
+      const hT = dis ? 0 : stepper.hoverT;
+      const bgV = Math.round(lerp(34, 58, hT));
+      rrect(ctx, 0, 0, W, H, H / 2);
+      ctx.fillStyle = dis ? '#DFDFDF' : `rgb(${bgV},${bgV},${bgV})`;
+      ctx.fill();
+      ctx.font = `700 ${FONT}px Nunito, sans-serif`;
+      const label = 'Pay ' + amt + ' ' + cur;
+      if (_zenPayIcon && _zenPayIcon.complete && _zenPayIcon.naturalWidth > 0) {
+        const ih = 20;
+        const iw = _zenPayIcon.naturalWidth * (ih / _zenPayIcon.naturalHeight);
+        const textW = ctx.measureText(label).width;
+        const totalW = iw + 8 + textW;
+        const startX = (W - totalW) / 2;
+        ctx.drawImage(_zenPayIcon, startX, (H - ih) / 2, iw, ih);
+        ctx.fillStyle = '#fff';
+        ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+        ctx.fillText(label, startX + iw + 8, H / 2 + 1);
+      } else {
+        ctx.fillStyle = '#fff';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText(label, W / 2, H / 2 + 1);
+      }
+      ctx.restore();
+      canvas.style.cursor = dis ? 'not-allowed' : 'pointer';
+      return;
+    }
+
     // Derived values
     const aW = lerp(PW, CIR, p);
     const aBg = dis && cp < 0.5 ? lerpC("#DFDFDF", "#DFDFDF", 0) : lerpC("#F7F7F7", "#22E243", cp);
@@ -2930,19 +3207,16 @@ document.addEventListener('click',function(e){
     ctx.fillStyle = rgb(bBg);
     ctx.fill();
 
-    // B badge "2" (inactive) — outlined circle on dark pill, matches inactive step style
+    // B badge "2" (inactive) — outlined circle on dark pill, fixed #B5B5B5 (no hover effect)
     if (bBadge > 0.01) {
       ctx.globalAlpha = bBadge;
       const bx = bL + bW / 2, by = H / 2;
-      // transparent fill, white stroke
       ctx.beginPath(); ctx.arc(bx, by, BADGE / 2, 0, Math.PI * 2);
       ctx.fillStyle = 'transparent';
       ctx.fill();
-      const hT2 = dis ? 0 : stepper.hoverT;
-      ctx.strokeStyle = `rgba(255,255,255,${0.35 + 0.35 * hT2})`;
+      ctx.strokeStyle = '#B5B5B5';
       ctx.lineWidth = 1.5; ctx.stroke();
-      // number text
-      ctx.fillStyle = `rgba(255,255,255,${0.45 + 0.45 * hT2})`;
+      ctx.fillStyle = '#B5B5B5';
       ctx.font = `700 ${BFONT}px Nunito, sans-serif`;
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       ctx.fillText('2', bx, by + 1);
@@ -2981,11 +3255,16 @@ document.addEventListener('click',function(e){
   resizeCanvas();
   drawStepper();
 
-  // Resize canvas on window resize
+  // Resize canvas on window resize (debounced 100ms)
+  let _resizeTimer = null;
   window.addEventListener('resize', () => {
-    if (document.getElementById('stepperWrap').style.display !== 'none') {
-      drawStepper();
-    }
+    if (_resizeTimer) clearTimeout(_resizeTimer);
+    _resizeTimer = setTimeout(() => {
+      if (document.getElementById('stepperWrap').style.display !== 'none') {
+        resizeCanvas();
+        drawStepper();
+      }
+    }, 100);
   });
 </script>
 
