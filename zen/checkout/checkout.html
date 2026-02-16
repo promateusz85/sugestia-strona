@@ -2064,33 +2064,43 @@ document.addEventListener('click',function(e){
         </div>
         <hr class="payment-separator">
 
-        <!-- ZEN.COM App -->
-        <div class="payment-item zen-app-item" onclick="collapseAll()">
-          <div class="payment-item-left">
-            <div class="pm-icon" style="overflow:hidden;padding:0;">
-              <img src="./icons/zencomapp.svg" alt="ZEN.COM App" style="width:40px;height:40px;border-radius:12px;display:block;">
-            </div>
-            <div class="pm-info">
-              <div class="pm-name-row">
-                <span class="pm-name">ZEN.COM App</span>
-                <div class="cashback-badge">
-                  <img src="./icons/Icon-Cashback.svg" alt="" style="width:12px;height:12px;flex-shrink:0;">
-                  <span>CASHBACK 2 EUR</span>
+        <!-- ZEN.COM App (expandable) -->
+        <div class="expandable-item" id="zenappItem" onclick="expandItem('zenapp')">
+          <div class="expandable-header">
+            <div class="payment-item-left">
+              <div class="pm-icon" style="overflow:hidden;padding:0;">
+                <img src="./icons/zencomapp.svg" alt="ZEN.COM App" style="width:40px;height:40px;border-radius:12px;display:block;">
+              </div>
+              <div class="pm-info">
+                <div class="pm-name-row">
+                  <span class="pm-name">ZEN.COM App</span>
+                  <div class="cashback-badge">
+                    <img src="./icons/Icon-Cashback.svg" alt="" style="width:12px;height:12px;flex-shrink:0;">
+                    <span>CASHBACK 2 EUR</span>
+                  </div>
+                </div>
+                <div class="pm-desc">One-Scan Payment</div>
+                <div class="app-only-chip app-only-mobile">
+                  <img src="./icons/app-users-only.svg" alt="" style="width:12px;height:12px;flex-shrink:0;">
+                  <span>App users only</span>
                 </div>
               </div>
-              <div class="pm-desc">One-Scan Payment</div>
-              <div class="app-only-chip app-only-mobile">
-                <img src="./icons/app-users-only.svg" alt="" style="width:12px;height:12px;flex-shrink:0;">
-                <span>App users only</span>
+            </div>
+            <div class="app-only-chip app-only-desktop">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="3" y="1" width="6" height="10" rx="1" stroke="#727272" stroke-width="1.2" fill="none"/><line x1="4.5" y1="9" x2="7.5" y2="9" stroke="#727272" stroke-width="0.8" stroke-linecap="round"/></svg>
+              <span>App users only</span>
+            </div>
+          </div>
+          <div class="expandable-content" id="zenappExpanded">
+            <div class="expandable-inner">
+              <div class="redirect-info">
+                <img src="./icons/after-confirming.svg" alt="" style="width:16px;height:16px;flex-shrink:0;">
+                <span>After clicking Pay, you'll be redirected to complete your payment securely with the ZEN.COM app.</span>
               </div>
             </div>
           </div>
-          <div class="app-only-chip app-only-desktop">
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="3" y="1" width="6" height="10" rx="1" stroke="#727272" stroke-width="1.2" fill="none"/><line x1="4.5" y1="9" x2="7.5" y2="9" stroke="#727272" stroke-width="0.8" stroke-linecap="round"/></svg>
-            <span>App users only</span>
-          </div>
         </div>
-        <hr class="payment-separator">
+        <hr class="payment-separator" id="sep-zenapp-bank">
 
         <!-- ZEN.COM CashCard -->
         <div class="payment-item" onclick="collapseAll()">
@@ -2281,7 +2291,7 @@ document.addEventListener('click',function(e){
   }
 
   // ── Generic expand/collapse system ──
-  let activeItem = null; // 'blik', 'card', or null
+  let activeItem = null; // 'blik', 'card', 'zenapp', or null
 
   const items = {
     blik: {
@@ -2290,6 +2300,13 @@ document.addEventListener('click',function(e){
       brands: null,
       sepBefore: null,
       sepAfter: 'sep-blik-card',
+    },
+    zenapp: {
+      wrapper: 'zenappItem',
+      content: 'zenappExpanded',
+      brands: null,
+      sepBefore: 'sep-zenapp-bank',
+      sepAfter: null,
     },
     card: {
       wrapper: 'cardItem',
@@ -2700,7 +2717,7 @@ document.addEventListener('click',function(e){
       paymentData.currency = document.getElementById('totalCurrency')?.textContent || 'EUR';
       paymentData.amount = document.getElementById('totalAmount')?.textContent || '100.00';
       try { sessionStorage.setItem('zenPaymentData', JSON.stringify(paymentData)); } catch(e) {}
-      const nextRoute = (activeItem === 'blik') ? '/blik' : '/status';
+      const nextRoute = activeItem === 'blik' ? '/blik' : activeItem === 'zenapp' ? '/zen-payment' : '/status';
       window.parent.postMessage({ type: 'navigate', to: nextRoute }, '*');
       return;
     }
