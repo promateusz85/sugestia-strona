@@ -783,6 +783,18 @@
     color: white;
   }
 
+  /* BLIK mode: show only PLN pill, non-interactive */
+  .currency-tabs.blik-mode .currency-tab:not([data-currency="PLN"]) {
+    display: none;
+  }
+  .currency-tabs.blik-mode .currency-tab[data-currency="PLN"] {
+    cursor: default;
+    pointer-events: none;
+  }
+  .currency-tabs.blik-mode .currency-tabs-label::after {
+    content: '';
+  }
+
   .total-box {
     padding: 20px;
     background: var(--SurfaceLight);
@@ -2322,11 +2334,11 @@ document.addEventListener('click',function(e){
     // Mobile: show card detail view
     if (id === 'card') enterMobileCardView();
 
-    // BLIK: auto-select PLN and hide currency tabs
+    // BLIK: auto-select PLN, show only PLN pill (no other currencies)
     if (id === 'blik') {
       const plnTab = document.querySelector('.currency-tab[data-currency="PLN"]');
       if (plnTab) selectCurrency(plnTab);
-      document.getElementById('currencyTabs')?.classList.remove('visible');
+      document.getElementById('currencyTabs')?.classList.add('blik-mode');
     }
   }
 
@@ -2348,6 +2360,8 @@ document.addEventListener('click',function(e){
       if (cfg.sepAfter) document.getElementById(cfg.sepAfter).style.opacity = '1';
       // Reset card panels to default
       if (id === 'card') showCardPanel('saved');
+      // BLIK: remove blik-mode from currency tabs
+      if (id === 'blik') document.getElementById('currencyTabs')?.classList.remove('blik-mode');
     };
 
     if (instant) {
@@ -2508,7 +2522,7 @@ document.addEventListener('click',function(e){
     if (activeItem) {
       staticRow.style.display = 'none';
       stepperWrap.style.display = 'block';
-      if (activeItem !== 'blik') currTabs.classList.add('visible');
+      currTabs.classList.add('visible'); // always show; blik-mode controls which tabs are shown
       bottomBar.classList.add('visible');
       document.getElementById('mobileSteps')?.classList.add('visible');
       const chevron = document.getElementById('mobileCurrChevron');
