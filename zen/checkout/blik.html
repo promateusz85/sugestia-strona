@@ -569,10 +569,9 @@ function goTo(id) {
 // ── Screen 1 → 2 auto after 1s ──
 setTimeout(() => {
   goTo('screen-code');
-  setTimeout(() => {
-    const hidden = document.getElementById('blik-hidden');
-    hidden.focus();
-  }, 600);
+  // Focus immediately to trigger keyboard on mobile
+  const hidden = document.getElementById('blik-hidden');
+  hidden.focus();
 }, 1000);
 
 // ── BLIK 6-digit input logic ──
@@ -598,6 +597,8 @@ hidden.addEventListener('input', () => {
   code = hidden.value.replace(/\D/g, '').slice(0, 6);
   hidden.value = code;
   renderDigits(code);
+  // Hide keyboard when all 6 digits entered
+  if (code.length === 6) hidden.blur();
 });
 
 hidden.addEventListener('keydown', e => {

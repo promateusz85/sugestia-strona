@@ -1069,6 +1069,10 @@
     padding: 0;
   }
 
+  /* ZEN.COM App desc — show desktop variant only on desktop */
+  .zenapp-desc-mobile { display: none; }
+  .zenapp-desc-desktop { display: flex; }
+
   .redirect-info svg {
     flex-shrink: 0;
     margin-top: 1px;
@@ -1446,6 +1450,10 @@
     /* Prevent card brands from stretching in flex column */
 
     .show-all { padding: 14px 16px; font-size: 13px; }
+
+    /* ZEN.COM App desc — swap on mobile */
+    .zenapp-desc-desktop { display: none; }
+    .zenapp-desc-mobile { display: flex; }
 
     .trust-row {
       flex-direction: row;
@@ -2093,11 +2101,11 @@ document.addEventListener('click',function(e){
           </div>
           <div class="expandable-content" id="zenappExpanded">
             <div class="expandable-inner">
-              <div class="redirect-info app-only-desktop">
+              <div class="redirect-info zenapp-desc-desktop">
                 <img src="./icons/after-confirming.svg" alt="" style="width:16px;height:16px;flex-shrink:0;">
                 <span>Make sure you have the ZEN.COM app installed. After clicking Pay, you'll see a QR code to scan and pay instantly.</span>
               </div>
-              <div class="redirect-info app-only-mobile">
+              <div class="redirect-info zenapp-desc-mobile">
                 <img src="./icons/after-confirming.svg" alt="" style="width:16px;height:16px;flex-shrink:0;">
                 <span>Make sure you have the ZEN.COM app installed. After clicking Pay, you'll be redirected to the next step to securely provide your payment details.</span>
               </div>
@@ -2355,18 +2363,20 @@ document.addEventListener('click',function(e){
     // Mobile: show card detail view
     if (id === 'card') enterMobileCardView();
 
-    // Mobile: scroll expanded item into view (above bottom bar ~80px)
+    // Mobile: scroll expanded item fully into view (clear of bottom bar)
     if (id !== 'card' && isMobile()) {
       setTimeout(() => {
         const el = document.getElementById(cfg.wrapper);
         if (!el) return;
         const rect = el.getBoundingClientRect();
-        const bottomBarH = 80;
-        const visibleBottom = window.innerHeight - bottomBarH;
-        if (rect.bottom > visibleBottom || rect.top < 0) {
-          el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        const bottomBarH = document.querySelector('.bottom-bar')?.offsetHeight || 80;
+        const padding = 12;
+        const visibleBottom = window.innerHeight - bottomBarH - padding;
+        if (rect.bottom > visibleBottom) {
+          const extra = rect.bottom - visibleBottom;
+          window.scrollBy({ top: extra, behavior: 'smooth' });
         }
-      }, 500); // after expand animation (~450ms)
+      }, 500);
     }
 
     // BLIK: auto-select PLN, show only PLN pill (no other currencies)
