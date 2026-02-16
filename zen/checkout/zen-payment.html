@@ -584,6 +584,9 @@
 <div class="mobile-view">
   <div class="mobile-spacer-top"></div>
   <div class="mobile-content">
+    <a href="#" onclick="event.preventDefault(); window.parent.postMessage({ type: 'navigate', to: '/checkout' }, '*')" style="display:inline-block;margin-bottom:32px;">
+      <img src="./zencom-logo.svg" alt="ZEN.COM" style="height:22px;width:auto;display:block;">
+    </a>
     <p class="mobile-payment-label">Payment for</p>
     <p class="mobile-merchant">SUPER-MERCHANT.COM</p>
     <p class="mobile-amount" id="mobile-amount">100.00 EUR</p>
