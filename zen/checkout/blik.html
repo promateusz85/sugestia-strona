@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>BLIK – Płatność</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --blik-dark: #1a1a1a;
+    --blik-red: #e42020;
+    --blik-pink: #f0134d;
+    --success-green: #16a34a;
+    --text-primary: #1a1a1a;
+    --text-muted: #6b7280;
+    --border: #e5e7eb;
+    --bg: #fafafa;
+  }
+
+  html, body {
+    height: 100%;
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    overflow: hidden;
+  }
+
+  /* ── Decorative circles ── */
+  .circles-bg {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .circle {
+    position: absolute;
+    border-radius: 50%;
+    border: 2.5px solid;
+  }
+  .c1 {
+    width: 130px; height: 130px;
+    top: -40px; left: -40px;
+    border-color: #f0134d;
+  }
+  .c2 {
+    width: 80px; height: 80px;
+    top: 30px; left: 50px;
+    border-color: #f0134d;
+    border-width: 1.5px;
+    opacity: .5;
+  }
+  .c3 {
+    width: 320px; height: 320px;
+    bottom: -120px; left: -100px;
+    border-color: #f0134d;
+  }
+
+  /* ── Screen container ── */
+  .screen {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    transition: opacity .5s ease, transform .5s ease;
+  }
+  .screen.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(20px);
+  }
+  .screen.visible {
+    opacity: 1;
+    pointer-events: all;
+    transform: translateY(0);
+  }
+
+  /* Code screen scrollable – fixes iOS keyboard covering digits */
+  #screen-code {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    justify-content: flex-start;
+    padding-top: 32px;
+    padding-bottom: 60px;
+  }
+
+  /* ── BLIK logo ── */
+  .blik-logo {
+    margin-bottom: 32px;
+    display: inline-flex;
+    align-items: center;
+    user-select: none;
+  }
+  .blik-logo img {
+    height: 32px;
+    width: auto;
+    display: block;
+  }
+
+  /* ─────────────── SCREEN 1: Loading ─────────────── */
+  #screen-loading .loader-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+  .spinner {
+    width: 48px; height: 48px;
+    border: 3px solid var(--border);
+    border-top-color: var(--blik-red);
+    border-radius: 50%;
+    animation: spin .8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ─────────────── SCREEN 2: Code entry ─────────────── */
+  #screen-code .card {
+    width: 100%;
+    max-width: 420px;
+    background: #fff;
+    border-radius: 20px;
+    padding: 36px 32px;
+    box-shadow: 0 2px 24px rgba(0,0,0,.07);
+  }
+
+  .merchant-info {
+    margin-bottom: 20px;
+  }
+  .merchant-info .merchant-id {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.5;
+    word-break: break-all;
+  }
+  .merchant-info .merchant-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-top: 2px;
+  }
+
+  .amount {
+    font-size: 42px;
+    font-weight: 300;
+    color: var(--text-primary);
+    margin-bottom: 24px;
+    letter-spacing: -1px;
+  }
+  .amount sup { font-size: 20px; font-weight: 400; vertical-align: super; }
+
+  /* 6-digit segmented input */
+  .blik-input-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+    justify-content: space-between;
+  }
+  .blik-digit {
+    flex: 1;
+    height: 56px;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    font-size: 22px;
+    font-weight: 600;
+    text-align: center;
+    color: var(--text-primary);
+    background: #fff;
+    outline: none;
+    transition: border-color .2s, box-shadow .2s;
+    cursor: default;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+  .blik-digit:focus, .blik-digit.active {
+    border-color: var(--blik-red);
+    box-shadow: 0 0 0 3px rgba(228,32,32,.12);
+  }
+  .blik-digit.filled {
+    border-color: #9ca3af;
+  }
+
+  .help-link {
+    display: block;
+    font-size: 12px;
+    color: var(--text-muted);
+    text-decoration: underline;
+    margin-bottom: 28px;
+    cursor: pointer;
+  }
+
+  /* Sticky button bar – always above keyboard */
+  .btn-row {
+    position: fixed;
+    left: 0; right: 0;
+    bottom: 0;
+    z-index: 200;
+    display: flex;
+    gap: 12px;
+    padding: 12px 20px;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+    background: rgba(255,255,255,0.96);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-top: 1px solid var(--border);
+  }
+  .btn {
+    flex: 1;
+    height: 52px;
+    border-radius: 14px;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    border: none;
+    cursor: pointer;
+    transition: opacity .15s, transform .1s;
+  }
+  .btn:active { transform: scale(.97); }
+  .btn-cancel {
+    background: transparent;
+    color: var(--text-muted);
+    border: 2px solid var(--border);
+  }
+  .btn-continue {
+    background: linear-gradient(135deg, var(--blik-red) 0%, var(--blik-pink) 100%);
+    color: #fff;
+    opacity: .4;
+    pointer-events: none;
+    transition: opacity .3s;
+  }
+  .btn-continue.ready {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .footer-note {
+    margin-top: 8px;
+    font-size: 11px;
+    color: #c0c0c0;
+    text-align: center;
+  }
+
+  /* Spacer so card content isn't hidden under sticky bar */
+  .card-spacer { height: 100px; }
+
+  /* ─────────────── SCREEN 3: Confirm ─────────────── */
+  #screen-confirm .phone-wrap {
+    position: relative;
+    margin-bottom: 28px;
+  }
+  .phone-blob {
+    width: 160px; height: 160px;
+    background: #eef0ff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .phone-icon {
+    width: 72px;
+    animation: phone-float 3s ease-in-out infinite;
+  }
+  @keyframes phone-float {
+    0%, 100% { transform: translateY(0) rotate(-4deg); }
+    50%       { transform: translateY(-10px) rotate(4deg); }
+  }
+
+  .progress-ring-wrap {
+    position: absolute;
+    top: -8px; right: -8px;
+  }
+  .progress-ring { transform: rotate(-90deg); }
+  .progress-ring-bg { stroke: #e5e7eb; }
+  .progress-ring-fill {
+    stroke: var(--blik-red);
+    stroke-linecap: round;
+    stroke-dasharray: 126;
+    stroke-dashoffset: 126;
+    transition: stroke-dashoffset .1s linear;
+  }
+  .timer-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--blik-red);
+  }
+
+  .confirm-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+    text-align: center;
+    max-width: 300px;
+    line-height: 1.4;
+  }
+
+  /* ─────────────── SCREEN 4: Success ─────────────── */
+  #screen-success .success-card {
+    width: 100%;
+    max-width: 360px;
+    background: #fff;
+    border-radius: 24px;
+    padding: 48px 32px;
+    box-shadow: 0 4px 32px rgba(0,0,0,.08);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  .banners-row {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 0;
+  }
+  .banner-img {
+    flex: 1;
+    height: 160px;
+    border-radius: 16px;
+    object-fit: cover;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .banner-img.blikomania {
+    background: linear-gradient(135deg, #1a3a6e 0%, #2563eb 100%);
+    flex-direction: column;
+    gap: 4px;
+    color: #fff;
+  }
+  .banner-img.promo {
+    background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+    flex-direction: column;
+    gap: 4px;
+    color: #fff;
+  }
+  .banner-label {
+    font-size: 20px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .banner-year {
+    font-size: 14px;
+    font-weight: 400;
+    opacity: .8;
+  }
+  .banner-emoji { font-size: 40px; }
+
+  .success-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 0 12px;
+  }
+  .check-circle {
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    border: 2.5px solid var(--success-green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: pop .4s cubic-bezier(.175,.885,.32,1.275) both;
+  }
+  @keyframes pop {
+    0%   { transform: scale(0); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .check-circle svg { color: var(--success-green); }
+  .success-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text-primary);
+    text-align: center;
+  }
+  .success-sub {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-align: center;
+  }
+
+  .btn-back {
+    margin-top: 28px;
+    width: 100%;
+    max-width: 320px;
+    height: 52px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--blik-red), var(--blik-pink));
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    border: none;
+    cursor: pointer;
+    transition: opacity .15s;
+  }
+  .btn-back:hover { opacity: .9; }
+
+  /* ─── Mobile tweaks ─── */
+  @media (max-width: 480px) {
+    .blik-digit { height: 48px; font-size: 18px; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+    .amount { font-size: 34px; }
+    #screen-code .card { padding: 28px 20px; }
+    .banners-row { gap: 8px; }
+    .banner-img { height: 110px; }
+    .banner-label { font-size: 14px; }
+    .banner-emoji { font-size: 28px; }
+    #screen-success .success-card { padding: 28px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Decorative circles -->
+<div class="circles-bg">
+  <div class="circle c1"></div>
+  <div class="circle c2"></div>
+  <div class="circle c3"></div>
+</div>
+
+<!-- ─── Screen 1: Loading ─── -->
+<div class="screen visible" id="screen-loading">
+  <div class="loader-wrap">
+    <div class="blik-logo"><img src="./blik.svg" alt="BLIK"></div>
+    <div class="spinner"></div>
+  </div>
+</div>
+
+<!-- ─── Screen 2: Code entry ─── -->
+<div class="screen hidden" id="screen-code">
+  <div class="card">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+      <div class="blik-logo" style="margin-bottom:0;"><img src="./blik.svg" alt="BLIK"></div>
+      <span style="font-size:12px; color:var(--text-muted); cursor:pointer;">🌐 EN ▾</span>
+    </div>
+
+    <div class="merchant-info">
+      <div class="merchant-id">super-merchant · payment: cm0m7ugcd0mzg0lsk12i49e38</div>
+      <div class="merchant-name">super-merchant.com</div>
+    </div>
+
+    <div class="amount">455,00 zł</div>
+
+    <div class="blik-input-row" id="blik-digits">
+      <div class="blik-digit active" data-idx="0"></div>
+      <div class="blik-digit" data-idx="1"></div>
+      <div class="blik-digit" data-idx="2"></div>
+      <div class="blik-digit" data-idx="3"></div>
+      <div class="blik-digit" data-idx="4"></div>
+      <div class="blik-digit" data-idx="5"></div>
+    </div>
+
+    <input id="blik-hidden" inputmode="numeric" pattern="[0-9]*"
+      maxlength="6" autocomplete="one-time-code"
+      style="position:fixed; top:-9999px; left:-9999px; opacity:0; width:0; height:0; pointer-events:none; caret-color:transparent;" />
+
+    <a class="help-link">Gdzie znaleźć kod BLIK?</a>
+
+    <p class="footer-note">Payment processed by ZEN.COM</p>
+    <div class="card-spacer"></div>
+  </div>
+</div>
+
+<!-- Sticky button bar (outside card, always above keyboard) -->
+<div class="btn-row" id="btn-row-code" style="display:none;">
+  <button class="btn btn-cancel" onclick="window.parent.postMessage({ type: 'navigate', to: '/checkout' }, '*')">Anuluj</button>
+  <button class="btn btn-continue" id="btn-continue">Kontynuuj</button>
+</div>
+
+<!-- ─── Screen 3: Confirm ─── -->
+<div class="screen hidden" id="screen-confirm">
+  <div class="blik-logo" style="margin-bottom:40px;"><img src="./blik.svg" alt="BLIK"></div>
+
+  <div class="phone-wrap">
+    <div class="phone-blob">
+      <!-- Inline phone SVG -->
+      <svg class="phone-icon" viewBox="0 0 60 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="2" y="2" width="56" height="96" rx="10" fill="#fff" stroke="#d1d5db" stroke-width="2.5"/>
+        <rect x="10" y="18" width="40" height="64" rx="4" fill="#f3f4f6"/>
+        <circle cx="30" cy="90" r="4" fill="#d1d5db"/>
+        <circle cx="30" cy="9" r="2.5" fill="#d1d5db"/>
+        <rect x="14" y="24" width="32" height="6" rx="3" fill="#d1d5db"/>
+        <rect x="14" y="34" width="24" height="4" rx="2" fill="#e5e7eb"/>
+        <rect x="14" y="42" width="20" height="4" rx="2" fill="#e5e7eb"/>
+      </svg>
+    </div>
+
+    <!-- Countdown ring -->
+    <div class="progress-ring-wrap" style="width:48px;height:48px;position:absolute;top:-10px;right:-10px;">
+      <svg class="progress-ring" width="48" height="48">
+        <circle class="progress-ring-bg" cx="24" cy="24" r="20" fill="none" stroke-width="3"/>
+        <circle class="progress-ring-fill" id="ring-fill" cx="24" cy="24" r="20" fill="none" stroke-width="3"/>
+      </svg>
+      <span class="timer-text" id="timer-num">3</span>
+    </div>
+  </div>
+
+  <p class="confirm-title">Teraz magicznie potwierdzasz płatność<br>w aplikacji swojego banku ✨</p>
+</div>
+
+<!-- ─── Screen 4: Success ─── -->
+<div class="screen hidden" id="screen-success">
+  <div class="blik-logo" style="margin-bottom:28px;"><img src="./blik.svg" alt="BLIK"></div>
+
+  <div class="success-card">
+    <div class="banners-row">
+      <!-- Center success only -->
+      <div class="success-center">
+        <div class="check-circle">
+          <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
+        <div class="success-title">Płatność<br>zrealizowana</div>
+        <div class="success-sub">Pamiętaj, aby nie zamykać okna przeglądarki</div>
+      </div>
+    </div>
+
+    <button class="btn-back" onclick="navigateToStatus()">Wróć do sklepu</button>
+  </div>
+</div>
+
+<script>
+// ── Navigate to status page ──
+function navigateToStatus() {
+  // Ensure payment data has BLIK method set
+  try {
+    const existing = JSON.parse(sessionStorage.getItem('zenPaymentData') || '{}');
+    if (!existing.method) existing.method = 'blik';
+    sessionStorage.setItem('zenPaymentData', JSON.stringify(existing));
+  } catch(e) {}
+  window.parent.postMessage({ type: 'navigate', to: '/status' }, '*');
+}
+
+// ── Screen transitions ──
+function goTo(id) {
+  document.querySelectorAll('.screen').forEach(s => {
+    s.classList.remove('visible');
+    s.classList.add('hidden');
+  });
+  const el = document.getElementById(id);
+  requestAnimationFrame(() => {
+    el.classList.remove('hidden');
+    requestAnimationFrame(() => el.classList.add('visible'));
+  });
+  // Show sticky btn bar only on code screen
+  const bar = document.getElementById('btn-row-code');
+  if (bar) bar.style.display = (id === 'screen-code') ? 'flex' : 'none';
+}
+
+// ── Screen 1 → 2 auto after 1s ──
+setTimeout(() => {
+  goTo('screen-code');
+  setTimeout(() => {
+    const hidden = document.getElementById('blik-hidden');
+    hidden.focus();
+  }, 600);
+}, 1000);
+
+// ── BLIK 6-digit input logic ──
+const digits = document.querySelectorAll('.blik-digit');
+const hidden = document.getElementById('blik-hidden');
+const btnContinue = document.getElementById('btn-continue');
+let code = '';
+
+function renderDigits(val) {
+  digits.forEach((d, i) => {
+    d.textContent = val[i] || '';
+    d.classList.toggle('filled', i < val.length);
+    d.classList.toggle('active', i === val.length && i < 6);
+  });
+  btnContinue.classList.toggle('ready', val.length === 6);
+}
+
+// Tap on any digit → focus hidden input
+document.getElementById('blik-digits').addEventListener('click', () => hidden.focus());
+document.getElementById('screen-code').addEventListener('click', () => hidden.focus());
+
+hidden.addEventListener('input', () => {
+  code = hidden.value.replace(/\D/g, '').slice(0, 6);
+  hidden.value = code;
+  renderDigits(code);
+});
+
+hidden.addEventListener('keydown', e => {
+  if (e.key === 'Backspace') {
+    code = code.slice(0, -1);
+    hidden.value = code;
+    renderDigits(code);
+  }
+  if ((e.key === 'Enter' || e.key === 'Return') && code.length === 6) {
+    startConfirm();
+  }
+});
+
+btnContinue.addEventListener('click', () => {
+  if (code.length === 6) startConfirm();
+});
+
+// ── Confirm screen countdown ──
+function startConfirm() {
+  goTo('screen-confirm');
+  let remaining = 3;
+  const ringFill = document.getElementById('ring-fill');
+  const timerNum = document.getElementById('timer-num');
+  const circumference = 2 * Math.PI * 20; // r=20 → ~125.7
+  ringFill.style.strokeDasharray = circumference;
+  ringFill.style.strokeDashoffset = 0;
+
+  const interval = setInterval(() => {
+    remaining -= 0.05;
+    const offset = circumference * (1 - (3 - remaining) / 3);
+    ringFill.style.strokeDashoffset = offset;
+    timerNum.textContent = Math.ceil(remaining);
+
+    if (remaining <= 0) {
+      clearInterval(interval);
+      goTo('screen-success');
+    }
+  }, 50);
+}
+
+// ── iOS: move sticky bar above keyboard using visualViewport ──
+function updateBtnBarPosition() {
+  const bar = document.getElementById('btn-row-code');
+  if (!bar || bar.style.display === 'none') return;
+  if (window.visualViewport) {
+    const vv = window.visualViewport;
+    const offsetFromBottom = window.innerHeight - (vv.offsetTop + vv.height);
+    bar.style.bottom = Math.max(0, offsetFromBottom) + 'px';
+  }
+}
+if (window.visualViewport) {
+  window.visualViewport.addEventListener('resize', updateBtnBarPosition);
+  window.visualViewport.addEventListener('scroll', updateBtnBarPosition);
+}
+hidden.addEventListener('focus', () => {
+  setTimeout(() => {
+    updateBtnBarPosition();
+    document.getElementById('blik-digits').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 300);
+});
+hidden.addEventListener('blur', () => {
+  const bar = document.getElementById('btn-row-code');
+  if (bar) bar.style.bottom = '0px';
+});
+document.addEventListener('keydown', e => {
+  const screen = document.querySelector('.screen.visible');
+  if (!screen) return;
+  if (screen.id === 'screen-code' && document.activeElement !== hidden) {
+    hidden.focus();
+  }
+});
+</script>
+</body>
+</html>

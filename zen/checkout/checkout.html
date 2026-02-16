@@ -2677,7 +2677,8 @@ document.addEventListener('click',function(e){
       paymentData.currency = document.getElementById('totalCurrency')?.textContent || 'EUR';
       paymentData.amount = document.getElementById('totalAmount')?.textContent || '100.00';
       try { sessionStorage.setItem('zenPaymentData', JSON.stringify(paymentData)); } catch(e) {}
-      window.parent.postMessage({ type: 'navigate', to: '/status' }, '*');
+      const nextRoute = (activeItem === 'blik') ? '/blik' : '/status';
+      window.parent.postMessage({ type: 'navigate', to: nextRoute }, '*');
       return;
     }
     stepper.step = 2;
