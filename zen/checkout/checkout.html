@@ -1224,6 +1224,18 @@
     gap: 16px;
   }
 
+  .saved-card-row.selectable {
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background 0.15s;
+    margin: -8px;
+    padding: 8px;
+  }
+
+  .saved-card-row.selectable:hover {
+    background: var(--SurfaceLight);
+  }
+
   .saved-card-img {
     width: 100px;
     height: 64px;
@@ -2033,15 +2045,15 @@ document.addEventListener('click',function(e){
                   <span class="saved-card-number">**** 5555</span>
                   <span class="saved-card-current">Current</span>
                 </div>
-                <div class="saved-card-row" data-last4="2323">
+                <div class="saved-card-row selectable" data-last4="2323" onclick="chooseCard('2323')">
                   <div class="saved-card-img"><svg width="100" height="64" viewBox="0 0 100 64" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="cg2" x1="0" y1="0" x2="100" y2="64" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#1a0533"/><stop offset="100%" stop-color="#2d1460"/></linearGradient></defs><rect width="100" height="64" rx="8" fill="url(#cg2)"/><rect x="8" y="22" width="18" height="14" rx="3" fill="#f0c040" opacity="0.9"/><rect x="8" y="26" width="18" height="2" fill="#c8960a" opacity="0.6"/><rect x="10" y="44" width="32" height="3" rx="1.5" fill="white" opacity="0.25"/><rect x="10" y="50" width="20" height="3" rx="1.5" fill="white" opacity="0.2"/><circle cx="78" cy="48" r="9" fill="#EB001B" opacity="0.85"/><circle cx="88" cy="48" r="9" fill="#F79E1B" opacity="0.85"/><path d="M83 42a9 9 0 010 12 9 9 0 000-12z" fill="#FF5F00" opacity="0.9"/></svg></div>
                   <span class="saved-card-number">**** 2323</span>
-                  <a class="text-link" href="javascript:void(0)" onclick="event.preventDefault(); chooseCard('2323')">Choose</a>
+                  <span class="text-link">Choose</span>
                 </div>
-                <div class="saved-card-row" data-last4="4235">
+                <div class="saved-card-row selectable" data-last4="4235" onclick="chooseCard('4235')">
                   <div class="saved-card-img"><svg width="100" height="64" viewBox="0 0 100 64" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="cg3" x1="0" y1="0" x2="100" y2="64" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#0a2a1a"/><stop offset="100%" stop-color="#0e4429"/></linearGradient></defs><rect width="100" height="64" rx="8" fill="url(#cg3)"/><rect x="8" y="22" width="18" height="14" rx="3" fill="#f0c040" opacity="0.9"/><rect x="8" y="26" width="18" height="2" fill="#c8960a" opacity="0.6"/><rect x="10" y="44" width="32" height="3" rx="1.5" fill="white" opacity="0.25"/><rect x="10" y="50" width="20" height="3" rx="1.5" fill="white" opacity="0.2"/><text x="91" y="20" font-family="Arial" font-size="11" font-weight="900" font-style="italic" fill="white" text-anchor="end">VISA</text></svg></div>
                   <span class="saved-card-number">**** 4235</span>
-                  <a class="text-link" href="javascript:void(0)" onclick="event.preventDefault(); chooseCard('4235')">Choose</a>
+                  <span class="text-link">Choose</span>
                 </div>
               </div>
               <a class="text-link-small" href="javascript:void(0)" onclick="event.preventDefault()">View all saved cards <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 2l3 3-3 3" stroke="#222" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
@@ -2597,6 +2609,9 @@ document.addEventListener('click',function(e){
       const chooseEl = row.querySelector('.text-link');
       if (num && num.textContent.trim() === '**** ' + lastFour) {
         currentRow = row;
+        // Remove selectable – this is now the current card
+        row.classList.remove('selectable');
+        row.removeAttribute('onclick');
         if (chooseEl) chooseEl.style.display = 'none';
         if (!currentEl) {
           const span = document.createElement('span');
@@ -2605,19 +2620,20 @@ document.addEventListener('click',function(e){
           row.appendChild(span);
         } else { currentEl.style.display = ''; }
       } else {
+        // Make the whole row selectable
+        const digits = num ? num.textContent.trim().replace('**** ', '') : '';
+        row.classList.add('selectable');
+        row.onclick = function() { chooseCard(digits); };
         if (currentEl) currentEl.style.display = 'none';
         if (chooseEl) {
           chooseEl.style.display = '';
         } else {
-          // Create a "Choose" link if one doesn't exist (e.g. for the initial current card)
-          const digits = num ? num.textContent.trim().replace('**** ', '') : '';
+          // Create a "Choose" span if one doesn't exist (e.g. for the initial current card)
           if (digits) {
-            const a = document.createElement('a');
-            a.className = 'text-link';
-            a.href = 'javascript:void(0)';
-            a.textContent = 'Choose';
-            a.addEventListener('click', function(e) { e.preventDefault(); chooseCard(digits); });
-            row.appendChild(a);
+            const span = document.createElement('span');
+            span.className = 'text-link';
+            span.textContent = 'Choose';
+            row.appendChild(span);
           }
         }
       }
