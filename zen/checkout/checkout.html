@@ -901,15 +901,9 @@
     border: 1px solid var(--SurfaceMedium);
   }
 
-  /* Default: stacked (label top, amount below) */
+  /* Default: side-by-side (label left, amount right) */
   .total-top-row {
     display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  /* Converted: side-by-side */
-  .total-box.converted .total-top-row {
     flex-direction: row;
     justify-content: space-between;
     align-items: flex-end;
@@ -1549,6 +1543,19 @@
     /* Prevent card brands from stretching in flex column */
 
     .show-all { padding: 14px 16px; font-size: 13px; }
+
+    /* === MOBILE: show all payment methods without toggle === */
+    .extra-methods { grid-template-rows: 1fr !important; }
+    .show-all { display: none !important; }
+
+    /* Fix: bottom border-radius on last item inside extra-methods */
+    .extra-methods-inner > .payment-item:last-child {
+      border-radius: 0 0 16px 16px;
+    }
+
+    /* Fix: align expandable-item icons with payment-item icons (compensate 3px border) */
+    .expandable-item { padding-left: 13px; }
+    .expandable-item.expanded { padding-left: 13px; }
 
     /* ZEN.COM App desc — swap on mobile */
     .zenapp-desc-desktop { display: none; }
