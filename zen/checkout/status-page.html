@@ -216,7 +216,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--pri);min-h
   display:flex;align-items:center;justify-content:space-between;
   font-family:'Nunito',sans-serif;
 ">
-  <span style="font-size:10px;font-weight:700;color:#A3A3A3;letter-spacing:0.3px;line-height:1;display:flex;align-items:center;">ZEN.COM Pay 2.0 Checkout</span>
+  <span onclick="window.parent.postMessage({type:'navigate',to:'/checkout'},'*')" style="font-size:10px;font-weight:700;color:#A3A3A3;letter-spacing:0.3px;line-height:1;display:flex;align-items:center;cursor:pointer;">ZEN.COM Pay 2.0 Checkout</span>
   <div style="position:relative;display:flex;align-items:center;">
     <button id="authorBtn" onclick="toggleAuthorCard()" style="
       background:none;border:none;cursor:pointer;padding:0;

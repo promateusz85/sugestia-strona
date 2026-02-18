@@ -46,6 +46,7 @@
     .sidebar {
       background: var(--bg-sidebar);
       padding: 32px 28px;
+      padding-top: calc(32px + 36px);
       position: relative;
     }
 
@@ -101,6 +102,7 @@
       display: flex;
       flex-direction: column;
       padding: 32px 48px 32px 48px;
+      padding-top: calc(32px + 36px);
       position: relative;
     }
 
@@ -383,6 +385,22 @@
   </style>
 </head>
 <body>
+
+<!-- ── Sticky top bar ── -->
+<div id="topBar" style="position:fixed;top:0;left:0;right:0;z-index:999;background:rgba(255,255,255,0.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid #EBEBEB;padding:0 20px;height:36px;display:flex;align-items:center;justify-content:space-between;font-family:'Nunito',sans-serif;">
+  <span onclick="window.parent.postMessage({type:'navigate',to:'/checkout'},'*')" style="font-size:10px;font-weight:700;color:#A3A3A3;letter-spacing:0.3px;line-height:1;display:flex;align-items:center;cursor:pointer;">ZEN.COM Pay 2.0 Checkout</span>
+  <div style="position:relative;display:flex;align-items:center;">
+    <button id="authorBtn" onclick="toggleAuthorCard()" style="background:none;border:none;cursor:pointer;padding:0;font-family:'Nunito',sans-serif;font-size:10px;font-weight:600;color:#A3A3A3;letter-spacing:0.3px;text-decoration:underline;text-underline-offset:2px;transition:color 0.15s;line-height:1;display:flex;align-items:center;" onmouseenter="this.style.color='#222'" onmouseleave="this.style.color='#A3A3A3'">Designed and Built by Mateusz Karbowski</button>
+    <div id="authorCard" style="position:absolute;right:0;top:calc(100% + 8px);background:#fff;border:1px solid #EBEBEB;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.10);padding:16px 18px;width:240px;display:flex;flex-direction:column;align-items:center;gap:10px;opacity:0;transform:translateY(-8px) scale(0.97);pointer-events:none;transition:opacity 0.22s cubic-bezier(0.4,0,0.2,1),transform 0.22s cubic-bezier(0.4,0,0.2,1);">
+      <img src="./mateusz-karbowski.jpg" alt="Mateusz Karbowski" style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid #EBEBEB;">
+      <p style="font-size:11px;font-weight:500;color:#727272;text-align:center;line-height:16px;margin:0;">If you have any questions or suggestions, feel free to reach out at<br><a href="mailto:mateusz.karbowski@zen.com" style="color:#222;font-weight:700;text-decoration:underline;text-underline-offset:2px;">mateusz.karbowski@zen.com</a></p>
+    </div>
+  </div>
+</div>
+<script>
+function toggleAuthorCard(){const c=document.getElementById('authorCard');const isOpen=c.style.opacity==='1';c.style.opacity=isOpen?'0':'1';c.style.transform=isOpen?'translateY(-8px) scale(0.97)':'translateY(0) scale(1)';c.style.pointerEvents=isOpen?'none':'all';}
+document.addEventListener('click',function(e){const btn=document.getElementById('authorBtn');const card=document.getElementById('authorCard');if(btn&&card&&!btn.contains(e.target)&&!card.contains(e.target)){card.style.opacity='0';card.style.transform='translateY(-8px) scale(0.97)';card.style.pointerEvents='none';}});
+</script>
 
 <!-- ═══════════════ DESKTOP ═══════════════ -->
 <div class="layout">
