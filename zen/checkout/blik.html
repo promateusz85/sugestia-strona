@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>BLIK – Płatność</title>
+<title>BLIK – Payment</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&display=swap');
 
@@ -477,11 +477,11 @@ document.addEventListener('click',function(e){const btn=document.getElementById(
       maxlength="6" autocomplete="one-time-code"
       style="position:fixed; top:-9999px; left:-9999px; opacity:0; width:0; height:0; pointer-events:none; caret-color:transparent;" />
 
-    <a class="help-link">Gdzie znaleźć kod BLIK?</a>
+    <a class="help-link">Where can I find the BLIK code?</a>
 
     <div class="btn-row" id="btn-row-code" style="margin-top:20px;">
-      <button class="btn btn-cancel" onclick="window.parent.postMessage({ type: 'navigate', to: '/checkout' }, '*')">Anuluj</button>
-      <button class="btn btn-continue" id="btn-continue">Kontynuuj</button>
+      <button class="btn btn-cancel" onclick="window.parent.postMessage({ type: 'navigate', to: '/checkout' }, '*')">Cancel</button>
+      <button class="btn btn-continue" id="btn-continue">Continue</button>
     </div>
 
     <p class="footer-note" style="margin-top:12px;">Payment processed by ZEN.COM</p>
@@ -517,7 +517,7 @@ document.addEventListener('click',function(e){const btn=document.getElementById(
     </div>
   </div>
 
-  <p class="confirm-title">Teraz magicznie potwierdzasz płatność<br>w aplikacji swojego banku ✨</p>
+  <p class="confirm-title">Now magically confirm the payment<br>in your bank's app ✨</p>
 </div>
 
 <!-- ─── Screen 4: Success ─── -->
@@ -533,12 +533,12 @@ document.addEventListener('click',function(e){const btn=document.getElementById(
             <polyline points="20 6 9 17 4 12"/>
           </svg>
         </div>
-        <div class="success-title">Płatność<br>zrealizowana</div>
-        <div class="success-sub">Pamiętaj, aby nie zamykać okna przeglądarki</div>
+        <div class="success-title">Payment<br>completed</div>
+        <div class="success-sub">Remember not to close the browser window</div>
       </div>
     </div>
 
-    <button class="btn-back" onclick="navigateToStatus()">Wróć do sklepu</button>
+    <button class="btn-back" onclick="navigateToStatus()">Return to store</button>
   </div>
 </div>
 
