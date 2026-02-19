@@ -1506,7 +1506,7 @@
     /* Mobile header: merchant + badge */
     .mobile-header {
       display: flex !important;
-      align-items: flex-end;
+      align-items: flex-start;
       justify-content: space-between;
       padding: 16px 20px;
       padding-top: calc(36px + 16px);
@@ -1560,6 +1560,7 @@
       display: flex;
       align-items: center;
       gap: 5px;
+      margin-top: 3px;
     }
 
     .mobile-header-badge-text {
@@ -2039,7 +2040,7 @@
 
     /* Krok bez własnej kropki (step 1 — kropka jest w wierszu wyżej) */
     .cashcard-step--text-only .cashcard-step-indicator {
-      margin-top: 0;
+      padding-top: 0;
     }
 
     .cashcard-step--text-only .cashcard-step-line {
@@ -2052,7 +2053,8 @@
       align-items: center;
       flex-shrink: 0;
       width: 12px;
-      margin-top: 2px;
+      align-self: stretch;
+      padding-top: 2px;
     }
 
     .cashcard-step-dot {
@@ -2073,9 +2075,9 @@
     .cashcard-step-line {
       width: 1.5px;
       flex: 1;
-      min-height: 14px;
+      min-height: 6px;
       background: #E4E4E4;
-      margin: 3px 0;
+      margin: 3px 0 0 0;
     }
 
     .cashcard-step-text {
