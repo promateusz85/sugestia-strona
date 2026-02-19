@@ -774,6 +774,22 @@
     animation: badge-glow 1.0s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   }
 
+  @keyframes badge-glow-text {
+    0%   { filter: none; }
+    20%  { filter: drop-shadow(0 0 3px rgba(34,226,67,0.25))
+                   drop-shadow(0 0 8px rgba(34,226,67,0.12)); }
+    45%  { filter: drop-shadow(0 0 4px rgba(34,226,67,0.45))
+                   drop-shadow(0 0 12px rgba(34,226,67,0.22))
+                   drop-shadow(0 0 22px rgba(34,226,67,0.08)); }
+    70%  { filter: drop-shadow(0 0 3px rgba(34,226,67,0.18))
+                   drop-shadow(0 0 8px rgba(34,226,67,0.08)); }
+    100% { filter: none; }
+  }
+
+  .payment-secured.shimmer .payment-secured-text {
+    animation: badge-glow-text 1.0s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
   .payment-secured-lock {
     width: 16px;
     height: 16px;
@@ -1445,6 +1461,20 @@
     }
   }
 
+  /* cashcard-details-expanded: domyślnie ukryty (max-height transition), widoczny tylko w mobile przez .visible */
+  .cashcard-details-expanded {
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transition: max-height 0.35s ease, opacity 0.25s ease;
+    padding: 0;
+  }
+
+  /* cashcard-details-row: domyślnie ukryty, pokazywany w mobile */
+  .cashcard-details-row {
+    display: none;
+  }
+
   /* ══════════════════════════════════════════
      MOBILE RESPONSIVE (≤768px)
      ══════════════════════════════════════════ */
@@ -1473,10 +1503,10 @@
     /* Hide desktop header */
     .header-row { display: none; }
 
-    /* Mobile header: merchant + EN */
+    /* Mobile header: merchant + badge */
     .mobile-header {
       display: flex !important;
-      align-items: center;
+      align-items: flex-end;
       justify-content: space-between;
       padding: 16px 20px;
       padding-top: calc(36px + 16px);
@@ -1931,15 +1961,15 @@
       display: none !important;
     }
 
-    /* CashCard details row — wiersz pod buttonem */
+    /* CashCard details row — widoczny na mobile po wybraniu metody */
     .cashcard-details-row {
-      display: none;
       align-items: center;
       justify-content: space-between;
       width: 100%;
       font-size: 11px;
       color: var(--Secondary);
       line-height: 1.4;
+      padding-top: 4px;
     }
 
     .cashcard-details-row.visible {
@@ -1948,20 +1978,19 @@
 
     .cashcard-details-left {
       display: flex;
-      align-items: center;
-      gap: 5px;
+      align-items: flex-start;
+      gap: 10px;
       flex: 1;
     }
 
-    .cashcard-details-dot {
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background: var(--Secondary);
-      flex-shrink: 0;
+    .cashcard-details-text {
+      font-size: 11px;
+      color: var(--Secondary);
+      line-height: 1.4;
+      padding-top: 0;
     }
 
-    .cashcard-details-left a {
+    .cashcard-details-text a {
       color: var(--Primary);
       font-weight: 700;
       text-decoration: underline;
@@ -1988,19 +2017,10 @@
       transform: rotate(180deg);
     }
 
-    /* Expanded details panel — płynna animacja max-height */
-    .cashcard-details-expanded {
-      overflow: hidden;
-      max-height: 0;
-      opacity: 0;
-      transition: max-height 0.35s ease, opacity 0.25s ease;
-      padding: 0;
-    }
-
+    /* Expanded details panel — widoczny na mobile po kliknięciu */
     .cashcard-details-expanded.visible {
       max-height: 300px;
       opacity: 1;
-      padding-top: 10px;
     }
 
     /* Kroki wewnątrz details */
@@ -2008,7 +2028,7 @@
       display: flex;
       flex-direction: column;
       gap: 0;
-      padding: 2px 0;
+      padding: 0;
     }
 
     .cashcard-step {
@@ -2017,29 +2037,45 @@
       gap: 10px;
     }
 
+    /* Krok bez własnej kropki (step 1 — kropka jest w wierszu wyżej) */
+    .cashcard-step--text-only .cashcard-step-indicator {
+      margin-top: 0;
+    }
+
+    .cashcard-step--text-only .cashcard-step-line {
+      margin-top: 0;
+    }
+
     .cashcard-step-indicator {
       display: flex;
       flex-direction: column;
       align-items: center;
       flex-shrink: 0;
       width: 12px;
-      margin-top: 3px;
+      margin-top: 2px;
     }
 
     .cashcard-step-dot {
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background: var(--Primary);
+      background: transparent;
+      border: 1.5px solid #C8C8C8;
       flex-shrink: 0;
+      box-sizing: border-box;
+    }
+
+    .cashcard-step-dot.active {
+      background: #222;
+      border-color: #222;
     }
 
     .cashcard-step-line {
       width: 1.5px;
       flex: 1;
-      min-height: 16px;
-      background: rgba(34,226,67,0.3);
-      margin: 2px 0;
+      min-height: 14px;
+      background: #E4E4E4;
+      margin: 3px 0;
     }
 
     .cashcard-step-text {
@@ -2049,9 +2085,9 @@
       padding-bottom: 12px;
     }
 
-    .cashcard-step-text strong {
-      color: var(--Primary);
-      font-weight: 700;
+    .cashcard-step-text.active {
+      color: #222;
+      font-weight: 600;
     }
 
     .cashcard-step-text a {
@@ -2094,8 +2130,7 @@
   .mobile-steps { display: none; }
   .mobile-currency-chevron { display: none; }
   .mobile-card-header { display: none; }
-  .cashcard-details-row { display: none; }
-  .cashcard-details-expanded { display: none; }
+  /* cashcard-details-expanded: ukryty na desktop (max-height:0 jest ustawiony globalnie) */
   .mobile-header-left {
     display: flex;
     align-items: center;
@@ -2199,7 +2234,7 @@ document.addEventListener('click',function(e){
     <div class="left-col">
 
       <div class="mobile-title">
-        <div class="mobile-title-left">Payment method for&nbsp;&nbsp;<span class="underlined-country">Poland</span><svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="margin-left:6px;vertical-align:middle;flex-shrink:0"><path d="M4 5.5L7 8.5L10 5.5" stroke="#222" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="mobile-title-left">Payment method for <span class="underlined-country">Poland</span><svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="margin-left:4px;vertical-align:middle;flex-shrink:0"><path d="M4 5.5L7 8.5L10 5.5" stroke="#222" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         <div class="mobile-title-lang lang-toggle">EN</div>
       </div>
 
@@ -2642,8 +2677,12 @@ document.addEventListener('click',function(e){
         <!-- CashCard details row (visible on step 1 BLIK/Card and step 2) -->
         <div class="cashcard-details-row" id="cashcardDetailsRow">
           <div class="cashcard-details-left">
-            <span class="cashcard-details-dot"></span>
-            Buying ZEN.COM CashCard from <a href="javascript:void(0)">distributor</a>
+            <div class="cashcard-step-indicator">
+              <div class="cashcard-step-dot active" id="cashcardStep1Dot"></div>
+            </div>
+            <div class="cashcard-details-text" id="cashcardStep1Text">
+              Buying ZEN.COM CashCard from <a href="javascript:void(0)">distributor</a>
+            </div>
           </div>
           <div class="cashcard-details-toggle" id="cashcardDetailsToggle" onclick="toggleCashcardDetails()">
             Details
@@ -2654,33 +2693,32 @@ document.addEventListener('click',function(e){
         </div>
         <div class="cashcard-details-expanded" id="cashcardDetailsExpanded">
           <div class="cashcard-steps">
-            <div class="cashcard-step">
+            <!-- step 1 text (dot is in the row above, line connects downward) -->
+            <div class="cashcard-step cashcard-step--text-only">
               <div class="cashcard-step-indicator">
-                <div class="cashcard-step-dot"></div>
                 <div class="cashcard-step-line"></div>
               </div>
-              <div class="cashcard-step-text">
-                <strong>Select amount &amp; currency</strong><br>
-                Choose how much you want to top up your ZEN.COM CashCard.
-              </div>
-            </div>
-            <div class="cashcard-step">
-              <div class="cashcard-step-indicator">
-                <div class="cashcard-step-dot"></div>
-                <div class="cashcard-step-line"></div>
-              </div>
-              <div class="cashcard-step-text">
-                <strong>Accept order</strong><br>
+              <div class="cashcard-step-text active" id="cashcardStep1Detail">
                 By clicking "accept order" I accept <a href="javascript:void(0)">ZEN.COM CashCard distributor terms</a>.
               </div>
             </div>
+            <!-- step 2 -->
+            <div class="cashcard-step">
+              <div class="cashcard-step-indicator">
+                <div class="cashcard-step-dot"></div>
+                <div class="cashcard-step-line"></div>
+              </div>
+              <div class="cashcard-step-text">
+                Payment for super-merchant.com
+              </div>
+            </div>
+            <!-- step 3 -->
             <div class="cashcard-step">
               <div class="cashcard-step-indicator">
                 <div class="cashcard-step-dot"></div>
               </div>
               <div class="cashcard-step-text">
-                <strong>Receive your CashCard</strong><br>
-                Your ZEN.COM CashCard will be issued by an authorised <a href="javascript:void(0)">distributor</a> and topped up instantly.
+                Status
               </div>
             </div>
           </div>
@@ -3214,27 +3252,37 @@ document.addEventListener('click',function(e){
     updateStepperDisabled();
   }
 
+  function updateStep1Text() {
+    const step1Detail = document.getElementById('cashcardStep1Detail');
+    if (!step1Detail) return;
+    if (stepperCurrentStep === 2) {
+      step1Detail.innerHTML = 'Clicking \'Confirm payment\' confirms your purchase and acceptance of <a href="javascript:void(0)">ZEN.COM terms</a>.';
+    } else {
+      step1Detail.innerHTML = 'By clicking "accept order" I accept <a href="javascript:void(0)">ZEN.COM CashCard distributor terms</a>.';
+    }
+  }
+
   function updateTermsText() {
     const t = document.getElementById('termsText');
     const detailsRow = document.getElementById('cashcardDetailsRow');
     const detailsExpanded = document.getElementById('cashcardDetailsExpanded');
     const detailsToggle = document.getElementById('cashcardDetailsToggle');
 
-    // Reset
+    // Reset expanded
     if (detailsExpanded) detailsExpanded.classList.remove('visible');
     if (detailsToggle) detailsToggle.classList.remove('open');
 
     if (activeItem === 'zenapp') {
-      // zenapp: pokaż terms-text, ukryj details row
       t.style.display = '';
       t.innerHTML = 'By clicking "pay" I accept <a href="javascript:void(0)"> <strong>ZEN.COM</strong> payment terms</a>';
       if (detailsRow) detailsRow.classList.remove('visible');
       return;
     }
 
-    // BLIK / Card — step 1 i step 2: ukryj terms-text, pokaż details row
+    // BLIK / Card step 1 i 2 — ukryj terms-text, pokaż details row
     t.style.display = 'none';
     if (detailsRow) detailsRow.classList.add('visible');
+    updateStep1Text();
   }
 
   function toggleCashcardDetails() {
