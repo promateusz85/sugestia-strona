@@ -58,10 +58,13 @@
   /* ── Left column ── */
   .left-col {
     width: 552px;
+    max-width: 552px;
+    flex-shrink: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 24px;
+    position: relative;
   }
 
   .header-row {
@@ -747,7 +750,9 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    margin-top: 400px;
+    position: absolute;
+    left: 0;
+    right: 0;
   }
 
   @keyframes badge-glow {
@@ -813,6 +818,8 @@
   /* ── Right column ── */
   .right-col {
     width: 408px;
+    max-width: 408px;
+    flex-shrink: 1;
     display: flex;
     flex-direction: column;
     gap: 64px;
@@ -1101,6 +1108,7 @@
     position: fixed;
     bottom: 0;
     left: 0;
+    right: 0;
     z-index: 100;
     transform: translateY(100%);
     transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -1419,9 +1427,9 @@
   }
 
   /* ══════════════════════════════════════════
-     TABLET RESPONSIVE (769px - 1100px)
+     TABLET RESPONSIVE (786px - 1100px)
      ══════════════════════════════════════════ */
-  @media (max-width: 1100px) and (min-width: 769px) {
+  @media (max-width: 1100px) and (min-width: 786px) {
     .page {
       width: 100%;
       max-width: 1100px;
@@ -1476,9 +1484,9 @@
   }
 
   /* ══════════════════════════════════════════
-     MOBILE RESPONSIVE (≤768px)
+     MOBILE RESPONSIVE (≤785px)
      ══════════════════════════════════════════ */
-  @media (max-width: 768px) {
+  @media (max-width: 785px) {
     .page {
       width: 100%;
       padding: 0;
@@ -2769,7 +2777,7 @@ document.addEventListener('click',function(e){
 
 <script>
   // ── Mobile card detail view ──
-  const isMobile = () => window.innerWidth <= 768;
+  const isMobile = () => window.innerWidth <= 785;
 
   function enterMobileCardView() {
     if (isMobile()) {
@@ -2810,7 +2818,7 @@ document.addEventListener('click',function(e){
   };
 
   function expandItem(id) {
-    if (activeItem === id) return;
+    if (activeItem === id) { collapseItem(id, false); return; }
 
     // Collapse currently active first (instant)
     if (activeItem) {
@@ -3738,17 +3746,68 @@ document.addEventListener('click',function(e){
   resizeCanvas();
   drawStepper();
 
+  // ── Desktop badge alignment ──
+  // Pins .payment-secured just below .payment-card bottom edge on desktop.
+  // On mobile badge is display:none (media query), so no-op there.
+  const _badge = document.querySelector('.payment-secured');
+  const _paymentCard = document.querySelector('.payment-card');
+
+  function alignBadge() {
+    if (!_badge || !_paymentCard) return;
+    if (window.innerWidth <= 785) return;
+    // Freeze badge position when "show all" is open
+    if (showAllOpen) return;
+    // Bottom edge of badge aligns with bottom edge of payment-card
+    const cardBottom = _paymentCard.offsetTop + _paymentCard.offsetHeight;
+    _badge.style.top = (cardBottom - _badge.offsetHeight) + 'px';
+  }
+
+  // Patch expandItem to realign badge (with transition)
+  const _origExpandForBadge = expandItem;
+  expandItem = function(id) {
+    _origExpandForBadge(id);
+    // Poll during expand animation so badge moves smoothly with card
+    let t = 0;
+    const poll = () => { alignBadge(); t += 16; if (t < 400) requestAnimationFrame(poll); };
+    requestAnimationFrame(poll);
+  };
+
+  // Patch collapseItem to realign badge when method is deselected
+  const _origCollapseItemForBadge = collapseItem;
+  collapseItem = function(id, instant) {
+    _origCollapseItemForBadge(id, instant);
+    let t = 0;
+    const poll = () => { alignBadge(); t += 16; if (t < 500) requestAnimationFrame(poll); };
+    requestAnimationFrame(poll);
+  };
+
+  // Patch toggleShowAll to realign badge when show-all closes
+  const _origToggleShowAll = toggleShowAll;
+  toggleShowAll = function() {
+    _origToggleShowAll();
+    // After _origToggleShowAll, showAllOpen reflects the NEW state
+    if (!showAllOpen) {
+      let t = 0;
+      const poll = () => { alignBadge(); t += 16; if (t < 500) requestAnimationFrame(poll); };
+      requestAnimationFrame(poll);
+    }
+  };
+
   // Resize canvas on window resize (debounced 100ms)
   let _resizeTimer = null;
   window.addEventListener('resize', () => {
     if (_resizeTimer) clearTimeout(_resizeTimer);
     _resizeTimer = setTimeout(() => {
+      alignBadge();
       if (document.getElementById('stepperWrap').style.display !== 'none') {
         resizeCanvas();
         drawStepper();
       }
     }, 100);
   });
+
+  // Initial alignment (after fonts/images settle)
+  requestAnimationFrame(() => { requestAnimationFrame(alignBadge); });
 </script>
 
 </body>
