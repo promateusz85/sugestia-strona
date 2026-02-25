@@ -2116,13 +2116,6 @@
       padding-bottom: 0;
     }
 
-    .mobile-steps a {
-      color: var(--Primary);
-      font-weight: 700;
-      text-decoration: underline;
-      text-underline-offset: 2px;
-    }
-
     /* ── Mobile: Expiry + CVV fields fit in row ── */
     .field-row {
       gap: 12px;
@@ -2142,7 +2135,7 @@
   .mobile-steps { display: none; }
   .mobile-currency-chevron { display: none; }
   .mobile-card-header { display: none; }
-  /* cashcard-details-expanded: ukryty na desktop (max-height:0 jest ustawiony globalnie) */
+  /* cashcard-details-expanded: ukryty na desktop (max-height:0 ustawiony globalnie) */
   .mobile-header-left {
     display: flex;
     align-items: center;
@@ -3767,11 +3760,10 @@ document.addEventListener('click',function(e){
     _badge.style.top = (cardBottom - _badge.offsetHeight) + 'px';
   }
 
-  // Patch expandItem to realign badge (with transition)
+  // Patch expandItem to realign badge (rAF poll during animation)
   const _origExpandForBadge = expandItem;
   expandItem = function(id) {
     _origExpandForBadge(id);
-    // Poll during expand animation so badge moves smoothly with card
     let t = 0;
     const poll = () => { alignBadge(); t += 16; if (t < 400) requestAnimationFrame(poll); };
     requestAnimationFrame(poll);
