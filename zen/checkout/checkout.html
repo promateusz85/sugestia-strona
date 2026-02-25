@@ -2158,7 +2158,7 @@
   display:flex;align-items:center;justify-content:space-between;
   font-family:'Nunito',sans-serif;
 ">
-  <span onclick="window.parent.postMessage({type:'navigate',to:'/checkout'},'*')" style="font-size:10px;font-weight:700;color:#A3A3A3;letter-spacing:0.3px;line-height:1;display:flex;align-items:center;cursor:pointer;">ZEN.COM Pay 2.0 Checkout</span>
+  <span onclick="window.location.href='./checkout.html'" style="font-size:10px;font-weight:700;color:#A3A3A3;letter-spacing:0.3px;line-height:1;display:flex;align-items:center;cursor:pointer;">ZEN.COM Pay 2.0 Checkout</span>
   <div style="position:relative;display:flex;align-items:center;">
     <button id="authorBtn" onclick="toggleAuthorCard()" style="
       background:none;border:none;cursor:pointer;padding:0;
@@ -3457,10 +3457,10 @@ document.addEventListener('click',function(e){
         void badge.offsetWidth;
         badge.classList.add('shimmer');
         triggerMobileBadgeShimmer();
-        setTimeout(() => window.parent.postMessage({ type: 'navigate', to: '/zen-payment' }, '*'), 1050);
+        setTimeout(() => { window.location.href = './zen-payment.html'; }, 1050);
       } else {
         triggerMobileBadgeShimmer();
-        setTimeout(() => window.parent.postMessage({ type: 'navigate', to: '/zen-payment' }, '*'), 1050);
+        setTimeout(() => { window.location.href = './zen-payment.html'; }, 1050);
       }
       return;
     }
@@ -3488,7 +3488,7 @@ document.addEventListener('click',function(e){
       paymentData.currency = document.getElementById('totalCurrency')?.textContent || 'EUR';
       paymentData.amount = document.getElementById('totalAmount')?.textContent || '100.00';
       try { sessionStorage.setItem('zenPaymentData', JSON.stringify(paymentData)); } catch(e) {}
-      const nextRoute = activeItem === 'blik' ? '/blik' : activeItem === 'zenapp' ? '/zen-payment' : activeItem === 'card' ? '/3ds' : '/status';
+      const nextRoute = activeItem === 'blik' ? './blik.html' : activeItem === 'zenapp' ? './zen-payment.html' : activeItem === 'card' ? './3ds.html' : './status-page.html';
       // Shimmer effect on badge before navigating
       const badge = document.querySelector('.payment-secured');
       const mobileBadge2 = document.getElementById('mobileHeaderBadge');
@@ -3501,9 +3501,9 @@ document.addEventListener('click',function(e){
         badge.classList.remove('shimmer');
         void badge.offsetWidth; // reflow to restart animation
         badge.classList.add('shimmer');
-        setTimeout(() => window.parent.postMessage({ type: 'navigate', to: nextRoute }, '*'), 1050);
+        setTimeout(() => { window.location.href = nextRoute; }, 1050);
       } else {
-        setTimeout(() => window.parent.postMessage({ type: 'navigate', to: nextRoute }, '*'), 1050);
+        setTimeout(() => { window.location.href = nextRoute; }, 1050);
       }
       return;
     }
