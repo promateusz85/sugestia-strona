@@ -58,10 +58,13 @@
   /* ── Left column ── */
   .left-col {
     width: 552px;
+    max-width: 552px;
+    flex-shrink: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 24px;
+    position: relative;
   }
 
   .header-row {
@@ -741,9 +744,82 @@
     color: var(--Tertiary);
   }
 
+  /* ── Payment secured badge ── */
+  .payment-secured {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    position: absolute;
+    left: 0;
+    right: 0;
+  }
+
+  @keyframes badge-glow {
+    0%   { filter: none; }
+    20%  { filter: sepia(1) saturate(4) hue-rotate(85deg) brightness(1.2)
+           drop-shadow(0 0 3px rgba(34,226,67,0.30))
+           drop-shadow(0 0 8px rgba(34,226,67,0.15))
+           drop-shadow(0 0 18px rgba(34,226,67,0.06))
+           drop-shadow(0 0 35px rgba(34,226,67,0.03)); }
+    45%  { filter: sepia(1) saturate(5) hue-rotate(85deg) brightness(1.35)
+           drop-shadow(0 0 4px rgba(34,226,67,0.60))
+           drop-shadow(0 0 12px rgba(34,226,67,0.30))
+           drop-shadow(0 0 28px rgba(34,226,67,0.15))
+           drop-shadow(0 0 55px rgba(34,226,67,0.06))
+           drop-shadow(0 0 80px rgba(34,226,67,0.03)); }
+    70%  { filter: sepia(1) saturate(3) hue-rotate(85deg) brightness(1.15)
+           drop-shadow(0 0 3px rgba(34,226,67,0.15))
+           drop-shadow(0 0 10px rgba(34,226,67,0.06)); }
+    100% { filter: none; }
+  }
+
+  .payment-secured.shimmer .payment-secured-lock,
+  .payment-secured.shimmer .payment-secured-logo {
+    animation: badge-glow 1.0s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  @keyframes badge-glow-text {
+    0%   { filter: none; }
+    20%  { filter: drop-shadow(0 0 3px rgba(34,226,67,0.25))
+                   drop-shadow(0 0 8px rgba(34,226,67,0.12)); }
+    45%  { filter: drop-shadow(0 0 4px rgba(34,226,67,0.45))
+                   drop-shadow(0 0 12px rgba(34,226,67,0.22))
+                   drop-shadow(0 0 22px rgba(34,226,67,0.08)); }
+    70%  { filter: drop-shadow(0 0 3px rgba(34,226,67,0.18))
+                   drop-shadow(0 0 8px rgba(34,226,67,0.08)); }
+    100% { filter: none; }
+  }
+
+  .payment-secured.shimmer .payment-secured-text {
+    animation: badge-glow-text 1.0s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  .payment-secured-lock {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    opacity: 0.5;
+  }
+
+  .payment-secured-text {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--Tertiary);
+    white-space: nowrap;
+  }
+
+  .payment-secured-logo {
+    height: 18px;
+    width: auto;
+    flex-shrink: 0;
+  }
+
   /* ── Right column ── */
   .right-col {
     width: 408px;
+    max-width: 408px;
+    flex-shrink: 1;
     display: flex;
     flex-direction: column;
     gap: 64px;
@@ -1032,6 +1108,7 @@
     position: fixed;
     bottom: 0;
     left: 0;
+    right: 0;
     z-index: 100;
     transform: translateY(100%);
     transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -1350,9 +1427,9 @@
   }
 
   /* ══════════════════════════════════════════
-     TABLET RESPONSIVE (769px - 1100px)
+     TABLET RESPONSIVE (786px - 1100px)
      ══════════════════════════════════════════ */
-  @media (max-width: 1100px) and (min-width: 769px) {
+  @media (max-width: 1100px) and (min-width: 786px) {
     .page {
       width: 100%;
       max-width: 1100px;
@@ -1392,10 +1469,24 @@
     }
   }
 
+  /* cashcard-details-expanded: domyślnie ukryty (max-height transition), widoczny tylko w mobile przez .visible */
+  .cashcard-details-expanded {
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transition: max-height 0.35s ease, opacity 0.25s ease;
+    padding: 0;
+  }
+
+  /* cashcard-details-row: domyślnie ukryty, pokazywany w mobile */
+  .cashcard-details-row {
+    display: none;
+  }
+
   /* ══════════════════════════════════════════
-     MOBILE RESPONSIVE (≤768px)
+     MOBILE RESPONSIVE (≤785px)
      ══════════════════════════════════════════ */
-  @media (max-width: 768px) {
+  @media (max-width: 785px) {
     .page {
       width: 100%;
       padding: 0;
@@ -1420,10 +1511,10 @@
     /* Hide desktop header */
     .header-row { display: none; }
 
-    /* Mobile header: merchant + EN */
+    /* Mobile header: merchant + badge */
     .mobile-header {
       display: flex !important;
-      align-items: center;
+      align-items: flex-start;
       justify-content: space-between;
       padding: 16px 20px;
       padding-top: calc(36px + 16px);
@@ -1472,14 +1563,67 @@
       font-weight: 700;
     }
 
-    /* Mobile title: "Payment method for Poland ˅" */
+    /* Badge "Processed by ZEN.COM" w nagłówku mobilnym */
+    .mobile-header-badge {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 3px;
+    }
+
+    .mobile-header-badge-text {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--Tertiary);
+      white-space: nowrap;
+    }
+
+    .mobile-header-badge-logo {
+      height: 16px;
+      width: auto;
+      flex-shrink: 0;
+    }
+
+    /* Aurora na mobile badge */
+    @keyframes mobile-badge-glow {
+      0%   { filter: none; }
+      20%  { filter: sepia(1) saturate(4) hue-rotate(85deg) brightness(1.2)
+             drop-shadow(0 0 3px rgba(34,226,67,0.30))
+             drop-shadow(0 0 8px rgba(34,226,67,0.15))
+             drop-shadow(0 0 18px rgba(34,226,67,0.06))
+             drop-shadow(0 0 35px rgba(34,226,67,0.03)); }
+      45%  { filter: sepia(1) saturate(5) hue-rotate(85deg) brightness(1.35)
+             drop-shadow(0 0 4px rgba(34,226,67,0.60))
+             drop-shadow(0 0 12px rgba(34,226,67,0.30))
+             drop-shadow(0 0 28px rgba(34,226,67,0.15))
+             drop-shadow(0 0 55px rgba(34,226,67,0.06))
+             drop-shadow(0 0 80px rgba(34,226,67,0.03)); }
+      70%  { filter: sepia(1) saturate(3) hue-rotate(85deg) brightness(1.15)
+             drop-shadow(0 0 3px rgba(34,226,67,0.15))
+             drop-shadow(0 0 10px rgba(34,226,67,0.06)); }
+      100% { filter: none; }
+    }
+
+    .mobile-header-badge.shimmer .mobile-header-badge-logo {
+      animation: mobile-badge-glow 1.0s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    /* Mobile title: "Payment method for Poland ˅" + EN */
     .mobile-title {
-      display: block !important;
-      font-size: 20px;
+      display: flex !important;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 16px;
       font-weight: 700;
-      padding: 20px 0 12px;
+      padding: 12px 0 12px;
       line-height: 1.3;
       text-align: left;
+    }
+
+    .mobile-title-left {
+      display: flex;
+      align-items: center;
+      gap: 2px;
     }
 
     .mobile-title .underlined-country {
@@ -1487,6 +1631,13 @@
       text-decoration-color: var(--Primary);
       text-underline-offset: 4px;
       text-decoration-thickness: 1px;
+    }
+
+    .mobile-title-lang {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--Primary);
+      flex-shrink: 0;
     }
 
     /* Payment card */
@@ -1579,6 +1730,10 @@
       justify-content: center;
       gap: 8px 16px;
       padding: 20px 0;
+    }
+
+    .payment-secured {
+      display: none;
     }
 
     /* ── Right col → fixed mobile bottom bar ── */
@@ -1681,10 +1836,12 @@
     }
 
     .terms-text {
-      font-size: 11px;
+      font-size: 10px;
+      color: #727272;
       text-align: center;
       line-height: 1.4;
-      min-height: 32px;
+      min-height: 0;
+      margin-top: 6px;
     }
 
     /* ── Mobile: Card detail view ── */
@@ -1810,18 +1967,153 @@
       display: none !important;
     }
 
-    /* Mobile steps info line */
+    /* Mobile steps info line (legacy - hidden) */
     .mobile-steps {
-      display: none;
-      justify-content: center;
-      align-items: center;
-      gap: 4px;
-      font-size: 10px;
-      color: var(--Secondary);
+      display: none !important;
     }
 
-    .mobile-steps.visible {
+    /* CashCard details row — widoczny na mobile po wybraniu metody */
+    .cashcard-details-row {
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      font-size: 11px;
+      color: var(--Secondary);
+      line-height: 1.4;
+      padding-top: 4px;
+    }
+
+    .cashcard-details-row.visible {
       display: flex !important;
+    }
+
+    .cashcard-details-left {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      flex: 1;
+    }
+
+    .cashcard-details-text {
+      font-size: 11px;
+      color: var(--Secondary);
+      line-height: 1.4;
+      padding-top: 0;
+    }
+
+    .cashcard-details-text a {
+      color: var(--Primary);
+      font-weight: 700;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .cashcard-details-toggle {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--Primary);
+      cursor: pointer;
+      flex-shrink: 0;
+      user-select: none;
+    }
+
+    .cashcard-details-toggle svg {
+      transition: transform 0.25s ease;
+    }
+
+    .cashcard-details-toggle.open svg {
+      transform: rotate(180deg);
+    }
+
+    /* Expanded details panel — widoczny na mobile po kliknięciu */
+    .cashcard-details-expanded.visible {
+      max-height: 300px;
+      opacity: 1;
+    }
+
+    /* Kroki wewnątrz details */
+    .cashcard-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      padding: 0;
+    }
+
+    .cashcard-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    /* Krok bez własnej kropki (step 1 — kropka jest w wierszu wyżej) */
+    .cashcard-step--text-only .cashcard-step-indicator {
+      padding-top: 0;
+    }
+
+    .cashcard-step--text-only .cashcard-step-line {
+      margin-top: 0;
+    }
+
+    .cashcard-step-indicator {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex-shrink: 0;
+      width: 12px;
+      align-self: stretch;
+      padding-top: 2px;
+    }
+
+    .cashcard-step-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: transparent;
+      border: 1.5px solid #C8C8C8;
+      flex-shrink: 0;
+      box-sizing: border-box;
+    }
+
+    .cashcard-step-dot.active {
+      background: #222;
+      border-color: #222;
+    }
+
+    .cashcard-step-line {
+      width: 1.5px;
+      flex: 1;
+      min-height: 6px;
+      background: #E4E4E4;
+      margin: 3px 0 0 0;
+    }
+
+    .cashcard-step-text {
+      font-size: 11px;
+      color: var(--Secondary);
+      line-height: 1.5;
+      padding-bottom: 12px;
+    }
+
+    .cashcard-step-text.active {
+      color: #222;
+      font-weight: 600;
+    }
+
+    .cashcard-step-text a {
+      color: var(--Primary);
+      font-weight: 700;
+      text-decoration: underline;
+    }
+
+    .cashcard-step:last-child .cashcard-step-line {
+      display: none;
+    }
+
+    .cashcard-step:last-child .cashcard-step-text {
+      padding-bottom: 0;
     }
 
     .mobile-steps a {
@@ -1850,6 +2142,7 @@
   .mobile-steps { display: none; }
   .mobile-currency-chevron { display: none; }
   .mobile-card-header { display: none; }
+  /* cashcard-details-expanded: ukryty na desktop (max-height:0 jest ustawiony globalnie) */
   .mobile-header-left {
     display: flex;
     align-items: center;
@@ -1940,7 +2233,10 @@ document.addEventListener('click',function(e){
       <div class="merchant-name">super-merchant.com</div>
     </div>
   </div>
-  <div class="lang-toggle">EN</div>
+  <div class="mobile-header-badge" id="mobileHeaderBadge">
+    <span class="mobile-header-badge-text">Processed by</span>
+    <img src="./icons/zencom-logo.svg" alt="ZEN.COM" class="mobile-header-badge-logo">
+  </div>
 </div>
 
 <div class="page">
@@ -1949,7 +2245,10 @@ document.addEventListener('click',function(e){
     <!-- ════════ LEFT COLUMN ════════ -->
     <div class="left-col">
 
-      <div class="mobile-title">Payment method for <span class="underlined-country">Poland</span><svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="margin-left:4px;vertical-align:middle"><path d="M4 5.5L7 8.5L10 5.5" stroke="#222" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="mobile-title">
+        <div class="mobile-title-left">Payment method for <span class="underlined-country">Poland</span><svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="margin-left:4px;vertical-align:middle;flex-shrink:0"><path d="M4 5.5L7 8.5L10 5.5" stroke="#222" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="mobile-title-lang lang-toggle">EN</div>
+      </div>
 
       <div class="header-row">
         <div>
@@ -2325,22 +2624,6 @@ document.addEventListener('click',function(e){
         </div>
       </div>
 
-      <!-- Trust badges -->
-      <div class="trust-row">
-        <div class="trust-item">
-          <img src="./icons/ssl secure.svg" alt="SSL Secure" style="height:12px;width:auto;">
-          <span>SSL Secure</span>
-        </div>
-        <div class="trust-item">
-          <img src="./icons/pci-dss.svg" alt="PCI DSS" style="height:12px;width:auto;">
-          <span>PCI DSS</span>
-        </div>
-        <div class="trust-item">
-          <img src="./icons/processed by.svg" alt="" style="height:12px;width:auto;">
-          <span>Processed by</span>
-          <img src="./icons/zencom-logo.svg" alt="ZEN.COM" style="height:12px;width:auto;margin-left:2px;">
-        </div>
-      </div>
     </div>
 
     <!-- ════════ RIGHT COLUMN ════════ -->
@@ -2402,10 +2685,67 @@ document.addEventListener('click',function(e){
         <div class="terms-text" id="termsText">
           By clicking "Continue" I accept <a href="javascript:void(0)"> <strong>ZEN.COM</strong> payment terms</a>
         </div>
-        <div class="mobile-steps" id="mobileSteps">
-          <span>●</span> Buying ZEN.COM CashCard from <a href="javascript:void(0)">distributor</a>
+
+        <!-- CashCard details row (visible on step 1 BLIK/Card and step 2) -->
+        <div class="cashcard-details-row" id="cashcardDetailsRow">
+          <div class="cashcard-details-left">
+            <div class="cashcard-step-indicator">
+              <div class="cashcard-step-dot active" id="cashcardStep1Dot"></div>
+            </div>
+            <div class="cashcard-details-text" id="cashcardStep1Text">
+              Buying ZEN.COM CashCard from <a href="javascript:void(0)">distributor</a>
+            </div>
+          </div>
+          <div class="cashcard-details-toggle" id="cashcardDetailsToggle" onclick="toggleCashcardDetails()">
+            Details
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+        <div class="cashcard-details-expanded" id="cashcardDetailsExpanded">
+          <div class="cashcard-steps">
+            <!-- step 1 text (dot is in the row above, line connects downward) -->
+            <div class="cashcard-step cashcard-step--text-only">
+              <div class="cashcard-step-indicator">
+                <div class="cashcard-step-line"></div>
+              </div>
+              <div class="cashcard-step-text active" id="cashcardStep1Detail">
+                By clicking "accept order" I accept <a href="javascript:void(0)">ZEN.COM CashCard distributor terms</a>.
+              </div>
+            </div>
+            <!-- step 2 -->
+            <div class="cashcard-step">
+              <div class="cashcard-step-indicator">
+                <div class="cashcard-step-dot"></div>
+                <div class="cashcard-step-line"></div>
+              </div>
+              <div class="cashcard-step-text">
+                Payment for super-merchant.com
+              </div>
+            </div>
+            <!-- step 3 -->
+            <div class="cashcard-step">
+              <div class="cashcard-step-indicator">
+                <div class="cashcard-step-dot"></div>
+              </div>
+              <div class="cashcard-step-text">
+                Status
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mobile-steps" id="mobileSteps"></div>
+
+        <!-- Payment secured badge -->
+        <div class="payment-secured">
+          <img src="./icons/ssl secure.svg" alt="" class="payment-secured-lock">
+          <span class="payment-secured-text">Payment secured and provided by</span>
+          <img src="./icons/zencom-logo.svg" alt="ZEN.COM" class="payment-secured-logo">
         </div>
       </div>
+
     </div>
 
   </div>
@@ -2439,7 +2779,7 @@ document.addEventListener('click',function(e){
 
 <script>
   // ── Mobile card detail view ──
-  const isMobile = () => window.innerWidth <= 768;
+  const isMobile = () => window.innerWidth <= 785;
 
   function enterMobileCardView() {
     if (isMobile()) {
@@ -2480,7 +2820,7 @@ document.addEventListener('click',function(e){
   };
 
   function expandItem(id) {
-    if (activeItem === id) return;
+    if (activeItem === id) { collapseItem(id, false); return; }
 
     // Collapse currently active first (instant)
     if (activeItem) {
@@ -2889,10 +3229,8 @@ document.addEventListener('click',function(e){
       stepperWrap.style.display = 'block';
       currTabs.classList.add('visible'); // always show; blik-mode controls which tabs are shown
       bottomBar.classList.add('visible');
-      document.getElementById('mobileSteps')?.classList.add('visible');
       if (activeItem === 'zenapp') {
         bottomBar.classList.remove('visible');
-        document.getElementById('mobileSteps')?.classList.remove('visible');
       }
       const chevron = document.getElementById('mobileCurrChevron');
       if (chevron) chevron.classList.add('visible');
@@ -2905,11 +3243,15 @@ document.addEventListener('click',function(e){
       stepperWrap.style.display = 'none';
       currTabs.classList.remove('visible');
       bottomBar.classList.remove('visible');
-      document.getElementById('mobileSteps')?.classList.remove('visible');
+      document.getElementById('cashcardDetailsRow')?.classList.remove('visible');
+      document.getElementById('cashcardDetailsExpanded')?.classList.remove('visible');
+      document.getElementById('cashcardDetailsToggle')?.classList.remove('open');
       const chevron = document.getElementById('mobileCurrChevron');
       if (chevron) chevron.classList.remove('visible');
       document.querySelector('.total-amount')?.classList.remove('has-dropdown');
-      document.getElementById('termsText').innerHTML = 'By clicking "Continue" I accept <a href="javascript:void(0)"> <strong>ZEN.COM</strong> payment terms</a>';
+      const termsEl = document.getElementById('termsText');
+      termsEl.style.display = '';
+      termsEl.innerHTML = 'By clicking "Continue" I accept <a href="javascript:void(0)"> <strong>ZEN.COM</strong> payment terms</a>';
       resetCurrency();
       stepperCurrentStep = 1;
       stepper.step = 1;
@@ -2922,16 +3264,53 @@ document.addEventListener('click',function(e){
     updateStepperDisabled();
   }
 
+  function updateStep1Text() {
+    const step1Detail = document.getElementById('cashcardStep1Detail');
+    if (!step1Detail) return;
+    if (stepperCurrentStep === 2) {
+      step1Detail.innerHTML = 'Clicking \'Confirm payment\' confirms your purchase and acceptance of <a href="javascript:void(0)">ZEN.COM terms</a>.';
+    } else {
+      step1Detail.innerHTML = 'By clicking "accept order" I accept <a href="javascript:void(0)">ZEN.COM CashCard distributor terms</a>.';
+    }
+  }
+
   function updateTermsText() {
     const t = document.getElementById('termsText');
+    const detailsRow = document.getElementById('cashcardDetailsRow');
+    const detailsExpanded = document.getElementById('cashcardDetailsExpanded');
+    const detailsToggle = document.getElementById('cashcardDetailsToggle');
+
+    // Reset expanded
+    if (detailsExpanded) detailsExpanded.classList.remove('visible');
+    if (detailsToggle) detailsToggle.classList.remove('open');
+
     if (activeItem === 'zenapp') {
+      t.style.display = '';
       t.innerHTML = 'By clicking "pay" I accept <a href="javascript:void(0)"> <strong>ZEN.COM</strong> payment terms</a>';
+      if (detailsRow) detailsRow.classList.remove('visible');
       return;
     }
+
+    // BLIK / Card — pokaż nowy tekst (bez details row na mobile)
+    t.style.display = '';
     if (stepperCurrentStep === 2) {
-      t.innerHTML = 'By clicking "confirm payment" I accept <a href="javascript:void(0)"> <strong>ZEN.COM</strong> terms</a>';
+      t.innerHTML = 'By clicking "confirm payment" I buy ZEN.COM CashCard from <a href="javascript:void(0)">distributor</a> and accept <a href="javascript:void(0)">ZEN.COM terms</a>.';
     } else {
-      t.innerHTML = 'By clicking "accept order" I accept <a href="javascript:void(0)"> <strong>ZEN.COM</strong> CashCard distributor terms</a>';
+      t.innerHTML = 'By clicking "accept order" I buy ZEN.COM CashCard from <a href="javascript:void(0)">distributor</a> and accept the <a href="javascript:void(0)">distributor terms</a>.';
+    }
+  }
+
+  function toggleCashcardDetails() {
+    const expanded = document.getElementById('cashcardDetailsExpanded');
+    const toggle = document.getElementById('cashcardDetailsToggle');
+    if (!expanded || !toggle) return;
+    const isOpen = expanded.classList.contains('visible');
+    if (isOpen) {
+      expanded.classList.remove('visible');
+      toggle.classList.remove('open');
+    } else {
+      expanded.classList.add('visible');
+      toggle.classList.add('open');
     }
   }
 
@@ -3069,7 +3448,25 @@ document.addEventListener('click',function(e){
       paymentData.currency = document.getElementById('totalCurrency')?.textContent || 'EUR';
       paymentData.amount = document.getElementById('totalAmount')?.textContent || '100.00';
       try { sessionStorage.setItem('zenPaymentData', JSON.stringify(paymentData)); } catch(e) {}
-      window.parent.postMessage({ type: 'navigate', to: '/zen-payment' }, '*');
+      const badge = document.querySelector('.payment-secured');
+      const mobileBadge = document.getElementById('mobileHeaderBadge');
+      function triggerMobileBadgeShimmer() {
+        if (mobileBadge) {
+          mobileBadge.classList.remove('shimmer');
+          void mobileBadge.offsetWidth;
+          mobileBadge.classList.add('shimmer');
+        }
+      }
+      if (badge) {
+        badge.classList.remove('shimmer');
+        void badge.offsetWidth;
+        badge.classList.add('shimmer');
+        triggerMobileBadgeShimmer();
+        setTimeout(() => window.parent.postMessage({ type: 'navigate', to: '/zen-payment' }, '*'), 1050);
+      } else {
+        triggerMobileBadgeShimmer();
+        setTimeout(() => window.parent.postMessage({ type: 'navigate', to: '/zen-payment' }, '*'), 1050);
+      }
       return;
     }
     if (stepper.step === 2) {
@@ -3097,7 +3494,22 @@ document.addEventListener('click',function(e){
       paymentData.amount = document.getElementById('totalAmount')?.textContent || '100.00';
       try { sessionStorage.setItem('zenPaymentData', JSON.stringify(paymentData)); } catch(e) {}
       const nextRoute = activeItem === 'blik' ? '/blik' : activeItem === 'zenapp' ? '/zen-payment' : activeItem === 'card' ? '/3ds' : '/status';
-      window.parent.postMessage({ type: 'navigate', to: nextRoute }, '*');
+      // Shimmer effect on badge before navigating
+      const badge = document.querySelector('.payment-secured');
+      const mobileBadge2 = document.getElementById('mobileHeaderBadge');
+      if (mobileBadge2) {
+        mobileBadge2.classList.remove('shimmer');
+        void mobileBadge2.offsetWidth;
+        mobileBadge2.classList.add('shimmer');
+      }
+      if (badge) {
+        badge.classList.remove('shimmer');
+        void badge.offsetWidth; // reflow to restart animation
+        badge.classList.add('shimmer');
+        setTimeout(() => window.parent.postMessage({ type: 'navigate', to: nextRoute }, '*'), 1050);
+      } else {
+        setTimeout(() => window.parent.postMessage({ type: 'navigate', to: nextRoute }, '*'), 1050);
+      }
       return;
     }
     stepper.step = 2;
@@ -3339,17 +3751,68 @@ document.addEventListener('click',function(e){
   resizeCanvas();
   drawStepper();
 
+  // ── Desktop badge alignment ──
+  // Pins .payment-secured just below .payment-card bottom edge on desktop.
+  // On mobile badge is display:none (media query), so no-op there.
+  const _badge = document.querySelector('.payment-secured');
+  const _paymentCard = document.querySelector('.payment-card');
+
+  function alignBadge() {
+    if (!_badge || !_paymentCard) return;
+    if (window.innerWidth <= 785) return;
+    // Freeze badge position when "show all" is open
+    if (showAllOpen) return;
+    // Bottom edge of badge aligns with bottom edge of payment-card
+    const cardBottom = _paymentCard.offsetTop + _paymentCard.offsetHeight;
+    _badge.style.top = (cardBottom - _badge.offsetHeight) + 'px';
+  }
+
+  // Patch expandItem to realign badge (with transition)
+  const _origExpandForBadge = expandItem;
+  expandItem = function(id) {
+    _origExpandForBadge(id);
+    // Poll during expand animation so badge moves smoothly with card
+    let t = 0;
+    const poll = () => { alignBadge(); t += 16; if (t < 400) requestAnimationFrame(poll); };
+    requestAnimationFrame(poll);
+  };
+
+  // Patch collapseItem to realign badge when method is deselected
+  const _origCollapseItemForBadge = collapseItem;
+  collapseItem = function(id, instant) {
+    _origCollapseItemForBadge(id, instant);
+    let t = 0;
+    const poll = () => { alignBadge(); t += 16; if (t < 500) requestAnimationFrame(poll); };
+    requestAnimationFrame(poll);
+  };
+
+  // Patch toggleShowAll to realign badge when show-all closes
+  const _origToggleShowAll = toggleShowAll;
+  toggleShowAll = function() {
+    _origToggleShowAll();
+    // After _origToggleShowAll, showAllOpen reflects the NEW state
+    if (!showAllOpen) {
+      let t = 0;
+      const poll = () => { alignBadge(); t += 16; if (t < 500) requestAnimationFrame(poll); };
+      requestAnimationFrame(poll);
+    }
+  };
+
   // Resize canvas on window resize (debounced 100ms)
   let _resizeTimer = null;
   window.addEventListener('resize', () => {
     if (_resizeTimer) clearTimeout(_resizeTimer);
     _resizeTimer = setTimeout(() => {
+      alignBadge();
       if (document.getElementById('stepperWrap').style.display !== 'none') {
         resizeCanvas();
         drawStepper();
       }
     }, 100);
   });
+
+  // Initial alignment (after fonts/images settle)
+  requestAnimationFrame(() => { requestAnimationFrame(alignBadge); });
 </script>
 
 </body>

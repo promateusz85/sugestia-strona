@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/zen/checkout/static/css/main.5e6c2781.css",
-    "main.js": "/zen/checkout/static/js/main.219875a4.js",
-    "index.html": "/zen/checkout/index.html",
-    "main.5e6c2781.css.map": "/zen/checkout/static/css/main.5e6c2781.css.map",
-    "main.219875a4.js.map": "/zen/checkout/static/js/main.219875a4.js.map"
+    "main.css": "https://sugestia.pl/zen/checkout2/static/css/main.5e6c2781.css",
+    "main.js": "https://sugestia.pl/zen/checkout2/static/js/main.3427038c.js",
+    "index.html": "https://sugestia.pl/zen/checkout2/index.html",
+    "main.5e6c2781.css.map": "https://sugestia.pl/zen/checkout2/static/css/main.5e6c2781.css.map",
+    "main.3427038c.js.map": "https://sugestia.pl/zen/checkout2/static/js/main.3427038c.js.map"
   },
   "entrypoints": [
     "static/css/main.5e6c2781.css",
-    "static/js/main.219875a4.js"
+    "static/js/main.3427038c.js"
   ]
 }
