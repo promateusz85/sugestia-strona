@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<link rel="icon" href="./favicon.svg" type="image/svg+xml">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ZEN.COM - Payment Status</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -292,15 +293,15 @@ document.addEventListener('click',function(e){
 
 <!-- PROCESSING -->
 <div class="cs active" id="cProc">
-<div class="st au v">Processing payment</div>
-<div class="ss au v">Please wait while we securely process your transaction</div>
-<div class="ph au v">This usually takes a few seconds. Do not close this page.</div>
+<div class="st au v">Processing your payment</div>
+<div class="ss au v">This should only take a moment. Keep this page open until it's done.</div>
+<div class="ph au v"></div>
 </div>
 
 <!-- SUCCESS -->
 <div class="cs" id="cSucc">
 <div class="st au" id="sT">All done!</div>
-<div class="ss au" id="sS">Your payment to <strong>super-merchant.com</strong> was successfully processed.</div>
+<div class="ss au" id="sS">Your payment to <strong>super-merchant.com</strong> was successfully completed.</div>
 <div class="os au" id="sO">
 <div class="osh"><span class="ost">Order summary</span><span class="oid">#ZEN-2026-0213-8847</span></div>
 <div class="ors">
@@ -320,9 +321,9 @@ document.addEventListener('click',function(e){
         stroke-dasharray="53.4" stroke-dashoffset="53.4"
         style="transition:stroke-dashoffset 1s linear;"/>
     </svg>
-    <span id="redirCount" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#A3A3A3;line-height:1;font-family:'Nunito',sans-serif;">5</span>
+    <span id="redirCount" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#A3A3A3;line-height:1;font-family:'Nunito',sans-serif;">10</span>
   </div>
-  <span style="font-size:12px;font-weight:500;color:#A3A3A3;">Redirecting to store in <span id="redirSec">5</span>s</span>
+  <span style="font-size:12px;font-weight:500;color:#A3A3A3;">Redirecting to store in <span id="redirSec">10</span>s</span>
 </div>
 </div>
 
@@ -531,7 +532,7 @@ document.getElementById('oD').textContent=mo[n.getMonth()]+' '+n.getDate()+', '+
         pmDisplay.innerHTML = '<span class="pis"><img src="./icons/Blik3.svg" alt="BLIK" style="width:16px;height:11px;border-radius:2px;object-fit:cover;"></span>BLIK';
         // Update success subtitle for BLIK
         const sS = document.getElementById('sS');
-        if (sS) sS.innerHTML = 'Your BLIK payment to <strong>super-merchant.com</strong> was successfully processed.';
+        if (sS) sS.innerHTML = 'Your BLIK payment to <strong>super-merchant.com</strong> was successfully completed.';
         // Update error subtitle for BLIK
         const eS = document.getElementById('eS');
         if (eS) eS.innerHTML = 'We couldn\'t process your BLIK payment to <strong>super-merchant.com</strong>. Don\'t worry — no charges were made.';
@@ -551,34 +552,34 @@ stepper('processing');
 ati=setTimeout(()=>{if(st==='processing')go('success')},3000);
 
 // ── Auto-redirect (success only) ──
-let redirTimer=null,redirInterval=null,redirSecs=5;
+let redirTimer=null,redirInterval=null,redirSecs=10;
 
 function startRedir(){
   clearTimeout(redirTimer);clearInterval(redirInterval);
-  redirSecs=5;
+  redirSecs=10;
   const el=document.getElementById('redirSec');
   const cnt=document.getElementById('redirCount');
   const ring=document.getElementById('redirRing');
   const wrap=document.getElementById('sRedir');
-  if(el)el.textContent=5;
-  if(cnt)cnt.textContent=5;
+  if(el)el.textContent=10;
+  if(cnt)cnt.textContent=10;
   if(wrap)wrap.style.display='flex';
 
-  // Reset ring, then start smooth 5s CSS animation
+  // Reset ring, then start smooth 10s CSS animation
   if(ring){
     ring.style.transition='none';
     ring.style.strokeDashoffset='53.4';
     void ring.offsetWidth;
     requestAnimationFrame(()=>{
       requestAnimationFrame(()=>{
-        ring.style.transition='stroke-dashoffset 5s linear';
+        ring.style.transition='stroke-dashoffset 10s linear';
         ring.style.strokeDashoffset='0';
       });
     });
   }
 
   // Countdown text ticker
-  let secs=5;
+  let secs=10;
   redirInterval=setInterval(()=>{
     secs--;
     if(el)el.textContent=secs;
@@ -589,7 +590,7 @@ function startRedir(){
   redirTimer=setTimeout(()=>{
     clearInterval(redirInterval);
     window.location.href='./checkout.html';
-  },5000);
+  },10000);
 }
 
 function stopRedir(){
