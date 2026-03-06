@@ -1095,6 +1095,60 @@
     text-decoration: underline;
   }
 
+  /* ── BLIK loading: spinner in button ── */
+  @keyframes btn-spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+  .btn-spinner {
+    width: 22px;
+    height: 22px;
+    border: 2.5px solid rgba(255,255,255,0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: btn-spin 0.7s linear infinite;
+    flex-shrink: 0;
+  }
+
+  /* ── BLIK loading: skeleton under button ── */
+  @keyframes skeleton-shimmer {
+    0%   { background-position: -300px 0; }
+    100% { background-position: 300px 0; }
+  }
+  .terms-skeleton {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    width: 100%;
+  }
+  .skeleton-line {
+    height: 11px;
+    border-radius: 6px;
+    background: linear-gradient(90deg, #EBEBEB 25%, #F7F7F7 50%, #EBEBEB 75%);
+    background-size: 600px 100%;
+    animation: skeleton-shimmer 1.3s ease-in-out infinite;
+  }
+
+  /* ── Fade transitions for button swap ── */
+  .static-btn-row {
+    transition: opacity 0.25s ease;
+  }
+  .static-btn-row.fade-out {
+    opacity: 0;
+    pointer-events: none;
+  }
+  #stepperWrap {
+    transition: opacity 0.3s ease;
+  }
+  #stepperWrap.fade-in {
+    animation: stepperFadeIn 0.35s ease forwards;
+  }
+  @keyframes stepperFadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
   /* ── Bottom bar / stepper ── */
   .bottom-bar {
     width: 100%;
@@ -2668,14 +2722,21 @@ document.addEventListener('click',function(e){
       <div class="continue-section">
         <!-- State 1: No method selected — static disabled Continue -->
         <div class="static-btn-row" id="staticBtnRow">
-          <div class="static-btn disabled">
-            <span>Continue</span>
+          <div class="static-btn disabled" id="staticBtn">
+            <span id="staticBtnText">Continue</span>
+            <div class="btn-spinner" id="staticBtnSpinner" style="display:none;"></div>
           </div>
         </div>
 
         <!-- State 2: Method selected — spring stepper canvas -->
         <div id="stepperWrap" style="display:none; width:100%; max-width:408px; height:60px; position:relative; flex-shrink:0;">
           <canvas id="stepperCanvas" style="width:100%; height:60px; cursor:pointer; display:block;"></canvas>
+        </div>
+
+        <!-- BLIK loading skeleton (replaces terms during 2s load) -->
+        <div class="terms-skeleton" id="termsSkeleton" style="display:none;">
+          <div class="skeleton-line" style="width:210px;"></div>
+          <div class="skeleton-line" style="width:155px;"></div>
         </div>
 
         <div class="terms-text" id="termsText">
@@ -3349,11 +3410,74 @@ document.addEventListener('click',function(e){
     drawStepper();
   }
 
+  // ── BLIK loading state helpers ──
+  let _blikLoadingTimer = null;
+
+  function _showBlikLoading() {
+    // Spinner instead of "Continue"
+    const btnText    = document.getElementById('staticBtnText');
+    const btnSpinner = document.getElementById('staticBtnSpinner');
+    if (btnText)    btnText.style.display    = 'none';
+    if (btnSpinner) btnSpinner.style.display = 'block';
+    // Skeleton instead of terms
+    const termsEl    = document.getElementById('termsText');
+    const skeletonEl = document.getElementById('termsSkeleton');
+    if (termsEl)    termsEl.style.display    = 'none';
+    if (skeletonEl) skeletonEl.style.display = 'flex';
+  }
+
+  function _hideBlikLoading() {
+    const btnText    = document.getElementById('staticBtnText');
+    const btnSpinner = document.getElementById('staticBtnSpinner');
+    if (btnText)    btnText.style.display    = '';
+    if (btnSpinner) btnSpinner.style.display = 'none';
+    const skeletonEl = document.getElementById('termsSkeleton');
+    if (skeletonEl) skeletonEl.style.display = 'none';
+    // termsText visibility is handled by updateButtonVisibility → updateTermsText
+  }
+
+  // After loading: smoothly swap static btn → stepper
+  function _finishBlikLoading() {
+    _hideBlikLoading();
+
+    const staticRow  = document.getElementById('staticBtnRow');
+    const stepperWrp = document.getElementById('stepperWrap');
+
+    // Fade out static btn
+    if (staticRow) staticRow.classList.add('fade-out');
+
+    setTimeout(() => {
+      // Now do the real visibility update (hides staticRow, shows stepper, bottom bar etc.)
+      if (staticRow) staticRow.classList.remove('fade-out');
+      updateButtonVisibility();
+      // Fade in stepper
+      if (stepperWrp) {
+        stepperWrp.classList.add('fade-in');
+        setTimeout(() => stepperWrp.classList.remove('fade-in'), 400);
+      }
+    }, 250);
+  }
+
   // Hook into expand/collapse/panel to update button
   const _origExpand = expandItem;
-  expandItem = function(id) { _origExpand(id); setTimeout(updateButtonVisibility, 50); };
+  expandItem = function(id) {
+    // Cancel any in-progress BLIK load timer
+    if (_blikLoadingTimer) { clearTimeout(_blikLoadingTimer); _blikLoadingTimer = null; _hideBlikLoading(); }
+    _origExpand(id);
+    if (id === 'blik') {
+      _showBlikLoading();
+      _blikLoadingTimer = setTimeout(() => {
+        _blikLoadingTimer = null;
+        _finishBlikLoading();
+      }, 2000);
+    } else {
+      setTimeout(updateButtonVisibility, 50);
+    }
+  };
   const _origCollapseAll = collapseAll;
   collapseAll = function() {
+    // Cancel BLIK timer if user collapses before it fires
+    if (_blikLoadingTimer) { clearTimeout(_blikLoadingTimer); _blikLoadingTimer = null; _hideBlikLoading(); }
     document.body.classList.remove('mobile-card-view');
     _origCollapseAll();
     setTimeout(updateButtonVisibility, 500);
