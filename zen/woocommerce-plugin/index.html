@@ -340,6 +340,22 @@
       transform: translateY(0);
     }
 
+    /* ─── MOBILE ──────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .topbar-logo { display: none; }
+      .topbar { gap: 0; padding: 0 8px; }
+    }
+
+    @media (max-width: 480px) {
+      :root { --switcher-height: 52px; }
+      .topbar { gap: 0; padding: 0 6px; }
+      .switcher { padding: 3px; width: calc(100% - 12px); }
+      .switcher-btn { font-size: 12px; padding: 6px 10px; gap: 5px; flex: 1; justify-content: center; }
+      .switcher-btn svg { width: 13px; height: 13px; }
+      .badge { display: none; }
+      .view-label { left: 8px; bottom: 8px; font-size: 11px; padding: 4px 10px; }
+    }
+
   </style>
 </head>
 <body>

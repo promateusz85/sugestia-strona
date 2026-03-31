@@ -5283,6 +5283,28 @@ function zenFlushNow() {
 .zen-payment-methods-move-handle:active{cursor:grabbing!important;}
 /* Sticky save */
 @media(max-width:960px){#zen-sticky-save{left:36px!important;}}
+@media(max-width:782px){
+  #zen-sticky-save{left:0!important;padding:10px 12px!important;flex-wrap:wrap;gap:8px;justify-content:center!important;}
+  #zen-sticky-save span{font-size:12px;}
+  #zen-sticky-save button{width:100%;}
+}
+@media(max-width:600px){
+  .zen-payment-methods-table-row{flex-wrap:wrap;gap:6px;}
+  .zen-payment-methods-table-row > div[style*="flex-grow"]{flex:1 1 100%!important;}
+  .zen-payment-methods-table-row > div.zen-text-center,
+  .zen-payment-methods-table-row > div.zen-promoted-checkbox{flex:0 0 auto!important;min-width:28px!important;}
+  .zen-payment-methods-table-row > div.zen-payment-methods-move-handle{flex:0 0 auto!important;min-width:28px!important;}
+  .zen-channel-icon-in-table-container{margin-left:0!important;}
+  .zen-payment-methods-group-header{flex-wrap:wrap;gap:4px;}
+  .zen-credential-field{grid-template-columns:1fr!important;row-gap:4px;}
+  .zen-settings-label{text-align:left!important;min-width:0!important;padding-right:0!important;}
+  .zen-input-container{overflow:hidden;}
+  .zen-input-container .zen-input{min-width:0!important;width:100%!important;}
+  .zen-fieldset{overflow:hidden;max-width:100%;}
+  .zen-redirect-toggle-wrapper{flex-direction:column!important;}
+  .zen-redirect-toggle-wrapper .zen-toggle-label,
+  .zen-redirect-toggle-wrapper .zen-redirect-toggle{width:100%!important;text-align:left!important;padding-left:0!important;}
+}
 </style>
 
 <script>

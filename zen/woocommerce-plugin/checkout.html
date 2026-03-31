@@ -1155,6 +1155,9 @@ img:is([sizes=auto i],[sizes^="auto," i]){contain-intrinsic-size:3000px 1500px}
 <style>
 /* ZEN.COM PAYMENT v5 — Apple/Stripe Design Language */
 
+/* Prevent fieldset overflow */
+#payment-method { min-inline-size: 0; max-width: 100%; box-sizing: border-box; }
+
 /* Section heading */
 #payment-method .wc-block-components-checkout-step__heading {
   display: flex; align-items: center; justify-content: space-between;
@@ -1528,6 +1531,19 @@ img:is([sizes=auto i],[sizes^="auto," i]){contain-intrinsic-size:3000px 1500px}
   transition: opacity 200ms;
 }
 #payment-method .zp-trust-item:hover svg { opacity: .7; }
+
+/* ── Mobile ── */
+@media (max-width: 480px) {
+  #payment-method .zp-express-btns { grid-template-columns: 1fr; }
+  #payment-method .zp-row-header { padding: 12px 12px; gap: 10px; }
+  #payment-method .zp-gicon { width: 36px; height: 28px; }
+  #payment-method .zp-name { font-size: 14px; }
+  #payment-method .zp-panel-inner { padding: 12px 12px 16px; }
+  #payment-method .zp-cashback { padding: 2px 7px 2px 5px; }
+  #payment-method .zp-cashback-text { font-size: 10px; }
+  #payment-method .zp-subgrid { grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 6px; }
+  #payment-method .zp-subcard { padding: 10px 6px 8px; }
+}
 </style>
 <div class="zp-express-label">Fast checkout</div>
 <div class="zp-express-btns">
@@ -1644,7 +1660,14 @@ window.zpInitGooglePay = function() {
       buttonType: "plain",
       buttonRadius: 10,
       buttonSizeMode: "fill",
-      buttonLocale: "en"
+      buttonLocale: "en",
+      allowedPaymentMethods: [{
+        type: "CARD",
+        parameters: {
+          allowedAuthMethods: ["PAN_ONLY", "CRYPTOGRAM_3DS"],
+          allowedCardNetworks: ["VISA", "MASTERCARD", "AMEX", "DISCOVER"]
+        }
+      }]
     });
     container.appendChild(btn);
   } catch(e) { /* SDK not available in this context */ }
