@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZEN Design System — Preview</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ── ZEN Tokens ── */
+    :root {
+      --font-family: 'Nunito', sans-serif;
+      --color-accent: #22e243;
+      --color-primary: #222222;
+      --color-secondary: #727272;
+      --color-tertiary: #a3a3a3;
+      --color-disabled: #b5b5b5;
+      --color-contrary: #ffffff;
+      --color-background: #ffffff;
+      --color-surface-super-light: #fafafa;
+      --color-surface-light: #f7f7f7;
+      --color-surface-medium: #ebebeb;
+      --color-surface-strong: #dfdfdf;
+      --color-line-pattern: #dfdfdf;
+      --color-overlay-dark-8: rgba(34,34,34,0.08);
+      --radius-card: 20px;
+      --radius-tile-small: 12px;
+      --radius-8: 8px;
+      --radius-16: 16px;
+      --radius-32: 32px;
+    }
+
+    /* ── Reset & Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-family);
+      color: var(--color-primary);
+      background: var(--color-surface-super-light);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Hero Section ── */
+    .hero {
+      background: var(--color-primary);
+      color: var(--color-contrary);
+      padding: 80px 40px 64px;
+      text-align: center;
+    }
+
+    .hero__badge {
+      display: inline-block;
+      background: var(--color-accent);
+      color: var(--color-primary);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 100px;
+      margin-bottom: 24px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .hero h1 {
+      font-size: 48px;
+      line-height: 60px;
+      font-weight: 800;
+      margin-bottom: 16px;
+    }
+
+    .hero h1 span { color: var(--color-accent); }
+
+    .hero p {
+      font-size: 17px;
+      line-height: 28px;
+      font-weight: 400;
+      color: rgba(255,255,255,0.7);
+      max-width: 560px;
+      margin: 0 auto 40px;
+    }
+
+    .hero__actions {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-family: var(--font-family);
+      font-weight: 600;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.15s;
+      white-space: nowrap;
+    }
+
+    .btn:hover { opacity: 0.85; }
+    .btn:active { transform: scale(0.97); }
+
+    .btn--standard {
+      height: 60px;
+      padding: 0 32px;
+      min-width: 240px;
+      border-radius: var(--radius-32);
+      font-size: 17px;
+    }
+
+    .btn--small {
+      height: 40px;
+      padding: 0 15px;
+      min-width: 92px;
+      border-radius: var(--radius-32);
+      font-size: 15px;
+    }
+
+    .btn--micro {
+      height: 32px;
+      padding: 0 16px;
+      min-width: 96px;
+      border-radius: var(--radius-16);
+      font-size: 14px;
+    }
+
+    .btn--primary {
+      background: var(--color-primary);
+      color: var(--color-contrary);
+    }
+
+    .btn--accent {
+      background: var(--color-accent);
+      color: var(--color-primary);
+      border-color: var(--color-accent);
+    }
+
+    .btn--secondary {
+      background: var(--color-contrary);
+      color: var(--color-primary);
+      border-color: var(--color-primary);
+    }
+
+    .btn--ghost {
+      background: transparent;
+      color: var(--color-contrary);
+      border-color: rgba(255,255,255,0.3);
+    }
+
+    .btn--disabled {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    /* ── Container ── */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 40px;
+    }
+
+    /* ── Section ── */
+    .section {
+      padding: 64px 0;
+    }
+
+    .section__label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--color-accent);
+      margin-bottom: 8px;
+    }
+
+    .section__title {
+      font-size: 28px;
+      line-height: 38px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .section__desc {
+      font-size: 17px;
+      line-height: 26px;
+      color: var(--color-secondary);
+      max-width: 640px;
+      margin-bottom: 40px;
+    }
+
+    /* ── Cards Grid ── */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--color-contrary);
+      border: 1px solid var(--color-surface-medium);
+      border-radius: var(--radius-card);
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+
+    .card:hover {
+      box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+      transform: translateY(-2px);
+    }
+
+    .card__icon {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-tile-small);
+      background: var(--color-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .card__icon svg {
+      width: 24px;
+      height: 24px;
+      stroke: var(--color-contrary);
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .card__title {
+      font-size: 19px;
+      line-height: 26px;
+      font-weight: 700;
+    }
+
+    .card__text {
+      font-size: 15px;
+      line-height: 22px;
+      color: var(--color-secondary);
+      flex: 1;
+    }
+
+    .card .btn { align-self: flex-start; }
+
+    /* ── List ── */
+    .list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .list__item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 17px;
+      line-height: 23px;
+      font-weight: 500;
+    }
+
+    .list__check {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      background: var(--color-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .list__check svg {
+      width: 14px;
+      height: 14px;
+      stroke: white;
+      fill: none;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* ── Form Controls ── */
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      margin-top: 40px;
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .control-group__title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--color-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    /* Checkbox */
+    .checkbox {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      font-size: 17px;
+      line-height: 23px;
+      font-weight: 500;
+      user-select: none;
+    }
+
+    .checkbox input { display: none; }
+
+    .checkbox__box {
+      width: 24px;
+      height: 24px;
+      border: 2px solid var(--color-surface-strong);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+      flex-shrink: 0;
+    }
+
+    .checkbox__box svg {
+      width: 14px;
+      height: 14px;
+      stroke: white;
+      fill: none;
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+
+    .checkbox input:checked + .checkbox__box {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+    }
+
+    .checkbox input:checked + .checkbox__box svg {
+      opacity: 1;
+    }
+
+    /* Radio */
+    .radio {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      font-size: 17px;
+      line-height: 23px;
+      font-weight: 500;
+      user-select: none;
+    }
+
+    .radio input { display: none; }
+
+    .radio__circle {
+      width: 24px;
+      height: 24px;
+      border: 2px solid var(--color-surface-strong);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.15s;
+      flex-shrink: 0;
+    }
+
+    .radio__dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--color-primary);
+      transform: scale(0);
+      transition: transform 0.15s;
+    }
+
+    .radio input:checked + .radio__circle {
+      border-color: var(--color-primary);
+    }
+
+    .radio input:checked + .radio__circle .radio__dot {
+      transform: scale(1);
+    }
+
+    /* ── Text Input (Underline) ── */
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .field__label {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--color-secondary);
+    }
+
+    .field__input {
+      font-family: var(--font-family);
+      font-size: 19px;
+      font-weight: 600;
+      line-height: 26px;
+      color: var(--color-primary);
+      border: none;
+      border-bottom: 1px solid var(--color-line-pattern);
+      padding: 4px 0 8px;
+      background: transparent;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .field__input::placeholder {
+      color: var(--color-tertiary);
+      font-weight: 400;
+    }
+
+    .field__input:focus {
+      border-bottom: 2px solid var(--color-primary);
+    }
+
+    /* ── CTA Section ── */
+    .cta {
+      background: var(--color-primary);
+      border-radius: var(--radius-card);
+      padding: 64px;
+      text-align: center;
+      margin: 0 0 64px;
+    }
+
+    .cta h2 {
+      font-size: 36px;
+      line-height: 46px;
+      font-weight: 700;
+      color: var(--color-contrary);
+      margin-bottom: 12px;
+    }
+
+    .cta p {
+      font-size: 17px;
+      line-height: 26px;
+      color: rgba(255,255,255,0.6);
+      max-width: 480px;
+      margin: 0 auto 32px;
+    }
+
+    .cta__buttons {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* ── Divider ── */
+    .divider {
+      height: 1px;
+      background: var(--color-line-pattern);
+      margin: 0;
+      border: none;
+    }
+
+    /* ── Footer ── */
+    .footer {
+      padding: 32px 0;
+      text-align: center;
+      font-size: 14px;
+      color: var(--color-tertiary);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .hero { padding: 56px 24px 48px; }
+      .hero h1 { font-size: 36px; line-height: 46px; }
+      .container { padding: 0 24px; }
+      .cards { grid-template-columns: 1fr; }
+      .controls { grid-template-columns: 1fr; gap: 32px; }
+      .cta { padding: 40px 24px; }
+      .cta h2 { font-size: 28px; line-height: 38px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Hero -->
+  <section class="hero">
+    <span class="hero__badge">Design System Preview</span>
+    <h1>Buduj z <span>ZEN</span></h1>
+    <p>Komponenty, tokeny i style gotowe do wykorzystania. Spójny design oparty na Nunito, pill-shaped buttons i underline inputs.</p>
+    <div class="hero__actions">
+      <button class="btn btn--standard btn--accent">Rozpocznij teraz</button>
+      <button class="btn btn--standard btn--ghost">Zobacz dokumentacje</button>
+    </div>
+  </section>
+
+  <!-- Cards -->
+  <div class="container">
+    <section class="section">
+      <p class="section__label">Funkcje</p>
+      <h2 class="section__title">Wszystko czego potrzebujesz</h2>
+      <p class="section__desc">Trzy kluczowe elementy systemu, ktore przyspieszaja budowanie interfejsow i zapewniaja spojnosc wizualna.</p>
+
+      <div class="cards">
+        <!-- Card 1 -->
+        <div class="card">
+          <div class="card__icon">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          </div>
+          <h3 class="card__title">Komponenty</h3>
+          <p class="card__text">Gotowe do uzycia przyciski, inputy, karty, badge i wiele wiecej. Kazdy element jest w pelni konfigurowalny.</p>
+          <button class="btn btn--small btn--primary">Przegladaj</button>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="card">
+          <div class="card__icon">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+          </div>
+          <h3 class="card__title">Tokeny</h3>
+          <p class="card__text">Kolory, typografia, spacing i radiusy zdefiniowane jako CSS custom properties. Latwa personalizacja.</p>
+          <button class="btn btn--small btn--primary">Odkryj</button>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="card">
+          <div class="card__icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          </div>
+          <h3 class="card__title">Wzorce</h3>
+          <p class="card__text">Sprawdzone layouty i kompozycje, ktore mozesz wykorzystac jako punkt wyjscia dla nowych widokow.</p>
+          <button class="btn btn--small btn--primary">Sprawdz</button>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- List + Controls -->
+    <section class="section">
+      <p class="section__label">Elementy</p>
+      <h2 class="section__title">Lista, checkboxy i radio</h2>
+      <p class="section__desc">Przykladowe uzycie kontrolek formularzy i list w stylu ZEN design system.</p>
+
+      <div class="controls">
+        <!-- Left: List + Checkboxes -->
+        <div>
+          <h4 style="font-size:19px; font-weight:700; margin-bottom:20px;">Co zawiera pakiet</h4>
+          <ul class="list" style="margin-bottom:32px;">
+            <li class="list__item">
+              <span class="list__check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+              Pelny dostep do komponentow
+            </li>
+            <li class="list__item">
+              <span class="list__check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+              Tokeny kolorow i typografii
+            </li>
+            <li class="list__item">
+              <span class="list__check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+              Responsywny grid 12-kolumnowy
+            </li>
+            <li class="list__item">
+              <span class="list__check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+              Dark mode z jednym przlacznikiem
+            </li>
+            <li class="list__item">
+              <span class="list__check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+              Regularne aktualizacje
+            </li>
+          </ul>
+
+          <div class="control-group">
+            <p class="control-group__title">Checkboxy</p>
+            <label class="checkbox">
+              <input type="checkbox" checked>
+              <span class="checkbox__box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+              Powiadomienia e-mail
+            </label>
+            <label class="checkbox">
+              <input type="checkbox" checked>
+              <span class="checkbox__box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+              Powiadomienia push
+            </label>
+            <label class="checkbox">
+              <input type="checkbox">
+              <span class="checkbox__box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+              Newsletter tygodniowy
+            </label>
+            <label class="checkbox">
+              <input type="checkbox">
+              <span class="checkbox__box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+              Raporty miesieczne
+            </label>
+          </div>
+        </div>
+
+        <!-- Right: Radios + Input -->
+        <div>
+          <div class="control-group" style="margin-bottom:32px;">
+            <p class="control-group__title">Wybierz plan</p>
+            <label class="radio">
+              <input type="radio" name="plan">
+              <span class="radio__circle"><span class="radio__dot"></span></span>
+              Starter — darmowy
+            </label>
+            <label class="radio">
+              <input type="radio" name="plan" checked>
+              <span class="radio__circle"><span class="radio__dot"></span></span>
+              Pro — 49 PLN / mies.
+            </label>
+            <label class="radio">
+              <input type="radio" name="plan">
+              <span class="radio__circle"><span class="radio__dot"></span></span>
+              Enterprise — indywidualnie
+            </label>
+          </div>
+
+          <div class="control-group" style="margin-bottom:32px;">
+            <p class="control-group__title">Underline inputs</p>
+            <div class="field">
+              <label class="field__label">Imie i nazwisko</label>
+              <input class="field__input" type="text" placeholder="Jan Kowalski">
+            </div>
+            <div class="field">
+              <label class="field__label">Adres e-mail</label>
+              <input class="field__input" type="email" placeholder="jan@firma.pl">
+            </div>
+          </div>
+
+          <div style="display:flex; gap:12px; flex-wrap:wrap;">
+            <button class="btn btn--small btn--primary">Zapisz</button>
+            <button class="btn btn--small btn--secondary">Anuluj</button>
+            <button class="btn btn--small btn--primary btn--disabled">Disabled</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- Button showcase -->
+    <section class="section">
+      <p class="section__label">Przyciski</p>
+      <h2 class="section__title">Warianty buttonow</h2>
+      <p class="section__desc">Pill-shaped, border 2px, Nunito SemiBold 600. Dostepne w czterech rozmiarach i kilku wariantach kolorystycznych.</p>
+
+      <div style="display:flex; flex-wrap:wrap; gap:16px; align-items:center; margin-bottom:24px;">
+        <button class="btn btn--standard btn--primary">Primary</button>
+        <button class="btn btn--standard btn--accent">Accent</button>
+        <button class="btn btn--standard btn--secondary">Secondary</button>
+      </div>
+      <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin-bottom:24px;">
+        <button class="btn btn--small btn--primary">Small Primary</button>
+        <button class="btn btn--small btn--accent">Small Accent</button>
+        <button class="btn btn--small btn--secondary">Small Secondary</button>
+      </div>
+      <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:center;">
+        <button class="btn btn--micro btn--primary">Micro</button>
+        <button class="btn btn--micro btn--accent">Micro Accent</button>
+        <button class="btn btn--micro btn--secondary">Micro Sec</button>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta">
+      <h2>Gotowy do startu?</h2>
+      <p>Dolacz do zespolow, ktore juz korzystaja z ZEN Design System i buduj szybciej.</p>
+      <div class="cta__buttons">
+        <button class="btn btn--standard btn--accent">Zacznij za darmo</button>
+        <button class="btn btn--standard btn--ghost">Umow demo</button>
+      </div>
+    </section>
+  </div>
+
+  <hr class="divider">
+  <footer class="footer">
+    <div class="container">ZEN Design System &middot; Preview Page &middot; 2026</div>
+  </footer>
+
+</body>
+</html>
