@@ -719,4 +719,96 @@
           </div>
 
           <div class="control-group" style="margin-bottom:32px;">
-            <p class="control-group__title">Underline in
+            <p class="control-group__title">Underline inputs</p>
+            <div class="field">
+              <label class="field__label">Imie i nazwisko</label>
+              <input class="field__input" type="text" placeholder="Jan Kowalski">
+            </div>
+            <div class="field">
+              <label class="field__label">Adres e-mail</label>
+              <input class="field__input" type="email" placeholder="jan@firma.pl">
+            </div>
+          </div>
+
+          <div style="display:flex; gap:12px; flex-wrap:wrap;">
+            <button class="btn btn--small btn--primary">Zapisz</button>
+            <button class="btn btn--small btn--secondary">Anuluj</button>
+            <button class="btn btn--small btn--primary btn--disabled">Disabled</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- Button showcase -->
+    <section class="section">
+      <p class="section__label">Przyciski</p>
+      <h2 class="section__title">Warianty buttonow</h2>
+      <p class="section__desc">Pill-shaped, border 2px, Nunito SemiBold 600. Dostepne w czterech rozmiarach i kilku wariantach kolorystycznych.</p>
+
+      <div style="display:flex; flex-wrap:wrap; gap:16px; align-items:center; margin-bottom:24px;">
+        <button class="btn btn--standard btn--primary">Primary</button>
+        <button class="btn btn--standard btn--accent">Accent</button>
+        <button class="btn btn--standard btn--secondary">Secondary</button>
+      </div>
+      <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin-bottom:24px;">
+        <button class="btn btn--small btn--primary">Small Primary</button>
+        <button class="btn btn--small btn--accent">Small Accent</button>
+        <button class="btn btn--small btn--secondary">Small Secondary</button>
+      </div>
+      <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:center;">
+        <button class="btn btn--micro btn--primary">Micro</button>
+        <button class="btn btn--micro btn--accent">Micro Accent</button>
+        <button class="btn btn--micro btn--secondary">Micro Sec</button>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta">
+      <h2>Gotowy do startu?</h2>
+      <p>Dolacz do zespolow, ktore juz korzystaja z ZEN Design System i buduj szybciej.</p>
+      <div class="cta__buttons">
+        <button class="btn btn--standard btn--accent">Zacznij za darmo</button>
+        <button class="btn btn--standard btn--ghost">Umow demo</button>
+      </div>
+    </section>
+  </div>
+
+  <hr class="divider">
+  <footer class="footer">
+    <div class="container">ZEN Design System &middot; Preview Page &middot; 2026</div>
+  </footer>
+
+  <script>
+    (function() {
+      var toggle = document.getElementById('themeToggle');
+      var html = document.documentElement;
+      var stored = localStorage.getItem('zen-theme');
+
+      if (stored === 'dark') {
+        html.setAttribute('data-theme', 'dark');
+        toggle.setAttribute('aria-checked', 'true');
+      }
+
+      function flip() {
+        var isDark = html.getAttribute('data-theme') === 'dark';
+        if (isDark) {
+          html.removeAttribute('data-theme');
+          toggle.setAttribute('aria-checked', 'false');
+          localStorage.setItem('zen-theme', 'light');
+        } else {
+          html.setAttribute('data-theme', 'dark');
+          toggle.setAttribute('aria-checked', 'true');
+          localStorage.setItem('zen-theme', 'dark');
+        }
+      }
+
+      toggle.addEventListener('click', flip);
+      toggle.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); flip(); }
+      });
+    })();
+  </script>
+</body>
+</html>
