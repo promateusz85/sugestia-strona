@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1920">
+  <title>Recurring Payments - Subscriptions</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body spellcheck="false">
+<div class="page-wrapper">
+
+  <!-- TOP NAVBAR -->
+  <nav class="top-navbar">
+    <div class="navbar-left">
+      <div class="company-avatar">PC</div>
+      <div class="navbar-separator"></div>
+      <div class="workspace-selector">
+        <div class="workspace-avatar">A</div>
+        <div class="workspace-info">
+          <span class="workspace-name">Asics Store</span>
+          <span class="workspace-url">asics-store.com</span>
+        </div>
+        <svg class="workspace-chevron" viewBox="0 0 20 20" fill="none">
+          <path d="M6 8L10 12L14 8" stroke="#222222" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+    <div class="navbar-right">
+      <button class="navbar-btn" style="position:relative;">
+        <img src="assets/icon-lounge.png" alt="" style="width:20px;height:20px;">
+        <span>Customer Lounge</span>
+        <span class="navbar-badge">1</span>
+      </button>
+      <button class="navbar-btn">
+        <img src="assets/icon-livechat.png" alt="" style="width:20px;height:20px;">
+        <span>Live Chat</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <span class="sidebar-label">Apps & Services</span>
+    <div class="sidebar-apps">
+      <div class="sidebar-menu-item">
+        <img class="menu-icon" src="assets/icon-app-gateway.png" alt="">
+        <span class="menu-label">Payment gateway</span>
+        <svg class="menu-chevron" viewBox="0 0 20 20" fill="none"><path d="M6 8L10 12L14 8" stroke="#222222" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="sidebar-menu-item">
+        <img class="menu-icon" src="assets/icon-app-links.png" alt="">
+        <span class="menu-label">Payment links</span>
+        <svg class="menu-chevron" viewBox="0 0 20 20" fill="none"><path d="M6 8L10 12L14 8" stroke="#222222" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="sidebar-menu-item">
+        <img class="menu-icon" src="assets/icon-app-cashback.png" alt="">
+        <span class="menu-label">Cashback</span>
+        <svg class="menu-chevron" viewBox="0 0 20 20" fill="none"><path d="M6 8L10 12L14 8" stroke="#222222" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div>
+        <div class="sidebar-menu-item">
+          <img class="menu-icon" src="assets/icon-app-recurring.png" alt="">
+          <span class="menu-label active">Recurring payments</span>
+          <svg class="menu-chevron" viewBox="0 0 20 20" fill="none"><path d="M6 12L10 8L14 12" stroke="#222222" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="sidebar-submenu">
+          <span onclick="location.href='index.html'">Overview</span>
+          <span class="active" onclick="location.href='subscriptions.html'">Subscriptions</span>
+          <span onclick="location.href='products.html'">Products and plans</span>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:24px;">
+      <div class="sidebar-menu-item">
+        <img class="menu-icon" src="assets/icon-more-apps.png" alt="">
+        <span class="menu-label">More Apps</span>
+      </div>
+    </div>
+    <div style="margin-top:32px;">
+      <div class="sidebar-menu-item">
+        <img class="menu-icon" src="assets/icon-reports.png" alt="">
+        <span class="menu-label">Reports</span>
+      </div>
+      <div class="sidebar-menu-item">
+        <img class="menu-icon" src="assets/icon-settings.png" alt="">
+        <span class="menu-label">Settings</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+    <div class="page-header">
+      <h1 class="page-title">Subscriptions</h1>
+      <button class="export-btn">
+        <img class="icon" src="assets/icon-download.png" alt="" style="width:24px;height:24px;">
+        <span>Export</span>
+      </button>
+    </div>
+
+    <div class="content-area" style="gap:24px;">
+      <!-- SEARCH BAR -->
+      <div class="search-bar">
+        <div class="search-select">
+          <span class="field-label light">Search in</span>
+          <div class="field-input-wrapper">
+            <select>
+              <option>Email</option>
+              <option>Name</option>
+              <option>ID</option>
+            </select>
+            <svg class="field-chevron" viewBox="0 0 20 20" fill="none"><path d="M6 8L10 12L14 8" stroke="#222222" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+        </div>
+        <div class="search-field">
+          <span class="field-label">Search</span>
+          <div class="field-input-wrapper">
+            <input type="text" placeholder="Type here">
+            <svg class="search-icon" viewBox="0 0 20 20" fill="none">
+              <circle cx="9" cy="9" r="6" stroke="#727272" stroke-width="1.5"/>
+              <path d="M13.5 13.5L17 17" stroke="#727272" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+        <button class="filters-btn">
+          <svg class="icon" viewBox="0 0 20 20" fill="none">
+            <path d="M3 5H17M6 10H14M8 15H12" stroke="#222222" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <span>Filters</span>
+        </button>
+      </div>
+
+      <!-- TRANSACTION LIST -->
+      <div>
+        <!-- Row 1 (expandable) -->
+        <div class="transaction-row-wrapper" onclick="toggleRow(this)">
+          <div class="transaction-row">
+            <div class="transaction-left">
+            <img class="transaction-icon" src="assets/icon-recurring.png" alt="" style="width:32px;height:32px;">
+            <div class="transaction-info">
+              <span class="transaction-name">Fashion VIP Club</span>
+              <div class="transaction-details">
+                <span>10:30</span>
+                <span class="transaction-dot"></span>
+                <span>Active</span>
+                <span class="transaction-dot"></span>
+                <span>jasonliu@gmail.com</span>
+              </div>
+            </div>
+            </div>
+            <div class="transaction-right">
+            <span class="transaction-amount-large">30.00 EUR</span>
+            <svg class="transaction-chevron" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="#222222" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+          <div class="transaction-detail-panel">
+            <div class="detail-accent-bar"></div>
+            <div class="detail-info">
+              <div class="detail-item">
+                <span class="detail-label">Subscription ID</span>
+                <span class="detail-value">37.21 EUR</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Payment method</span>
+                <span class="detail-value">18 Gru 2023, 08:31</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Plan</span>
+                <span class="detail-value">Monthly</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Billing cycle</span>
+                <span class="detail-value">Monthly</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Created on</span>
+                <span class="detail-value">18 Dec 2025, 08:31</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Next charge</span>
+                <span class="detail-value">18 Apr 2026, 08:31</span>
+              </div>
+            </div>
+            <div class="detail-actions">
+              <button class="detail-action-btn" title="Pause">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <rect x="7" y="6" width="3" height="12" rx="1" fill="#222222"/>
+                  <rect x="14" y="6" width="3" height="12" rx="1" fill="#222222"/>
+                </svg>
+              </button>
+              <button class="detail-action-btn" title="Cancel">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#222222" stroke-width="2" stroke-linecap="round">
+                  <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+        <hr class="row-separator">
+
+        <!-- Row 2 -->
+        <div class="transaction-row-wrapper" onclick="toggleRow(this)">
+          <div class="transaction-row">
+            <div class="transaction-left">
+            <img class="transaction-icon" src="assets/icon-recurring.png" alt="" style="width:32px;height:32px;">
+            <div class="transaction-info">
+              <span class="transaction-name">Premium package</span>
+              <div class="transaction-details">
+                <span>10:30</span>
+                <span class="transaction-dot"></span>
+                <span>Trial</span>
+                <span class="transaction-dot"></span>
+                <span>ewar@gmail.com</span>
+              </div>
+            </div>
+            </div>
+            <div class="transaction-right">
+            <span class="transaction-amount-large">10.00 EUR</span>
+            <svg class="transaction-chevron" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="#222222" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+          <div class="transaction-detail-panel">
+            <div class="detail-accent-bar"></div>
+            <div class="detail-info">
+              <div class="detail-item">
+                <span class="detail-label">Subscription ID</span>
+                <span class="detail-value">12.50 EUR</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Payment method</span>
+                <span class="detail-value">10 Mar 2024, 14:22</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Plan</span>
+                <span class="detail-value">Standard</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Billing cycle</span>
+                <span class="detail-value">Monthly</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Created on</span>
+                <span class="detail-value">10 Mar 2024, 14:22</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Next charge</span>
+                <span class="detail-value">10 Apr 2026, 14:22</span>
+              </div>
+            </div>
+            <div class="detail-actions">
+              <button class="detail-action-btn" title="Pause">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <rect x="7" y="6" width="3" height="12" rx="1" fill="#222222"/>
+                  <rect x="14" y="6" width="3" height="12" rx="1" fill="#222222"/>
+                </svg>
+              </button>
+              <button class="detail-action-btn" title="Cancel">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#222222" stroke-width="2" stroke-linecap="round">
+                  <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+        <hr class="row-separator">
+
+        <!-- Row 3 -->
+        <div class="transaction-row-wrapper" onclick="toggleRow(this)">
+          <div class="transaction-row">
+            <div class="transaction-left">
+            <img class="transaction-icon" src="assets/icon-recurring.png" alt="" style="width:32px;height:32px;">
+            <div class="transaction-info">
+              <span class="transaction-name">Fashion VIP Club</span>
+              <div class="transaction-details">
+                <span>10:30</span>
+                <span class="transaction-dot"></span>
+                <span>Overdue</span>
+                <span class="transaction-dot"></span>
+                <span>joedoe@gmail.com</span>
+              </div>
+            </div>
+            </div>
+            <div class="transaction-right">
+            <span class="transaction-amount-large">30.00 EUR</span>
+            <svg class="transaction-chevron" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="#222222" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+          <div class="transaction-detail-panel">
+            <div class="detail-accent-bar"></div>
+            <div class="detail-info">
+              <div class="detail-item">
+                <span class="detail-label">Subscription ID</span>
+                <span class="detail-value">37.21 EUR</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Payment method</span>
+                <span class="detail-value">05 Jan 2024, 11:00</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Plan</span>
+                <span class="detail-value">Monthly</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Billing cycle</span>
+                <span class="detail-value">Monthly</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Created on</span>
+                <span class="detail-value">05 Jan 2024, 11:00</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Next charge</span>
+                <span class="detail-value">05 Apr 2026, 11:00</span>
+              </div>
+            </div>
+            <div class="detail-actions">
+              <button class="detail-action-btn" title="Pause">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <rect x="7" y="6" width="3" height="12" rx="1" fill="#222222"/>
+                  <rect x="14" y="6" width="3" height="12" rx="1" fill="#222222"/>
+                </svg>
+              </button>
+              <button class="detail-action-btn" title="Cancel">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#222222" stroke-width="2" stroke-linecap="round">
+                  <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+        <hr class="row-separator">
+
+        <!-- Row 4 -->
+        <div class="transaction-row-wrapper" onclick="toggleRow(this)">
+          <div class="transaction-row">
+            <div class="transaction-left">
+            <img class="transaction-icon" src="assets/icon-recurring.png" alt="" style="width:32px;height:32px;">
+            <div class="transaction-info">
+              <span class="transaction-name">Fashion VIP Club</span>
+              <div class="transaction-details">
+                <span>10:30</span>
+                <span class="transaction-dot"></span>
+                <span>Active</span>
+                <span class="transaction-dot"></span>
+                <span>jason@gmail.com</span>
+              </div>
+            </div>
+            </div>
+            <div class="transaction-right">
+            <span class="transaction-amount-large">30.00 EUR</span>
+            <svg class="transaction-chevron" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="#222222" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+          <div class="transaction-detail-panel">
+            <div class="detail-accent-bar"></div>
+            <div class="detail-info">
+              <div class="detail-item">
+                <span class="detail-label">Subscription ID</span>
+                <span class="detail-value">37.21 EUR</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Payment method</span>
+                <span class="detail-value">22 Feb 2024, 09:15</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Plan</span>
+                <span class="detail-value">Monthly</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Billing cycle</span>
+                <span class="detail-value">Monthly</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Created on</span>
+                <span class="detail-value">22 Feb 2024, 09:15</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Next charge</span>
+                <span class="detail-value">22 Apr 2026, 09:15</span>
+              </div>
+            </div>
+            <div class="detail-actions">
+              <button class="detail-action-btn" title="Pause">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <rect x="7" y="6" width="3" height="12" rx="1" fill="#222222"/>
+                  <rect x="14" y="6" width="3" height="12" rx="1" fill="#222222"/>
+                </svg>
+              </button>
+              <button class="detail-action-btn" title="Cancel">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#222222" stroke-width="2" stroke-linecap="round">
+                  <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+function toggleRow(wrapper) {
+  wrapper.classList.toggle('expanded');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1920">
+  <title>Recurring Payments - Overview</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body spellcheck="false">
+<div class="page-wrapper">
+
+  <!-- TOP NAVBAR -->
+  <nav class="top-navbar">
+    <div class="navbar-left">
+      <div class="company-avatar">PC</div>
+      <div class="navbar-separator"></div>
+      <div class="workspace-selector">
+        <div class="workspace-avatar">A</div>
+        <div class="workspace-info">
+          <span class="workspace-name">Asics Store</span>
+          <span class="workspace-url">asics-store.com</span>
+        </div>
+        <svg class="workspace-chevron" viewBox="0 0 20 20" fill="none">
+          <path d="M6 8L10 12L14 8" stroke="#222222" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+    <div class="navbar-right">
+      <button class="navbar-btn" style="position:relative;">
+        <img src="assets/icon-lounge.png" alt="" style="width:20px;height:20px;">
+        <span>Customer Lounge</span>
+        <span class="navbar-badge">1</span>
+      </button>
+      <button class="navbar-btn">
+        <img src="assets/icon-livechat.png" alt="" style="width:20px;height:20px;">
+        <span>Live Chat</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <span class="sidebar-label">Apps & Services</span>
+    <div class="sidebar-apps">
+      <div class="sidebar-menu-item">
+        <img class="menu-icon" src="assets/icon-app-gateway.png" alt="">
+        <span class="menu-label">Payment gateway</span>
+        <svg class="menu-chevron" viewBox="0 0 20 20" fill="none"><path d="M6 8L10 12L14 8" stroke="#222222" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="sidebar-menu-item">
+        <img class="menu-icon" src="assets/icon-app-links.png" alt="">
+        <span class="menu-label">Payment links</span>
+        <svg class="menu-chevron" viewBox="0 0 20 20" fill="none"><path d="M6 8L10 12L14 8" stroke="#222222" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="sidebar-menu-item">
+        <img class="menu-icon" src="assets/icon-app-cashback.png" alt="">
+        <span class="menu-label">Cashback</span>
+        <svg class="menu-chevron" viewBox="0 0 20 20" fill="none"><path d="M6 8L10 12L14 8" stroke="#222222" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div>
+        <div class="sidebar-menu-item">
+          <img class="menu-icon" src="assets/icon-app-recurring.png" alt="">
+          <span class="menu-label active">Recurring payments</span>
+          <svg class="menu-chevron" viewBox="0 0 20 20" fill="none"><path d="M6 12L10 8L14 12" stroke="#222222" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="sidebar-submenu">
+          <span class="active" onclick="location.href='index.html'">Overview</span>
+          <span onclick="location.href='subscriptions.html'">Subscriptions</span>
+          <span onclick="location.href='products.html'">Products and plans</span>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:24px;">
+      <div class="sidebar-menu-item">
+        <img class="menu-icon" src="assets/icon-more-apps.png" alt="">
+        <span class="menu-label">More Apps</span>
+      </div>
+    </div>
+    <div style="margin-top:32px;">
+      <div class="sidebar-menu-item">
+        <img class="menu-icon" src="assets/icon-reports.png" alt="">
+        <span class="menu-label">Reports</span>
+      </div>
+      <div class="sidebar-menu-item">
+        <img class="menu-icon" src="assets/icon-settings.png" alt="">
+        <span class="menu-label">Settings</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+    <div class="page-header">
+      <h1 class="page-title">Overview</h1>
+      <a href="new-product-step1.html" class="header-action-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#222222" stroke-width="2" stroke-linecap="round">
+          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+      </a>
+    </div>
+
+    <div class="content-area">
+      <!-- KPI CARDS ROW 1 -->
+      <div class="kpi-row">
+        <div class="kpi-card">
+          <span class="kpi-label">Monthly Recurring Revenue</span>
+          <span class="kpi-value">48 290 EUR</span>
+          <span class="kpi-badge">+12.3%</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Active subscriptions</span>
+          <span class="kpi-value">1 247</span>
+          <span class="kpi-badge">+8.7%</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Churn rate</span>
+          <span class="kpi-value">2.1%</span>
+          <span class="kpi-badge">-0.4pp</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Trial conversion</span>
+          <span class="kpi-value">78%</span>
+          <span class="kpi-badge">+5.2%</span>
+        </div>
+      </div>
+
+      <!-- CHART -->
+      <div class="chart-section">
+        <div class="chart-header">
+          <span class="chart-title">Recurring revenue (12 months)</span>
+          <div class="chart-pills">
+            <button class="chart-pill active">MRR</button>
+            <button class="chart-pill">New</button>
+            <button class="chart-pill">Churn</button>
+          </div>
+        </div>
+        <div class="chart-area">
+          <div class="chart-y-axis">
+            <span class="chart-y-label">50K EUR</span>
+            <span class="chart-y-label">25K EUR</span>
+            <span class="chart-y-label">0</span>
+          </div>
+          <div class="chart-grid">
+            <div class="chart-grid-line" style="top:0"></div>
+            <div class="chart-grid-line" style="top:50%"></div>
+            <div class="chart-grid-line" style="top:100%"></div>
+          </div>
+          <div class="chart-bars">
+            <div class="chart-bar-group"><div class="chart-bar" style="height:22px"></div><span class="chart-month">May</span></div>
+            <div class="chart-bar-group"><div class="chart-bar" style="height:42px"></div><span class="chart-month">Jun</span></div>
+            <div class="chart-bar-group"><div class="chart-bar" style="height:62px"></div><span class="chart-month">Jul</span></div>
+            <div class="chart-bar-group"><div class="chart-bar" style="height:72px"></div><span class="chart-month">Aug</span></div>
+            <div class="chart-bar-group"><div class="chart-bar" style="height:88px"></div><span class="chart-month">Sep</span></div>
+            <div class="chart-bar-group"><div class="chart-bar" style="height:96px"></div><span class="chart-month">Oct</span></div>
+            <div class="chart-bar-group"><div class="chart-bar" style="height:92px"></div><span class="chart-month">Nov</span></div>
+            <div class="chart-bar-group"><div class="chart-bar" style="height:100px"></div><span class="chart-month">Dec</span></div>
+            <div class="chart-bar-group"><div class="chart-bar" style="height:118px"></div><span class="chart-month">Jan</span></div>
+            <div class="chart-bar-group"><div class="chart-bar" style="height:130px"></div><span class="chart-month">Feb</span></div>
+            <div class="chart-bar-group"><div class="chart-bar" style="height:145px"></div><span class="chart-month">Mar</span></div>
+            <div class="chart-bar-group"><div class="chart-bar black" style="height:170px"></div><span class="chart-month">Apr</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECONDARY KPI CARDS -->
+      <div class="kpi-row">
+        <div class="kpi-card">
+          <span class="kpi-label">New subscriptions (this month)</span>
+          <span class="kpi-value">43</span>
+          <span class="kpi-subtitle">+17% vs previous month</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Upcoming Renewals</span>
+          <span class="kpi-value">312</span>
+          <span class="kpi-subtitle">Within 7 days</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Failed payments</span>
+          <span class="kpi-value">8</span>
+          <span class="kpi-subtitle">Needs attention - auto-retry enabled</span>
+        </div>
+      </div>
+
+      <!-- AI INSIGHT BANNER -->
+      <div class="ai-banner">
+        <img class="ai-mascot" src="assets/zenek-mascot.png" alt="Zenek">
+        <div class="ai-content">
+          <div class="ai-header">
+            <span class="ai-title">AI Insight</span>
+            <span class="ai-badge">Retention</span>
+            <div class="ai-close">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#222222" stroke-width="2" stroke-linecap="round">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </div>
+          </div>
+          <p class="ai-body">23 "Fashion VIP Club" subscriptions have a card expiring within 30 days. Sending a reminder to update your card can prevent churn due to failed payments.</p>
+          <button class="ai-action-btn">Send reminders</button>
+        </div>
+      </div>
+
+      <!-- LATEST TRANSACTIONS -->
+      <div>
+        <div class="section-header">
+          <span class="section-title">Lastest</span>
+          <span class="text-link" onclick="location.href='subscriptions.html'">all transactions</span>
+        </div>
+
+        <div class="date-separator">
+          <span class="date-separator-text">Today</span>
+          <div class="date-separator-line"></div>
+        </div>
+
+        <!-- Transaction 1 -->
+        <div class="transaction-row">
+          <div class="transaction-left">
+            <img class="transaction-icon" src="assets/icon-recurring.png" alt="" style="width:32px;height:32px;">
+            <div class="transaction-info">
+              <span class="transaction-name">Fashion VIP Club</span>
+              <div class="transaction-details">
+                <span>10:30</span>
+                <span class="transaction-dot"></span>
+                <span>New subscription</span>
+                <span class="transaction-dot"></span>
+                <span>jasonliu@gmail.com</span>
+              </div>
+            </div>
+          </div>
+          <span class="transaction-amount">30.00 EUR</span>
+        </div>
+        <hr class="row-separator">
+
+        <!-- Transaction 2 -->
+        <div class="transaction-row">
+          <div class="transaction-left">
+            <img class="transaction-icon" src="assets/icon-recurring.png" alt="" style="width:32px;height:32px;">
+            <div class="transaction-info">
+              <span class="transaction-name">Fashion VIP Club</span>
+              <div class="transaction-details">
+                <span>10:30</span>
+                <span class="transaction-dot"></span>
+                <span>Renewal</span>
+                <span class="transaction-dot"></span>
+                <span>jasonliu@gmail.com</span>
+              </div>
+            </div>
+          </div>
+          <span class="transaction-amount">30.00 EUR</span>
+        </div>
+        <hr class="row-separator">
+
+        <!-- Transaction 3 -->
+        <div class="transaction-row">
+          <div class="transaction-left">
+            <img class="transaction-icon" src="assets/icon-recurring.png" alt="" style="width:32px;height:32px;">
+            <div class="transaction-info">
+              <span class="transaction-name">Premium package</span>
+              <div class="transaction-details">
+                <span>10:30</span>
+                <span class="transaction-dot"></span>
+                <span>Trial > Active</span>
+                <span class="transaction-dot"></span>
+                <span>jasonliu@gmail.com</span>
+              </div>
+            </div>
+          </div>
+          <span class="transaction-amount">10.00 EUR</span>
+        </div>
+
+        <div class="show-more-link">
+          <span class="text-link" onclick="location.href='subscriptions.html'">Show more</span>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

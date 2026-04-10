@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1920">
+  <title>Create Product - Step 2</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="create-page">
+
+  <!-- NAV -->
+  <div class="create-nav">
+    <a href="products.html" class="create-nav-btn" title="Close">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#222222" stroke-width="2" stroke-linecap="round">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </a>
+    <a href="new-product-step1.html" class="create-nav-btn" title="Back">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#222222" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M15 18L9 12L15 6"/>
+      </svg>
+    </a>
+  </div>
+
+  <!-- LAYOUT -->
+  <div class="create-layout">
+    <!-- STEPPER -->
+    <div class="stepper">
+      <h1 class="stepper-title">Create product</h1>
+      <div class="stepper-steps">
+        <div class="stepper-step">
+          <div class="step-indicator"></div>
+          <span class="step-label inactive">Product</span>
+        </div>
+        <div class="stepper-connector">
+          <div class="stepper-connector-line"></div>
+        </div>
+        <div class="stepper-step">
+          <div class="step-indicator active"></div>
+          <span class="step-label">Plan</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- FORM -->
+    <div class="form-section">
+      <h2 class="form-section-title">Plan information</h2>
+      <div class="form-fields">
+        <div class="form-field-row">
+          <div class="form-field">
+            <input type="text" class="form-input" placeholder="Amount">
+          </div>
+          <div class="form-field currency">
+            <div class="form-select-wrapper">
+              <select>
+                <option value="" disabled selected>Currency</option>
+                <option>EUR</option>
+                <option>USD</option>
+                <option>PLN</option>
+              </select>
+              <svg viewBox="0 0 20 20" fill="none"><path d="M6 8L10 12L14 8" stroke="#222222" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+        </div>
+        <div class="form-field">
+          <div class="form-select-wrapper">
+            <select>
+              <option value="" disabled selected>Billing period</option>
+              <option>Monthly</option>
+              <option>Quarterly</option>
+              <option>Annual</option>
+            </select>
+            <svg viewBox="0 0 20 20" fill="none"><path d="M6 8L10 12L14 8" stroke="#222222" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+        </div>
+        <div class="toggle-row">
+          <div class="toggle-switch" onclick="this.classList.toggle('on')"></div>
+          <span class="toggle-label">Free trial</span>
+        </div>
+        <div class="toggle-row">
+          <div class="toggle-switch" onclick="this.classList.toggle('on')"></div>
+          <span class="toggle-label">Different first charge amount</span>
+        </div>
+      </div>
+      <div class="form-submit-wrapper">
+        <a href="products.html" class="btn-large-outline">Create product</a>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

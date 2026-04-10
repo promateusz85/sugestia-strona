@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1920">
+  <title>Recurring Payments - Products and Plans</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body spellcheck="false">
+<div class="page-wrapper">
+
+  <!-- TOP NAVBAR -->
+  <nav class="top-navbar">
+    <div class="navbar-left">
+      <div class="company-avatar">PC</div>
+      <div class="navbar-separator"></div>
+      <div class="workspace-selector">
+        <div class="workspace-avatar">A</div>
+        <div class="workspace-info">
+          <span class="workspace-name">Asics Store</span>
+          <span class="workspace-url">asics-store.com</span>
+        </div>
+        <svg class="workspace-chevron" viewBox="0 0 20 20" fill="none">
+          <path d="M6 8L10 12L14 8" stroke="#222222" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+    <div class="navbar-right">
+      <button class="navbar-btn" style="position:relative;">
+        <img src="assets/icon-lounge.png" alt="" style="width:20px;height:20px;">
+        <span>Customer Lounge</span>
+        <span class="navbar-badge">1</span>
+      </button>
+      <button class="navbar-btn">
+        <img src="assets/icon-livechat.png" alt="" style="width:20px;height:20px;">
+        <span>Live Chat</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <span class="sidebar-label">Apps & Services</span>
+    <div class="sidebar-apps">
+      <div class="sidebar-menu-item">
+        <img class="menu-icon" src="assets/icon-app-gateway.png" alt="">
+        <span class="menu-label">Payment gateway</span>
+        <svg class="menu-chevron" viewBox="0 0 20 20" fill="none"><path d="M6 8L10 12L14 8" stroke="#222222" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="sidebar-menu-item">
+        <img class="menu-icon" src="assets/icon-app-links.png" alt="">
+        <span class="menu-label">Payment links</span>
+        <svg class="menu-chevron" viewBox="0 0 20 20" fill="none"><path d="M6 8L10 12L14 8" stroke="#222222" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="sidebar-menu-item">
+        <img class="menu-icon" src="assets/icon-app-cashback.png" alt="">
+        <span class="menu-label">Cashback</span>
+        <svg class="menu-chevron" viewBox="0 0 20 20" fill="none"><path d="M6 8L10 12L14 8" stroke="#222222" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div>
+        <div class="sidebar-menu-item">
+          <img class="menu-icon" src="assets/icon-app-recurring.png" alt="">
+          <span class="menu-label active">Recurring payments</span>
+          <svg class="menu-chevron" viewBox="0 0 20 20" fill="none"><path d="M6 12L10 8L14 12" stroke="#222222" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="sidebar-submenu">
+          <span onclick="location.href='index.html'">Overview</span>
+          <span onclick="location.href='subscriptions.html'">Subscriptions</span>
+          <span class="active" onclick="location.href='products.html'">Products and plans</span>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:24px;">
+      <div class="sidebar-menu-item">
+        <img class="menu-icon" src="assets/icon-more-apps.png" alt="">
+        <span class="menu-label">More Apps</span>
+      </div>
+    </div>
+    <div style="margin-top:32px;">
+      <div class="sidebar-menu-item">
+        <img class="menu-icon" src="assets/icon-reports.png" alt="">
+        <span class="menu-label">Reports</span>
+      </div>
+      <div class="sidebar-menu-item">
+        <img class="menu-icon" src="assets/icon-settings.png" alt="">
+        <span class="menu-label">Settings</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+    <div class="page-header">
+      <h1 class="page-title">Products and plans</h1>
+      <a href="new-product-step1.html" class="header-action-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#222222" stroke-width="2" stroke-linecap="round">
+          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+      </a>
+    </div>
+
+    <div class="content-area" style="gap:24px;">
+      <!-- SEARCH BAR (simple) -->
+      <div class="search-bar">
+        <div class="search-field">
+          <span class="field-label">Search</span>
+          <div class="field-input-wrapper">
+            <input type="text" placeholder="Type here">
+            <svg class="search-icon" viewBox="0 0 20 20" fill="none">
+              <circle cx="9" cy="9" r="6" stroke="#727272" stroke-width="1.5"/>
+              <path d="M13.5 13.5L17 17" stroke="#727272" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+        <button class="filters-btn">
+          <svg class="icon" viewBox="0 0 20 20" fill="none">
+            <path d="M3 5H17M6 10H14M8 15H12" stroke="#222222" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <span>Filters</span>
+        </button>
+      </div>
+
+      <!-- PRODUCT CARD 1 -->
+      <div class="product-card">
+        <div class="product-header">
+          <div class="product-title-row">
+            <span class="product-name">Fashion VIP Club</span>
+            <span class="product-revenue">32 450 EUR</span>
+          </div>
+          <div class="product-meta-row">
+            <span class="product-url">fashionstore.pl/vip</span>
+            <span class="product-revenue-label">MRR</span>
+          </div>
+          <p class="product-description" style="margin-top:4px;">Exclusive club for regular customers with access to limited collections and discounts.</p>
+        </div>
+        <div class="product-separator"></div>
+        <div class="plans-table">
+          <div class="plan-row">
+            <span class="plan-name">Monthly</span>
+            <span class="plan-billing">Monthly</span>
+            <span class="plan-trial">14-day trial</span>
+            <span class="plan-price">29.00 EUR</span>
+            <span class="plan-subscriptions">847 subscriptions</span>
+          </div>
+          <div class="plan-separator"></div>
+          <div class="plan-row">
+            <span class="plan-name">Annual</span>
+            <span class="plan-billing">Annual</span>
+            <span class="plan-trial">-</span>
+            <span class="plan-price">299.00 EUR</span>
+            <span class="plan-subscriptions">423 subscriptions</span>
+          </div>
+        </div>
+        <a href="new-product-step1.html" class="add-plan-btn">
+          <svg class="icon" viewBox="0 0 16 16" fill="none">
+            <path d="M8 3V13M3 8H13" stroke="#222222" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <span>Add plan</span>
+        </a>
+      </div>
+
+      <!-- PRODUCT CARD 2 -->
+      <div class="product-card">
+        <div class="product-header">
+          <div class="product-title-row">
+            <span class="product-name">Fashion VIP Club</span>
+            <span class="product-revenue">11 240 EUR</span>
+          </div>
+          <div class="product-meta-row">
+            <span class="product-url">fashionstore.pl/premium</span>
+            <span class="product-revenue-label">MRR</span>
+          </div>
+          <p class="product-description" style="margin-top:4px;">Unlimited access to style guides, trends, and exclusive video materials.</p>
+        </div>
+        <div class="product-separator"></div>
+        <div class="plans-table">
+          <div class="plan-row">
+            <span class="plan-name">Standard</span>
+            <span class="plan-billing">Monthly</span>
+            <span class="plan-trial">7-day trial</span>
+            <span class="plan-price">49.00 EUR</span>
+            <span class="plan-subscriptions">156 subscriptions</span>
+          </div>
+          <div class="plan-separator"></div>
+          <div class="plan-row">
+            <span class="plan-name">Annual Premium</span>
+            <span class="plan-billing">Annual</span>
+            <span class="plan-trial">-</span>
+            <span class="plan-price">470.00 EUR</span>
+            <span class="plan-subscriptions">42 subscriptions</span>
+          </div>
+        </div>
+        <a href="new-product-step1.html" class="add-plan-btn">
+          <svg class="icon" viewBox="0 0 16 16" fill="none">
+            <path d="M8 3V13M3 8H13" stroke="#222222" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <span>Add plan</span>
+        </a>
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+</html>
