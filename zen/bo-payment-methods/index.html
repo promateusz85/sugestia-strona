@@ -1382,7 +1382,7 @@ function openMccModal(row){
   closeMccModal();
   var _md=getMcc(row);
   var allCodes=_md.available.map(function(c){return {code:c,kind:'Available'};}).concat(_md.restricted.map(function(c){return {code:c,kind:'Restricted'};}));
-  allCodes.sort(function(a,b){return parseInt(a.code,10)-parseInt(b.code,10);});
+  allCodes.sort(function(a,b){var aF=st.mcc.length>0&&st.mcc.indexOf(a.code)!==-1?0:1;var bF=st.mcc.length>0&&st.mcc.indexOf(b.code)!==-1?0:1;if(aF!==bF)return aF-bF;return parseInt(a.code,10)-parseInt(b.code,10);});
   var backdrop=document.createElement('div');
   backdrop.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:3000;';
   backdrop.addEventListener('click',function(e){if(e.target===backdrop)closeMccModal();});
