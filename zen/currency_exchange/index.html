@@ -73,21 +73,20 @@
     }
     .rate-dot {
       width: 6px; height: 6px; border-radius: 50%;
-      background: var(--color-accent);
-      animation: rpulse 2.4s ease-in-out infinite;
+      background: var(--color-primary);
+      animation: rpulse 1s ease-in-out infinite;
       flex-shrink: 0;
+      margin-top: 5px;
     }
-    @keyframes rpulse { 0%,100%{opacity:.45} 50%{opacity:1} }
+    @keyframes rpulse { 0%,100%{opacity:1} 50%{opacity:0.15} }
     .rate-val {
       transition: opacity 0.2s ease-out;
       font-weight: 700;
     }
     .rate-val.tick { opacity: 0.55; }
     .rate-preview-sub {
-      position: relative;
-      z-index: 1;
       font-size: 10px; font-weight: 600;
-      color: var(--color-primary);
+      color: var(--color-secondary);
     }
     .rate-plan-link {
       text-decoration: underline;
@@ -848,11 +847,9 @@
         <span class="rate-dot"></span>
         <span>
           <span class="rate-label">Current rate:</span><br>
-          1 <span id="rateFrom">PLN</span> = <span class="rate-val" id="rateVal">0.235148</span> <span id="rateTo">EUR</span>
+          1 <span id="rateFrom">PLN</span> = <span class="rate-val" id="rateVal">0.235148</span> <span id="rateTo">EUR</span><br>
+          <span class="rate-preview-sub">Based on your <span class="rate-plan-link" id="ratePlanLink">plan</span></span>
         </span>
-      </div>
-      <div class="rate-preview-sub">
-        Based on your <span class="rate-plan-link" id="ratePlanLink">plan</span>
       </div>
     </div>
     <button class="rate-preview-cta" type="button" id="seeChartBtn" aria-label="See chart">
