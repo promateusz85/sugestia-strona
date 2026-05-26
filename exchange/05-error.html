@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ZEN — Exchange failed</title>
+  <link rel="stylesheet" href="../shared.css">
+  <style>
+    .phone { overflow: hidden; }
+
+    /* Navbar */
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 0 16px;
+    }
+    .navbar-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--color-primary);
+      white-space: nowrap;
+    }
+    .navbar-close {
+      position: absolute;
+      left: 10px;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Hero stage — sits below navbar */
+    .hero-stage {
+      position: absolute;
+      top: 88px;
+      left: 0; right: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 32px;
+    }
+
+    /* Rive canvas */
+    #riveCanvas {
+      display: block;
+      width: 375px;
+      height: 240px;
+      flex-shrink: 0;
+    }
+
+    /* CSS Fallback */
+    #fallback {
+      display: none;
+      width: 375px;
+      height: 240px;
+      flex-shrink: 0;
+      position: relative;
+    }
+    .fb-warn-wrap {
+      position: absolute;
+      left: 50%; top: 50%;
+      transform: translate(-50%, -60%);
+      animation: popWarn 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+    @keyframes popWarn {
+      0%   { transform: translate(-50%, -60%) scale(0.6); opacity: 0; }
+      60%  { transform: translate(-50%, -60%) scale(1.06); opacity: 1; }
+      100% { transform: translate(-50%, -60%) scale(1); opacity: 1; }
+    }
+
+    /* Text block */
+    .text-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      width: 315px;
+      text-align: center;
+    }
+    .error-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--color-primary);
+      line-height: 33px;
+    }
+    .error-subtitle {
+      font-size: 17px;
+      font-weight: 600;
+      color: #727272;
+      line-height: 23px;
+    }
+    .info-card {
+      margin-top: 4px;
+      width: 100%;
+      background: #fafafa;
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--color-secondary);
+      line-height: 1.5;
+    }
+    .info-card strong {
+      color: var(--color-primary);
+      font-weight: 800;
+    }
+
+    /* CTA bar — pinned to bottom */
+    .cta-bar {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 12px 20px 36px;
+      background: var(--color-surface);
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .cta-btn {
+      width: 100%;
+      height: 56px;
+      border-radius: var(--radius-full);
+      border: none;
+      background: var(--color-primary);
+      color: white;
+      font-size: 17px;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background 0.12s, transform 0.08s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .cta-btn:hover  { background: #000; }
+    .cta-btn:active { transform: scale(0.99); }
+    .cta-text-link {
+      display: block;
+      width: 100%;
+      text-align: center;
+      background: transparent;
+      border: none;
+      padding: 14px 0 4px;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--color-secondary);
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .cta-text-link:hover { color: var(--color-primary); }
+  </style>
+</head>
+<body>
+
+<div class="phone">
+
+  <!-- Status bar -->
+  <div class="status-bar">
+    <span class="status-time">9:41</span>
+    <div class="status-icons">
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="none">
+        <rect x="0"    y="5"   width="3" height="7"    rx="1" fill="#222"/>
+        <rect x="4.5"  y="3.5" width="3" height="8.5"  rx="1" fill="#222"/>
+        <rect x="9"    y="1.5" width="3" height="10.5" rx="1" fill="#222"/>
+        <rect x="13.5" y="0"   width="3" height="12"   rx="1" fill="#222"/>
+      </svg>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+        <path d="M8 3.5C9.9 3.5 11.6 4.3 12.9 5.5L14.2 4.1C12.5 2.5 10.4 1.5 8 1.5C5.6 1.5 3.5 2.5 1.8 4.1L3.1 5.5C4.4 4.3 6.1 3.5 8 3.5Z" fill="#222"/>
+        <path d="M8 6.5C9.2 6.5 10.3 7 11.1 7.9L12.4 6.5C11.2 5.3 9.7 4.5 8 4.5C6.3 4.5 4.8 5.3 3.6 6.5L4.9 7.9C5.7 7 6.8 6.5 8 6.5Z" fill="#222"/>
+        <circle cx="8" cy="10.5" r="1.5" fill="#222"/>
+      </svg>
+      <svg width="26" height="12" viewBox="0 0 26 12" fill="none">
+        <rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="#222" stroke-opacity="0.35"/>
+        <rect x="2" y="2" width="18" height="8" rx="2" fill="#222"/>
+        <path d="M23.5 4V8C24.4 7.4 25 6.7 25 6C25 5.3 24.4 4.6 23.5 4Z" fill="#222" fill-opacity="0.4"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Navbar: close + Exchange title -->
+  <div class="navbar">
+    <button class="navbar-close" onclick="backToAccount()" aria-label="Close">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <path d="M2 2L16 16M16 2L2 16" stroke="#222" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+    </button>
+    <span class="navbar-title">Exchange</span>
+  </div>
+
+  <!-- Hero stage -->
+  <div class="hero-stage">
+
+    <!-- Rive canvas (primary) -->
+    <canvas id="riveCanvas" width="375" height="240"></canvas>
+
+    <!-- CSS fallback (shown when Rive can't load) -->
+    <div id="fallback">
+      <div class="fb-warn-wrap">
+        <svg width="88" height="88" viewBox="0 0 88 88" fill="none">
+          <circle cx="44" cy="44" r="44" fill="#f3f3f3"/>
+          <path d="M44 24L68 64H20L44 24Z" stroke="#222" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M44 38v14" stroke="#222" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="44" cy="56.5" r="1.8" fill="#222"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Text block -->
+    <div class="text-block">
+      <div class="error-title">Exchange couldn't<br>be completed</div>
+      <div class="error-subtitle">The rate changed before we could confirm.<br>Your balance is unchanged.</div>
+      <div class="info-card">
+        You tried to exchange <strong id="attempted">0.00 PLN</strong>.<br>No funds have been moved.
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CTAs -->
+  <div class="cta-bar">
+    <button class="cta-btn" onclick="tryAgain()">Try again</button>
+    <button class="cta-text-link" onclick="backToAccount()">Back to account</button>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+</div><!-- /phone -->
+
+<!-- Rive runtime -->
+<script src="https://unpkg.com/@rive-app/canvas@2.21.6/rive.js"></script>
+<script src="../shared.js"></script>
+<script>
+  // ── State ──
+  let fx = { from: { code: 'PLN' }, to: { code: 'EUR' }, rate: 0.235148, amount: 48 };
+  try {
+    const saved = JSON.parse(sessionStorage.getItem('zen_fx') || 'null');
+    if (saved) Object.assign(fx, saved);
+  } catch (e) {}
+
+  function fmt(n) {
+    return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+  document.getElementById('attempted').textContent = `${fmt(fx.amount)} ${fx.from.code}`;
+
+  // ── Rive animation ──
+  const RIVE_SRC = 'transfer-hero.riv';
+  const canvas   = document.getElementById('riveCanvas');
+  const fallback = document.getElementById('fallback');
+
+  function showFallback() {
+    canvas.style.display  = 'none';
+    fallback.style.display = 'block';
+  }
+
+  let riveInst;
+  try {
+    riveInst = new rive.Rive({
+      src:        RIVE_SRC,
+      canvas:     canvas,
+      autoplay:   true,
+      animations: ['transfer failed'],
+      onLoad() {
+        riveInst.resizeDrawingSurfaceToCanvas();
+      },
+      onLoadError() { showFallback(); }
+    });
+  } catch (e) {
+    showFallback();
+  }
+
+  // ── Navigation ──
+  function tryAgain() {
+    navigate('01-amount.html', 'exit-right', 'enter-left');
+  }
+  function backToAccount() {
+    sessionStorage.removeItem('zen_fx');
+    showToast('Returning to account');
+    setTimeout(() => navigate('../style-guide.html', 'exit-fade', 'enter-fade'), 700);
+  }
+</script>
+
+</body>
+</html>

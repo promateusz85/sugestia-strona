@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ZEN — Exchange done</title>
+  <link rel="stylesheet" href="../shared.css">
+  <style>
+    .phone { overflow: hidden; }
+
+    /* Navbar */
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 0 16px;
+    }
+    .navbar-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--color-primary);
+      white-space: nowrap;
+    }
+    .navbar-close {
+      position: absolute;
+      left: 10px;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Hero stage — sits below navbar */
+    .hero-stage {
+      position: absolute;
+      top: 88px;
+      left: 0; right: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 40px;
+    }
+
+    /* Rive canvas */
+    #riveCanvas {
+      display: block;
+      width: 375px;
+      height: 240px;
+      flex-shrink: 0;
+    }
+
+    /* ── CSS Fallback (shows if Rive fails to load) ── */
+    #fallback {
+      display: none;
+      width: 375px;
+      height: 240px;
+      flex-shrink: 0;
+      position: relative;
+    }
+    .fb-check-wrap {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      transform: translateX(-50%);
+    }
+    @keyframes drawCheck {
+      to { stroke-dashoffset: 0; }
+    }
+    @keyframes popCircle {
+      0%   { transform: scale(0.4); opacity: 0; }
+      60%  { transform: scale(1.06); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* Text block */
+    .text-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      width: 315px;
+      text-align: center;
+    }
+    .done-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--color-primary);
+      line-height: 33px;
+    }
+    .done-subtitle {
+      font-size: 17px;
+      font-weight: 600;
+      color: #727272;
+      line-height: 23px;
+    }
+
+    /* CTA bar — pinned to bottom */
+    .cta-bar {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 20px 20px 40px;
+      background: var(--color-surface);
+      display: flex;
+      justify-content: center;
+    }
+    .cta-ok {
+      width: 240px;
+      height: 60px;
+      border-radius: 32px;
+      border: 2px solid var(--color-primary);
+      background: transparent;
+      color: var(--color-primary);
+      font-family: inherit;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.14s, color 0.14s, transform 0.08s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .cta-ok:hover  { background: var(--color-primary); color: white; }
+    .cta-ok:active { transform: scale(0.98); }
+  </style>
+</head>
+<body>
+
+<div class="phone">
+
+  <!-- Status bar -->
+  <div class="status-bar">
+    <span class="status-time">9:41</span>
+    <div class="status-icons">
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="none">
+        <rect x="0"    y="5"   width="3" height="7"    rx="1" fill="#222"/>
+        <rect x="4.5"  y="3.5" width="3" height="8.5"  rx="1" fill="#222"/>
+        <rect x="9"    y="1.5" width="3" height="10.5" rx="1" fill="#222"/>
+        <rect x="13.5" y="0"   width="3" height="12"   rx="1" fill="#222"/>
+      </svg>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+        <path d="M8 3.5C9.9 3.5 11.6 4.3 12.9 5.5L14.2 4.1C12.5 2.5 10.4 1.5 8 1.5C5.6 1.5 3.5 2.5 1.8 4.1L3.1 5.5C4.4 4.3 6.1 3.5 8 3.5Z" fill="#222"/>
+        <path d="M8 6.5C9.2 6.5 10.3 7 11.1 7.9L12.4 6.5C11.2 5.3 9.7 4.5 8 4.5C6.3 4.5 4.8 5.3 3.6 6.5L4.9 7.9C5.7 7 6.8 6.5 8 6.5Z" fill="#222"/>
+        <circle cx="8" cy="10.5" r="1.5" fill="#222"/>
+      </svg>
+      <svg width="26" height="12" viewBox="0 0 26 12" fill="none">
+        <rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="#222" stroke-opacity="0.35"/>
+        <rect x="2" y="2" width="18" height="8" rx="2" fill="#222"/>
+        <path d="M23.5 4V8C24.4 7.4 25 6.7 25 6C25 5.3 24.4 4.6 23.5 4Z" fill="#222" fill-opacity="0.4"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Navbar: close button left + Exchange title -->
+  <div class="navbar">
+    <button class="navbar-close" onclick="handleClose()" aria-label="Close">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <path d="M2 2L16 16M16 2L2 16" stroke="#222" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+    </button>
+    <span class="navbar-title">Exchange</span>
+  </div>
+
+  <!-- Hero stage -->
+  <div class="hero-stage">
+
+    <!-- Rive canvas (primary) -->
+    <canvas id="riveCanvas" width="375" height="240"></canvas>
+
+    <!-- CSS fallback (shown when Rive can't load) -->
+    <div id="fallback">
+      <div class="fb-check-wrap">
+        <svg viewBox="0 0 375 240" width="375" height="240" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="greenGrad" cx="40%" cy="35%" r="65%">
+              <stop offset="0%"   stop-color="#22E243"/>
+              <stop offset="100%" stop-color="#0a9f24"/>
+            </radialGradient>
+          </defs>
+
+          <!-- Large green circle — centered slightly right, matching Figma layout -->
+          <g style="transform-origin:187px 120px; animation:popCircle 0.5s cubic-bezier(0.22,1,0.36,1) both;">
+            <circle cx="187" cy="120" r="90" fill="url(#greenGrad)"/>
+          </g>
+
+          <!-- White checkmark (draw-in animation) -->
+          <path d="M147 122L175 150L228 90"
+                stroke="white" stroke-width="9" fill="none"
+                stroke-linecap="round" stroke-linejoin="round"
+                style="stroke-dasharray:120; stroke-dashoffset:120; animation:drawCheck 0.55s ease-out 0.3s forwards;"/>
+
+          <!-- Decorative sparkle dots -->
+          <circle cx="110" cy="48"  r="5" fill="#22E243" opacity="0.55"/>
+          <circle cx="272" cy="62"  r="3.5" fill="#22E243" opacity="0.45"/>
+          <circle cx="295" cy="168" r="4"   fill="#22E243" opacity="0.4"/>
+          <circle cx="80"  cy="190" r="3"   fill="#22E243" opacity="0.35"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Text block -->
+    <div class="text-block">
+      <div class="done-title">Exchange done!</div>
+      <div class="done-subtitle">The money should be now<br>in your Wallet.</div>
+    </div>
+
+  </div>
+
+  <!-- CTA bar -->
+  <div class="cta-bar">
+    <button class="cta-ok" onclick="handleOK()">OK</button>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+</div><!-- /phone -->
+
+<!-- Rive runtime -->
+<script src="https://unpkg.com/@rive-app/canvas@2.21.6/rive.js"></script>
+<script src="../shared.js"></script>
+<script>
+  // ── Rive animation ──
+  const RIVE_SRC = 'transfer-hero.riv';
+  const canvas   = document.getElementById('riveCanvas');
+  const fallback = document.getElementById('fallback');
+
+  function showFallback() {
+    canvas.style.display  = 'none';
+    fallback.style.display = 'block';
+  }
+
+  let riveInst;
+  try {
+    riveInst = new rive.Rive({
+      src:        RIVE_SRC,
+      canvas:     canvas,
+      autoplay:   true,
+      animations: ['transfer is on'],
+      onLoad() {
+        riveInst.resizeDrawingSurfaceToCanvas();
+      },
+      onLoop() {
+        // Freeze on the last frame (green checkmark) after one full cycle
+        riveInst.pause();
+      },
+      onLoadError() { showFallback(); }
+    });
+  } catch (e) {
+    showFallback();
+  }
+
+  // ── Navigation ──
+  function handleOK() {
+    sessionStorage.removeItem('zen_fx');
+    navigate('01-amount.html', 'exit-right', 'enter-left');
+  }
+  function handleClose() {
+    handleOK();
+  }
+</script>
+
+</body>
+</html>
