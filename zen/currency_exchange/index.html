@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZEN — Exchange</title>
+  <link rel="stylesheet" href="shared.css">
+  <style>
+    /* Loading splash shown before redirect */
+    body {
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100dvh;
+      min-height: 100vh;
+    }
+    .splash-logo {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      animation: fadeIn 0.3s ease-out both;
+    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .splash-wordmark {
+      font-family: 'Nunito', sans-serif;
+      font-size: 32px;
+      font-weight: 800;
+      color: #222;
+      letter-spacing: -1px;
+    }
+    .splash-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #22e243;
+      animation: pulse 1.2s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:.4;transform:scale(.9)} 50%{opacity:1;transform:scale(1.1)} }
+  </style>
+</head>
+<body>
+  <div class="splash-logo">
+    <div class="splash-wordmark">ZEN</div>
+    <div class="splash-dot"></div>
+  </div>
+  <script>
+    // Redirect to the exchange flow entry point
+    setTimeout(function() {
+      window.location.replace('exchange/01-amount.html');
+    }, 500);
+  </script>
+</body>
+</html>

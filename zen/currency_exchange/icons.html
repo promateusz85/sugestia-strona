@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZEN Icon Library</title>
+  <link rel="stylesheet" href="./shared.css">
+  <style>
+    .icon-section-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--color-primary);
+      margin: 0 0 20px;
+    }
+    .icon-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 16px;
+    }
+    .icon-card {
+      background: white;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 20px 16px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .icon-card-preview {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .icon-card-preview img {
+      display: block;
+      width: 24px;
+      height: 24px;
+    }
+    .icon-card-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--color-primary);
+      text-align: center;
+      line-height: 1.3;
+    }
+    .icon-card-meta {
+      font-size: 11px;
+      color: var(--color-secondary);
+      text-align: center;
+      line-height: 1.5;
+      word-break: break-all;
+    }
+    .icon-card-uuid {
+      font-family: 'Courier New', monospace;
+      font-size: 10px;
+      color: #aaa;
+      text-align: center;
+      word-break: break-all;
+      background: #f8f8f8;
+      border-radius: 4px;
+      padding: 4px 6px;
+      width: 100%;
+    }
+    .inline-icon-preview {
+      background: #f8f8f8;
+      border-radius: var(--radius-md);
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+    }
+    .notice {
+      background: #fffbe6;
+      border: 1px solid #ffd860;
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      font-size: 14px;
+      color: #7a6200;
+      line-height: 1.5;
+      margin-bottom: 32px;
+    }
+    .notice strong { color: #222; }
+  </style>
+</head>
+<body class="web-layout">
+
+<div class="page">
+
+  <nav class="top-nav">
+    <div class="top-nav-inner">
+      <span class="top-nav-logo">ZEN</span>
+      <div class="top-nav-links">
+        <a href="style-guide.html" class="top-nav-link">Style Guide</a>
+        <a href="icons.html" class="top-nav-link active">Icons</a>
+        <a href="_template-mobile.html" class="top-nav-link">Mobile Template</a>
+        <a href="_template-web.html" class="top-nav-link">Web Template</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="page-container" style="padding-top: 40px; padding-bottom: 80px;">
+
+    <div class="section">
+      <h1 style="font-size:32px; font-weight:800; color:var(--color-primary); margin:0 0 8px;">Icon Library</h1>
+      <p style="font-size:17px; color:var(--color-secondary); margin:0 0 32px;">
+        All icons sourced from <strong>ZenDS Assets</strong> Figma file
+        (<code>7TTXh09o7SDNDDFBZWK3WC</code>).
+      </p>
+
+      <div class="notice">
+        <strong>Asset URLs expire after ~7 days.</strong> To refresh, call
+        <code>get_design_context(fileKey="BdJG2rVEiEQJFeKsvxSLm7", nodeId="27287:46066")</code>
+        for nav icons, or search <code>search_design_system(query="Icon-Name", fileKey="7TTXh09o7SDNDDFBZWK3WC")</code>
+        for others. All icons below include fallback SVGs via <code>onerror</code>.
+      </div>
+    </div>
+
+    <!-- Bottom Navigation Icons -->
+    <div class="section">
+      <h2 class="icon-section-title">Bottom Navigation Icons</h2>
+      <div class="icon-grid">
+
+        <div class="icon-card">
+          <div class="icon-card-preview">
+            <img src="https://www.figma.com/api/mcp/asset/4fa6d8e3-9a63-400b-b6a3-518a8dbe2067"
+                 alt="Card"
+                 onerror="this.outerHTML='<svg width=24 height=24 viewBox=&quot;0 0 24 24&quot; fill=none><rect x=3 y=6 width=18 height=13 rx=2.5 stroke=&quot;#222&quot; stroke-width=1.5/><path d=&quot;M3 10h18&quot; stroke=&quot;#222&quot; stroke-width=1.5/></svg>'">
+          </div>
+          <div class="icon-card-name">✅Icon-CardMCOutline</div>
+          <div class="icon-card-meta">Card tab — inactive</div>
+          <div class="icon-card-uuid">4fa6d8e3-9a63-400b-b6a3-518a8dbe2067</div>
+        </div>
+
+        <div class="icon-card">
+          <div class="icon-card-preview">
+            <img src="https://www.figma.com/api/mcp/asset/5404261c-e953-4e85-97b5-cf2c32c903ad"
+                 alt="Home"
+                 onerror="this.outerHTML='<svg width=24 height=24 viewBox=&quot;0 0 24 24&quot; fill=none><path d=&quot;M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5Z&quot; stroke=&quot;#222&quot; stroke-width=1.5 stroke-linejoin=round/></svg>'">
+          </div>
+          <div class="icon-card-name">✅Icon-CashbackHouse</div>
+          <div class="icon-card-meta">Home tab — inactive</div>
+          <div class="icon-card-uuid">5404261c-e953-4e85-97b5-cf2c32c903ad</div>
+        </div>
+
+        <div class="icon-card">
+          <div class="icon-card-preview">
+            <img src="https://www.figma.com/api/mcp/asset/9a3f9800-0854-4b38-9a8b-6786461d7093"
+                 alt="Stones"
+                 onerror="this.outerHTML='<svg width=24 height=24 viewBox=&quot;0 0 24 24&quot; fill=none><circle cx=9 cy=14 r=4.5 stroke=&quot;#222&quot; stroke-width=1.5/><circle cx=15.5 cy=10.5 r=4 stroke=&quot;#222&quot; stroke-width=1.5/></svg>'">
+          </div>
+          <div class="icon-card-name">✅Icon-Stones</div>
+          <div class="icon-card-meta">Stones tab — inactive</div>
+          <div class="icon-card-uuid">9a3f9800-0854-4b38-9a8b-6786461d7093</div>
+        </div>
+
+        <div class="icon-card">
+          <div class="icon-card-preview">
+            <img src="https://www.figma.com/api/mcp/asset/c6a13259-ad00-4e5a-98f5-eb9238fd5c66"
+                 alt="Cashback"
+                 onerror="this.outerHTML='<svg width=24 height=24 viewBox=&quot;0 0 24 24&quot; fill=none><path d=&quot;M12 3L14.5 9H21L16 13l2 7-6-4-6 4 2-7L3 9h6.5L12 3Z&quot; stroke=&quot;#222&quot; stroke-width=1.5 stroke-linejoin=round/></svg>'">
+          </div>
+          <div class="icon-card-name">Icon-Cashback✅</div>
+          <div class="icon-card-meta">Cashback tab — inactive</div>
+          <div class="icon-card-uuid">c6a13259-ad00-4e5a-98f5-eb9238fd5c66</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Inline SVG Icons -->
+    <div class="section">
+      <h2 class="icon-section-title">Inline SVG Icons</h2>
+      <p style="font-size:15px; color:var(--color-secondary); margin:0 0 20px;">
+        These are hand-coded SVGs used across screens — no Figma asset URL needed.
+        Copy the SVG directly into your HTML.
+      </p>
+      <div class="icon-grid">
+
+        <div class="icon-card">
+          <div class="inline-icon-preview">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M12.5 5L7 10l5.5 5" stroke="#222" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="icon-card-name">Back chevron</div>
+          <div class="icon-card-meta">Navbar back button<br>20×20px</div>
+        </div>
+
+        <div class="icon-card">
+          <div class="inline-icon-preview">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <circle cx="10" cy="10" r="7.5" stroke="#222" stroke-width="1.5"/>
+              <path d="M7.8 7.8C7.8 6.6 8.8 5.7 10 5.7C11.2 5.7 12.2 6.6 12.2 7.8C12.2 8.7 11.7 9.5 10.8 9.8C10.3 10 10 10.5 10 11V11.5" stroke="#222" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="10" cy="13.5" r="0.85" fill="#222"/>
+            </svg>
+          </div>
+          <div class="icon-card-name">Help / Question</div>
+          <div class="icon-card-meta">Navbar icon<br>20×20px</div>
+        </div>
+
+        <div class="icon-card">
+          <div class="inline-icon-preview">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M10 2.5C7.5 2.5 5.5 4.5 5.5 7V11.5L3.5 13.5H16.5L14.5 11.5V7C14.5 4.5 12.5 2.5 10 2.5Z" stroke="#222" stroke-width="1.5" stroke-linejoin="round"/>
+              <path d="M8.3 15C8.6 15.8 9.2 16.5 10 16.5C10.8 16.5 11.4 15.8 11.7 15" stroke="#222" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="icon-card-name">Notification bell</div>
+          <div class="icon-card-meta">Navbar icon<br>20×20px</div>
+        </div>
+
+        <div class="icon-card">
+          <div class="inline-icon-preview">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M7 3v14M4 14l3 3 3-3" stroke="#222" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M13 17V3M10 6l3-3 3 3" stroke="#222" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="icon-card-name">Swap / Exchange</div>
+          <div class="icon-card-meta">Exchange screen<br>20×20px</div>
+        </div>
+
+        <div class="icon-card">
+          <div class="inline-icon-preview">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M4 6l4 4 4-4" stroke="#727272" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="icon-card-name">Caret down</div>
+          <div class="icon-card-meta">Currency selector<br>16×16px, #727272</div>
+        </div>
+
+        <div class="icon-card">
+          <div class="inline-icon-preview">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <circle cx="10" cy="10" r="7.5" stroke="#222" stroke-width="1.5"/>
+              <path d="M10 6v4.5" stroke="#222" stroke-width="1.8" stroke-linecap="round"/>
+              <circle cx="10" cy="13.5" r="0.85" fill="#222"/>
+            </svg>
+          </div>
+          <div class="icon-card-name">Info circle</div>
+          <div class="icon-card-meta">General info<br>20×20px</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Figma Asset Images used in Screens -->
+    <div class="section">
+      <h2 class="icon-section-title">Figma Screen Assets</h2>
+      <p style="font-size:15px; color:var(--color-secondary); margin:0 0 20px;">
+        Larger Figma assets used in specific screens (bubbles, separators). These expire ~7 days after generation.
+      </p>
+      <div class="icon-grid">
+
+        <div class="icon-card">
+          <div class="icon-card-preview" style="width:60px; height:60px;">
+            <img src="https://www.figma.com/api/mcp/asset/795d5a07-e2b9-4bfc-8c89-fe32293dd326" alt="PLN bubble" style="width:60px; height:60px; border-radius:50%;" onerror="this.style.background='#333'; this.alt='expired'">
+          </div>
+          <div class="icon-card-name">PLN large bubble</div>
+          <div class="icon-card-meta">Wallet screen<br>239×237px</div>
+          <div class="icon-card-uuid">795d5a07-e2b9-4bfc-8c89-fe32293dd326</div>
+        </div>
+
+        <div class="icon-card">
+          <div class="icon-card-preview" style="width:60px; height:60px;">
+            <img src="https://www.figma.com/api/mcp/asset/0460ae68-e1e8-421b-bd76-9a48fa958845" alt="EUR bubble" style="width:60px; height:60px; border-radius:50%;" onerror="this.style.background='#555'; this.alt='expired'">
+          </div>
+          <div class="icon-card-name">EUR medium bubble</div>
+          <div class="icon-card-meta">Wallet screen<br>135×134px</div>
+          <div class="icon-card-uuid">0460ae68-e1e8-421b-bd76-9a48fa958845</div>
+        </div>
+
+        <div class="icon-card">
+          <div class="icon-card-preview" style="width:60px; height:60px;">
+            <img src="https://www.figma.com/api/mcp/asset/dc787f38-16f9-4de2-9adf-dbaa730a60b9" alt="Outline bubble" style="width:60px; height:60px;" onerror="this.style.background='#eee'; this.alt='expired'">
+          </div>
+          <div class="icon-card-name">Small outline bubble</div>
+          <div class="icon-card-meta">USD & GBP — same image<br>60×60px</div>
+          <div class="icon-card-uuid">dc787f38-16f9-4de2-9adf-dbaa730a60b9</div>
+        </div>
+
+        <div class="icon-card">
+          <div class="icon-card-preview" style="width:60px; height:60px;">
+            <img src="https://www.figma.com/api/mcp/asset/1776f9f8-eb2a-4c53-be67-27c79e6ca59c" alt="+More" style="width:60px; height:60px;" onerror="this.style.background='#f0f0f0'; this.alt='expired'">
+          </div>
+          <div class="icon-card-name">+ More circle</div>
+          <div class="icon-card-meta">Wallet screen<br>60×60px</div>
+          <div class="icon-card-uuid">1776f9f8-eb2a-4c53-be67-27c79e6ca59c</div>
+        </div>
+
+        <div class="icon-card">
+          <div class="icon-card-preview" style="width:80px; height:24px; overflow:hidden;">
+            <img src="https://www.figma.com/api/mcp/asset/302a14a3-a216-47e8-938d-1efea2326c55" alt="Exchange separator" style="width:160px; height:48px; transform:scale(0.5) translateX(-40px) translateY(-12px);" onerror="this.style.background='#f0f0f0'; this.alt='expired'">
+          </div>
+          <div class="icon-card-name">Exchange separator</div>
+          <div class="icon-card-meta">Path 12 — Exchange screen<br>335×29px</div>
+          <div class="icon-card-uuid">302a14a3-a216-47e8-938d-1efea2326c55</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- How to refresh -->
+    <div class="section">
+      <div class="card">
+        <h2 style="font-size:19px; font-weight:700; color:var(--color-primary); margin:0 0 16px;">Refreshing expired assets</h2>
+        <p style="font-size:15px; color:var(--color-secondary); line-height:1.6; margin:0 0 12px;">
+          Asset URLs expire after ~7 days. Use the Figma MCP tools to get fresh URLs:
+        </p>
+        <pre style="background:#f5f5f5; border-radius:8px; padding:16px; font-size:13px; overflow-x:auto; margin:0 0 12px;">// For bottom nav icons:
+get_design_context(
+  fileKey: "BdJG2rVEiEQJFeKsvxSLm7",
+  nodeId:  "27287:46066"
+)
+
+// For any ZenDS icon by name:
+search_design_system(
+  query:           "Icon-CardMCOutline",
+  fileKey:         "7TTXh09o7SDNDDFBZWK3WC",
+  includeLibraryKeys: ["lk-d5da8e..."]
+)
+
+// For wallet bubbles or other screen assets:
+get_design_context(
+  fileKey: "BdJG2rVEiEQJFeKsvxSLm7",
+  nodeId:  "&lt;node id from Figma URL&gt;"
+)</pre>
+        <p style="font-size:14px; color:var(--color-secondary); margin:0;">
+          Always include a fallback <code>onerror</code> SVG on every <code>&lt;img&gt;</code> tag so screens remain functional even after asset URLs expire.
+        </p>
+      </div>
+    </div>
+
+  </div><!-- /page-container -->
+</div><!-- /page -->
+
+<script src="./shared.js"></script>
+</body>
+</html>

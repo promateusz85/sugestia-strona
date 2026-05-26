@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZEN Design System — Style Guide</title>
+  <link rel="stylesheet" href="./shared.css">
+  <style>
+    .sg-section-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--color-primary);
+      margin: 0 0 6px;
+    }
+    .sg-section-desc {
+      font-size: 15px;
+      color: var(--color-secondary);
+      margin: 0 0 24px;
+    }
+    .sg-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      color: var(--color-secondary);
+      text-transform: uppercase;
+      margin: 0 0 8px;
+    }
+    .sg-token {
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      background: #f5f5f5;
+      border-radius: 4px;
+      padding: 2px 6px;
+      color: #555;
+    }
+
+    /* Color swatches */
+    .color-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 12px;
+    }
+    .color-swatch {
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1px solid var(--color-border);
+    }
+    .color-block {
+      height: 64px;
+    }
+    .color-info {
+      padding: 10px 12px;
+      background: white;
+    }
+    .color-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--color-primary);
+    }
+    .color-value {
+      font-size: 11px;
+      color: var(--color-secondary);
+      font-family: 'Courier New', monospace;
+    }
+
+    /* Spacing scale */
+    .spacing-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .spacing-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .spacing-bar-wrap {
+      flex: 1;
+      height: 24px;
+      display: flex;
+      align-items: center;
+    }
+    .spacing-bar {
+      height: 12px;
+      background: var(--color-accent);
+      border-radius: 3px;
+    }
+    .spacing-meta {
+      width: 180px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .spacing-token-col {
+      width: 80px;
+    }
+    .spacing-val-col {
+      width: 40px;
+      font-size: 13px;
+      color: var(--color-secondary);
+    }
+
+    /* Radius scale */
+    .radius-grid {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .radius-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .radius-box {
+      width: 64px;
+      height: 64px;
+      background: var(--color-primary);
+    }
+
+    /* Component demos */
+    .demo-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .demo-label {
+      font-size: 13px;
+      color: var(--color-secondary);
+      min-width: 120px;
+    }
+    .demo-box {
+      background: #f8f8f8;
+      border: 1px dashed #ddd;
+      border-radius: var(--radius-md);
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Mobile component previews — phone frame */
+    .phone-preview-wrap {
+      display: flex;
+      gap: 32px;
+      flex-wrap: wrap;
+      align-items: flex-start;
+    }
+    .phone-preview {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .phone-preview-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--color-secondary);
+      text-align: center;
+    }
+    .phone-mini {
+      width: 200px;
+      background: white;
+      border-radius: 28px;
+      overflow: hidden;
+      border: 2px solid #222;
+      box-shadow: var(--shadow-md);
+    }
+  </style>
+</head>
+<body class="web-layout">
+
+<div class="page">
+
+  <!-- Top nav -->
+  <nav class="top-nav">
+    <div class="top-nav-inner">
+      <span class="top-nav-logo">ZEN</span>
+      <div class="top-nav-links">
+        <a href="style-guide.html" class="top-nav-link active">Style Guide</a>
+        <a href="icons.html" class="top-nav-link">Icons</a>
+        <a href="_template-mobile.html" class="top-nav-link">Mobile Template</a>
+        <a href="_template-web.html" class="top-nav-link">Web Template</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="page-container" style="padding-top: 40px; padding-bottom: 100px;">
+
+    <!-- Header -->
+    <div class="section" style="margin-bottom: 48px;">
+      <h1 style="font-size:40px; font-weight:800; color:var(--color-primary); margin:0 0 8px; letter-spacing:-0.5px;">
+        ZEN Design System
+      </h1>
+      <p style="font-size:19px; color:var(--color-secondary); margin:0;">
+        Visual reference — tokens, components, and patterns for building ZEN.COM prototypes.
+      </p>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- COLORS                                          -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <div class="section">
+      <h2 class="sg-section-title">Colors</h2>
+      <p class="sg-section-desc">CSS custom properties defined in <code>shared.css</code>. Use these variables — never hardcode hex values.</p>
+
+      <h3 style="font-size:15px; font-weight:700; color:#444; margin:0 0 12px;">Brand</h3>
+      <div class="color-grid" style="margin-bottom:24px;">
+        <div class="color-swatch">
+          <div class="color-block" style="background:var(--color-primary);"></div>
+          <div class="color-info">
+            <div class="color-name">Primary</div>
+            <div class="color-value">--color-primary<br>#222222</div>
+          </div>
+        </div>
+        <div class="color-swatch">
+          <div class="color-block" style="background:var(--color-secondary);"></div>
+          <div class="color-info">
+            <div class="color-name">Secondary</div>
+            <div class="color-value">--color-secondary<br>#727272</div>
+          </div>
+        </div>
+        <div class="color-swatch">
+          <div class="color-block" style="background:var(--color-accent);"></div>
+          <div class="color-info">
+            <div class="color-name">Accent</div>
+            <div class="color-value">--color-accent<br>#22e243</div>
+          </div>
+        </div>
+        <div class="color-swatch">
+          <div class="color-block" style="background:var(--color-surface); border-bottom:1px solid #eee;"></div>
+          <div class="color-info">
+            <div class="color-name">Surface</div>
+            <div class="color-value">--color-surface<br>#ffffff</div>
+          </div>
+        </div>
+        <div class="color-swatch">
+          <div class="color-block" style="background:var(--color-surface-light);"></div>
+          <div class="color-info">
+            <div class="color-name">Surface Light</div>
+            <div class="color-value">--color-surface-light<br>#f7f7f7</div>
+          </div>
+        </div>
+        <div class="color-swatch">
+          <div class="color-block" style="background:var(--color-border);"></div>
+          <div class="color-info">
+            <div class="color-name">Border</div>
+            <div class="color-value">--color-border<br>#dfdfdf</div>
+          </div>
+        </div>
+      </div>
+
+      <h3 style="font-size:15px; font-weight:700; color:#444; margin:0 0 12px;">Semantic</h3>
+      <div class="color-grid">
+        <div class="color-swatch">
+          <div class="color-block" style="background:var(--color-success);"></div>
+          <div class="color-info">
+            <div class="color-name">Success</div>
+            <div class="color-value">--color-success<br>#22c55e</div>
+          </div>
+        </div>
+        <div class="color-swatch">
+          <div class="color-block" style="background:var(--color-error);"></div>
+          <div class="color-info">
+            <div class="color-name">Error</div>
+            <div class="color-value">--color-error<br>#ef4444</div>
+          </div>
+        </div>
+        <div class="color-swatch">
+          <div class="color-block" style="background:var(--color-warning);"></div>
+          <div class="color-info">
+            <div class="color-name">Warning</div>
+            <div class="color-value">--color-warning<br>#f59e0b</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- TYPOGRAPHY                                      -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <div class="section">
+      <h2 class="sg-section-title">Typography</h2>
+      <p class="sg-section-desc">
+        Font: <strong>Nunito</strong> (weights 400/500/600/700/800) via Google Fonts — loaded in shared.css.
+        All UI text uses Nunito. Only iOS keyboard keys use <code>-apple-system</code>.
+      </p>
+
+      <div class="card" style="display:flex; flex-direction:column; gap:20px;">
+        <div>
+          <div class="sg-label">800 / 40px — Hero / Display</div>
+          <div style="font-size:40px; font-weight:800; color:var(--color-primary); line-height:1.1;">Balance 12,850 PLN</div>
+        </div>
+        <div class="divider"></div>
+        <div>
+          <div class="sg-label">800 / 32px — Page Title</div>
+          <div style="font-size:32px; font-weight:800; color:var(--color-primary);">Wallet Overview</div>
+        </div>
+        <div class="divider"></div>
+        <div>
+          <div class="sg-label">700 / 24px — Section Heading</div>
+          <div style="font-size:24px; font-weight:700; color:var(--color-primary);">Recent Transactions</div>
+        </div>
+        <div class="divider"></div>
+        <div>
+          <div class="sg-label">700 / 19px — Card Title / Navbar Title</div>
+          <div style="font-size:19px; font-weight:700; color:var(--color-primary);">Exchange</div>
+        </div>
+        <div class="divider"></div>
+        <div>
+          <div class="sg-label">700 / 17px — Button / Emphasis</div>
+          <div style="font-size:17px; font-weight:700; color:var(--color-primary);">Confirm Exchange</div>
+        </div>
+        <div class="divider"></div>
+        <div>
+          <div class="sg-label">600 / 15px — Body / Secondary</div>
+          <div style="font-size:15px; font-weight:600; color:var(--color-secondary);">Balance: 100 210.00 PLN</div>
+        </div>
+        <div class="divider"></div>
+        <div>
+          <div class="sg-label">400 / 14px — Caption / Meta</div>
+          <div style="font-size:14px; font-weight:400; color:var(--color-secondary);">Exchange rate is based on your fee plan</div>
+        </div>
+        <div class="divider"></div>
+        <div>
+          <div class="sg-label">700 / 11px / UPPERCASE — Label</div>
+          <div style="font-size:11px; font-weight:700; letter-spacing:0.8px; text-transform:uppercase; color:var(--color-secondary);">Account type</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- SPACING & RADIUS                                -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <div class="section">
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+
+        <!-- Spacing -->
+        <div>
+          <h2 class="sg-section-title">Spacing</h2>
+          <p class="sg-section-desc">Use <code>--space-N</code> variables for consistent rhythm.</p>
+          <div class="spacing-grid">
+            <div class="spacing-row">
+              <div class="spacing-meta"><span class="sg-token" style="width:80px;">--space-4</span> <span class="spacing-val-col">4px</span></div>
+              <div class="spacing-bar-wrap"><div class="spacing-bar" style="width:4px;"></div></div>
+            </div>
+            <div class="spacing-row">
+              <div class="spacing-meta"><span class="sg-token" style="width:80px;">--space-8</span> <span class="spacing-val-col">8px</span></div>
+              <div class="spacing-bar-wrap"><div class="spacing-bar" style="width:8px;"></div></div>
+            </div>
+            <div class="spacing-row">
+              <div class="spacing-meta"><span class="sg-token" style="width:80px;">--space-12</span> <span class="spacing-val-col">12px</span></div>
+              <div class="spacing-bar-wrap"><div class="spacing-bar" style="width:12px;"></div></div>
+            </div>
+            <div class="spacing-row">
+              <div class="spacing-meta"><span class="sg-token" style="width:80px;">--space-16</span> <span class="spacing-val-col">16px</span></div>
+              <div class="spacing-bar-wrap"><div class="spacing-bar" style="width:16px;"></div></div>
+            </div>
+            <div class="spacing-row">
+              <div class="spacing-meta"><span class="sg-token" style="width:80px;">--space-20</span> <span class="spacing-val-col">20px</span></div>
+              <div class="spacing-bar-wrap"><div class="spacing-bar" style="width:20px;"></div></div>
+            </div>
+            <div class="spacing-row">
+              <div class="spacing-meta"><span class="sg-token" style="width:80px;">--space-24</span> <span class="spacing-val-col">24px</span></div>
+              <div class="spacing-bar-wrap"><div class="spacing-bar" style="width:24px;"></div></div>
+            </div>
+            <div class="spacing-row">
+              <div class="spacing-meta"><span class="sg-token" style="width:80px;">--space-32</span> <span class="spacing-val-col">32px</span></div>
+              <div class="spacing-bar-wrap"><div class="spacing-bar" style="width:32px;"></div></div>
+            </div>
+            <div class="spacing-row">
+              <div class="spacing-meta"><span class="sg-token" style="width:80px;">--space-48</span> <span class="spacing-val-col">48px</span></div>
+              <div class="spacing-bar-wrap"><div class="spacing-bar" style="width:48px;"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Radius -->
+        <div>
+          <h2 class="sg-section-title">Border Radius</h2>
+          <p class="sg-section-desc">Use <code>--radius-N</code> variables.</p>
+          <div style="display:flex; flex-direction:column; gap:16px;">
+            <div style="display:flex; align-items:center; gap:16px;">
+              <div style="width:48px; height:48px; background:var(--color-primary); border-radius:var(--radius-sm);"></div>
+              <div><div class="sg-token">--radius-sm</div><div style="font-size:13px; color:var(--color-secondary);">8px</div></div>
+            </div>
+            <div style="display:flex; align-items:center; gap:16px;">
+              <div style="width:48px; height:48px; background:var(--color-primary); border-radius:var(--radius-md);"></div>
+              <div><div class="sg-token">--radius-md</div><div style="font-size:13px; color:var(--color-secondary);">12px</div></div>
+            </div>
+            <div style="display:flex; align-items:center; gap:16px;">
+              <div style="width:48px; height:48px; background:var(--color-primary); border-radius:var(--radius-lg);"></div>
+              <div><div class="sg-token">--radius-lg</div><div style="font-size:13px; color:var(--color-secondary);">16px</div></div>
+            </div>
+            <div style="display:flex; align-items:center; gap:16px;">
+              <div style="width:48px; height:48px; background:var(--color-primary); border-radius:var(--radius-xl);"></div>
+              <div><div class="sg-token">--radius-xl</div><div style="font-size:13px; color:var(--color-secondary);">24px</div></div>
+            </div>
+            <div style="display:flex; align-items:center; gap:16px;">
+              <div style="width:48px; height:48px; background:var(--color-primary); border-radius:var(--radius-full);"></div>
+              <div><div class="sg-token">--radius-full</div><div style="font-size:13px; color:var(--color-secondary);">9999px</div></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- BUTTONS                                         -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <div class="section">
+      <h2 class="sg-section-title">Buttons</h2>
+      <p class="sg-section-desc">Use <code>.btn</code> base class plus a variant and optional size modifier.</p>
+
+      <div class="card">
+        <div style="display:flex; flex-direction:column; gap:24px;">
+
+          <div>
+            <div class="sg-label">Variants</div>
+            <div class="demo-row">
+              <button class="btn btn-primary" onclick="showToastWeb('Primary')">btn-primary</button>
+              <button class="btn btn-secondary" onclick="showToastWeb('Secondary')">btn-secondary</button>
+              <button class="btn btn-accent" onclick="showToastWeb('Accent')">btn-accent</button>
+              <button class="btn btn-ghost" onclick="showToastWeb('Ghost')">btn-ghost</button>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div>
+            <div class="sg-label">Sizes</div>
+            <div class="demo-row" style="align-items:flex-end;">
+              <button class="btn btn-primary btn-sm">btn-sm (36px)</button>
+              <button class="btn btn-primary">default (48px)</button>
+              <button class="btn btn-primary btn-lg">btn-lg (56px)</button>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div>
+            <div class="sg-label">Full width (add style="width:100%")</div>
+            <button class="btn btn-primary" style="width:100%; max-width:320px;">Full Width Button</button>
+          </div>
+
+          <div class="divider"></div>
+
+          <div>
+            <div class="sg-label">Mobile — Large outline (Exchange screen style)</div>
+            <button style="width:100%; max-width:320px; height:56px; border-radius:28px; border:2px solid #222; background:white; font-size:17px; font-weight:700; color:#222; cursor:pointer;" onclick="showToastWeb('Exchange')">Exchange</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- FORM ELEMENTS                                   -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <div class="section">
+      <h2 class="sg-section-title">Form Elements</h2>
+      <div class="card">
+        <div style="display:flex; flex-direction:column; gap:20px; max-width:480px;">
+          <div>
+            <div class="sg-label">Input field (.input-field)</div>
+            <input class="input-field" type="text" placeholder="Enter amount…">
+          </div>
+          <div>
+            <div class="sg-label">Input with label</div>
+            <label style="display:flex; flex-direction:column; gap:6px;">
+              <span style="font-size:13px; font-weight:600; color:var(--color-secondary);">Amount (PLN)</span>
+              <input class="input-field" type="number" placeholder="0.00">
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- BADGES                                          -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <div class="section">
+      <h2 class="sg-section-title">Badges</h2>
+      <div class="card">
+        <div class="demo-row">
+          <span class="badge badge-default">Default</span>
+          <span class="badge badge-success">Success</span>
+          <span class="badge badge-error">Error</span>
+          <span class="badge badge-warning">Warning</span>
+          <span class="badge badge-accent">Accent</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- WEB GRID LAYOUTS                                -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <div class="section">
+      <h2 class="sg-section-title">Web Grid Layouts</h2>
+      <p class="sg-section-desc">Use <code>.grid-2</code>, <code>.grid-3</code>, <code>.grid-4</code> inside <code>.page-container</code>.</p>
+
+      <div style="display:flex; flex-direction:column; gap:24px;">
+        <div>
+          <div class="sg-label" style="margin-bottom:12px;">.grid-2</div>
+          <div class="grid-2">
+            <div class="card" style="text-align:center; color:var(--color-secondary); font-size:15px;">Column A</div>
+            <div class="card" style="text-align:center; color:var(--color-secondary); font-size:15px;">Column B</div>
+          </div>
+        </div>
+        <div>
+          <div class="sg-label" style="margin-bottom:12px;">.grid-3</div>
+          <div class="grid-3">
+            <div class="card" style="text-align:center; color:var(--color-secondary); font-size:15px;">A</div>
+            <div class="card" style="text-align:center; color:var(--color-secondary); font-size:15px;">B</div>
+            <div class="card" style="text-align:center; color:var(--color-secondary); font-size:15px;">C</div>
+          </div>
+        </div>
+        <div>
+          <div class="sg-label" style="margin-bottom:12px;">.grid-4</div>
+          <div class="grid-4">
+            <div class="card" style="text-align:center; color:var(--color-secondary); font-size:15px;">A</div>
+            <div class="card" style="text-align:center; color:var(--color-secondary); font-size:15px;">B</div>
+            <div class="card" style="text-align:center; color:var(--color-secondary); font-size:15px;">C</div>
+            <div class="card" style="text-align:center; color:var(--color-secondary); font-size:15px;">D</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- MOBILE NAVIGATION                               -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <div class="section">
+      <h2 class="sg-section-title">Navigation Pattern (Mobile)</h2>
+      <p class="sg-section-desc">
+        Use <code>navigate(url, exitClass, entryClass)</code> from shared.js for all page transitions.
+        Transition classes animate the <code>.phone</code> element.
+      </p>
+      <div class="card">
+        <table style="width:100%; border-collapse:collapse; font-size:14px;">
+          <thead>
+            <tr style="border-bottom:2px solid var(--color-border);">
+              <th style="text-align:left; padding:8px 12px; color:var(--color-secondary); font-weight:600;">Direction</th>
+              <th style="text-align:left; padding:8px 12px; color:var(--color-secondary); font-weight:600;">exitClass</th>
+              <th style="text-align:left; padding:8px 12px; color:var(--color-secondary); font-weight:600;">entryCls</th>
+              <th style="text-align:left; padding:8px 12px; color:var(--color-secondary); font-weight:600;">Usage</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid var(--color-border);">
+              <td style="padding:10px 12px; font-weight:700;">Forward →</td>
+              <td style="padding:10px 12px;"><code>exit-left</code></td>
+              <td style="padding:10px 12px;"><code>enter-right</code></td>
+              <td style="padding:10px 12px; color:var(--color-secondary);">Push deeper into a flow</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--color-border);">
+              <td style="padding:10px 12px; font-weight:700;">Back ←</td>
+              <td style="padding:10px 12px;"><code>exit-right</code></td>
+              <td style="padding:10px 12px;"><code>enter-left</code></td>
+              <td style="padding:10px 12px; color:var(--color-secondary);">Back/cancel buttons</td>
+            </tr>
+            <tr>
+              <td style="padding:10px 12px; font-weight:700;">Cross-fade</td>
+              <td style="padding:10px 12px;"><code>exit-fade</code></td>
+              <td style="padding:10px 12px;"><code>enter-fade</code></td>
+              <td style="padding:10px 12px; color:var(--color-secondary);">Tab switches, avatar tap</td>
+            </tr>
+          </tbody>
+        </table>
+        <div style="margin-top:16px; padding:12px 16px; background:#f5f5f5; border-radius:8px; font-size:13px; font-family:'Courier New', monospace; color:#444;">
+          navigate('02-wallet.html', 'exit-fade', 'enter-fade')
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- MOBILE COMPONENT REFERENCE                      -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <div class="section">
+      <h2 class="sg-section-title">Mobile Component Reference</h2>
+      <p class="sg-section-desc">
+        Key layout primitives for the 375×812px phone frame. All rendered inside <code>.phone</code>.
+      </p>
+      <div class="card">
+        <div style="display:flex; flex-direction:column; gap:16px; font-size:14px;">
+          <div style="display:flex; gap:12px; border-bottom:1px solid var(--color-border); padding-bottom:16px;">
+            <div style="width:120px; font-weight:700; color:var(--color-primary); flex-shrink:0;">.status-bar</div>
+            <div style="color:var(--color-secondary);">44px tall, fixed to top of .phone. Contains .status-time and .status-icons. Copy the SVG icons verbatim — do not modify.</div>
+          </div>
+          <div style="display:flex; gap:12px; border-bottom:1px solid var(--color-border); padding-bottom:16px;">
+            <div style="width:120px; font-weight:700; color:var(--color-primary); flex-shrink:0;">.navbar</div>
+            <div style="color:var(--color-secondary);">44px tall. Flexbox row. Contains .avatar or .icon-btn elements. Add <code>position:relative</code> to center a title with <code>.navbar-title</code> + absolute positioning.</div>
+          </div>
+          <div style="display:flex; gap:12px; border-bottom:1px solid var(--color-border); padding-bottom:16px;">
+            <div style="width:120px; font-weight:700; color:var(--color-primary); flex-shrink:0;">.balance-section</div>
+            <div style="color:var(--color-secondary);">Optional. Shows .balance-label and .balance-amount. The .balance-currency span is clickable for currency switching.</div>
+          </div>
+          <div style="display:flex; gap:12px; border-bottom:1px solid var(--color-border); padding-bottom:16px;">
+            <div style="width:120px; font-weight:700; color:var(--color-primary); flex-shrink:0;">.scroll-area</div>
+            <div style="color:var(--color-secondary);"><code>flex: 1; overflow-y: auto</code> — the main scrollable content region. Use padding: 0 20px for edge insets.</div>
+          </div>
+          <div style="display:flex; gap:12px; border-bottom:1px solid var(--color-border); padding-bottom:16px;">
+            <div style="width:120px; font-weight:700; color:var(--color-primary); flex-shrink:0;">.bottom-nav</div>
+            <div style="color:var(--color-secondary);">5 tabs. Active tab shows .nav-tab-label + .nav-dot. Inactive tabs show .nav-tab-icon with a 24px image. Use Figma asset URLs with onerror SVG fallback.</div>
+          </div>
+          <div style="display:flex; gap:12px;">
+            <div style="width:120px; font-weight:700; color:var(--color-primary); flex-shrink:0;">.toast</div>
+            <div style="color:var(--color-secondary);">Centered bottom toast. Call <code>showToast('message')</code> to show. Automatically hides after 1.8s. Required on every screen.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- ACCOUNT SELECTOR                                -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <div class="section">
+      <h2 class="sg-section-title">Account Selector (Mobile)</h2>
+      <p class="sg-section-desc">Dropdown for switching between user accounts. Rendered inside .navbar.</p>
+      <div class="card">
+        <div style="max-width:200px;">
+          <div id="accountWrap" class="account-selector" style="display:inline-flex;">
+            <span id="accountName" class="account-name">Personal</span>
+            <svg class="account-chevron" width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M3.5 5.25L7 8.75l3.5-3.5" stroke="#222" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div class="account-dropdown">
+              <div class="dropdown-item active" onclick="selectAccount(this, 'Personal')">Personal</div>
+              <div class="dropdown-item" onclick="selectAccount(this, 'Business')">Business</div>
+              <div class="dropdown-item" onclick="selectAccount(this, 'Savings')">Savings</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /page-container -->
+</div><!-- /page -->
+
+<!-- Web toast -->
+<div class="toast-web" id="toastWeb"></div>
+
+<script src="./shared.js"></script>
+<script>
+  let _webToastTimer;
+  function showToastWeb(msg) {
+    const t = document.getElementById('toastWeb');
+    if (!t) return;
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(_webToastTimer);
+    _webToastTimer = setTimeout(() => t.classList.remove('show'), 1800);
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ZEN — Screen Name</title><!-- *** REPLACE: screen name *** -->
+  <link rel="stylesheet" href="./shared.css">
+  <style>
+    /*
+     * Screen-specific overrides go here.
+     *
+     * Common patterns:
+     *
+     * Picker/fullscreen (no bottom nav):
+     *   body { align-items: stretch; justify-content: stretch; }
+     *
+     * Centered navbar title:
+     *   .phone .navbar { position: relative; }
+     *   .navbar-title {
+     *     position: absolute; left: 50%; top: 50%;
+     *     transform: translate(-50%, -50%);
+     *     font-size: 17px; font-weight: 700; color: #222;
+     *     pointer-events: none; white-space: nowrap;
+     *   }
+     */
+  </style>
+</head>
+<body>
+
+<div class="phone">
+
+  <!-- ── Status bar (keep as-is on every screen) ── -->
+  <div class="status-bar">
+    <span class="status-time">9:41</span>
+    <div class="status-icons">
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="none">
+        <rect x="0"    y="5"   width="3" height="7"    rx="1" fill="#222"/>
+        <rect x="4.5"  y="3.5" width="3" height="8.5"  rx="1" fill="#222"/>
+        <rect x="9"    y="1.5" width="3" height="10.5" rx="1" fill="#222"/>
+        <rect x="13.5" y="0"   width="3" height="12"   rx="1" fill="#222"/>
+      </svg>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+        <path d="M8 3.5C9.9 3.5 11.6 4.3 12.9 5.5L14.2 4.1C12.5 2.5 10.4 1.5 8 1.5C5.6 1.5 3.5 2.5 1.8 4.1L3.1 5.5C4.4 4.3 6.1 3.5 8 3.5Z" fill="#222"/>
+        <path d="M8 6.5C9.2 6.5 10.3 7 11.1 7.9L12.4 6.5C11.2 5.3 9.7 4.5 8 4.5C6.3 4.5 4.8 5.3 3.6 6.5L4.9 7.9C5.7 7 6.8 6.5 8 6.5Z" fill="#222"/>
+        <circle cx="8" cy="10.5" r="1.5" fill="#222"/>
+      </svg>
+      <svg width="26" height="12" viewBox="0 0 26 12" fill="none">
+        <rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="#222" stroke-opacity="0.35"/>
+        <rect x="2" y="2" width="18" height="8" rx="2" fill="#222"/>
+        <path d="M23.5 4V8C24.4 7.4 25 6.7 25 6C25 5.3 24.4 4.6 23.5 4Z" fill="#222" fill-opacity="0.4"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- ── Navbar ──────────────────────────────────── -->
+  <!--
+    OPTION A — Avatar + icons (home-style):
+      <div class="navbar">
+        <div class="avatar" onclick="navigate('target.html','exit-fade','enter-fade')">MR</div>
+        <div class="nav-icons">
+          <button class="icon-btn" onclick="showToast('Help')">
+            [help SVG]
+          </button>
+          <button class="icon-btn" onclick="showToast('Notifications')">
+            [bell SVG]
+          </button>
+        </div>
+      </div>
+
+    OPTION B — Back + centered title + action:
+      <div class="navbar" style="position:relative;">
+        <button class="icon-btn" onclick="navigate('prev.html','exit-right','enter-left')">
+          [back chevron SVG]
+        </button>
+        <span class="navbar-title">Title</span>
+        <button class="icon-btn" onclick="doSomething()">
+          [action SVG]
+        </button>
+      </div>
+
+    OPTION C — Back only (simple header):
+      <div class="navbar">
+        <button class="icon-btn" onclick="navigate('prev.html','exit-right','enter-left')">
+          [back chevron SVG]
+        </button>
+        <span></span>
+      </div>
+  -->
+  <div class="navbar">
+    <!-- *** REPLACE: choose and fill in navbar option above *** -->
+    <div class="avatar">MR</div>
+    <div class="nav-icons">
+      <button class="icon-btn" onclick="showToast('Help')">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <circle cx="10" cy="10" r="7.5" stroke="#222" stroke-width="1.5"/>
+          <path d="M7.8 7.8C7.8 6.6 8.8 5.7 10 5.7C11.2 5.7 12.2 6.6 12.2 7.8C12.2 8.7 11.7 9.5 10.8 9.8C10.3 10 10 10.5 10 11V11.5" stroke="#222" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="10" cy="13.5" r="0.85" fill="#222"/>
+        </svg>
+      </button>
+      <button class="icon-btn" onclick="showToast('Notifications')">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path d="M10 2.5C7.5 2.5 5.5 4.5 5.5 7V11.5L3.5 13.5H16.5L14.5 11.5V7C14.5 4.5 12.5 2.5 10 2.5Z" stroke="#222" stroke-width="1.5" stroke-linejoin="round"/>
+          <path d="M8.3 15C8.6 15.8 9.2 16.5 10 16.5C10.8 16.5 11.4 15.8 11.7 15" stroke="#222" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Balance section (optional — remove if not needed) ── -->
+  <div class="balance-section">
+    <div class="balance-label">
+      Balance in
+      <span class="balance-currency" onclick="showToast('Change currency')">PLN</span>
+    </div>
+    <div class="balance-amount">0.00 PLN</div><!-- *** REPLACE: amount *** -->
+  </div>
+
+  <!-- ── Scrollable content area ─────────────────── -->
+  <div class="scroll-area">
+
+    <!-- *** REPLACE: add your screen content here *** -->
+    <div style="padding: 24px 20px; color: #727272; font-size: 15px; text-align: center;">
+      Screen content goes here
+    </div>
+
+  </div>
+
+  <!-- ── Bottom navigation ──────────────────────── -->
+  <!--
+    Mark the active tab with class="nav-tab active" (shows label + dot).
+    Inactive tabs use class="nav-tab inactive".
+    Use Figma asset images for icons — see icons.html for all URLs.
+    Fallback SVGs are provided via onerror for resilience.
+  -->
+  <div class="bottom-nav">
+    <div class="bottom-nav-inner">
+
+      <!-- Card tab -->
+      <div class="nav-tab inactive" onclick="showToast('Card')">
+        <div class="nav-tab-icon">
+          <img src="https://www.figma.com/api/mcp/asset/4fa6d8e3-9a63-400b-b6a3-518a8dbe2067"
+               width="24" height="24" alt="Card"
+               onerror="this.outerHTML='<svg width=24 height=24 viewBox=&quot;0 0 24 24&quot; fill=none><rect x=3 y=6 width=18 height=13 rx=2.5 stroke=&quot;#222&quot; stroke-width=1.5/><path d=&quot;M3 10h18&quot; stroke=&quot;#222&quot; stroke-width=1.5/></svg>'">
+        </div>
+      </div>
+
+      <!-- Wallet/Finance tab — *** REPLACE onclick *** -->
+      <div class="nav-tab inactive" onclick="showToast('Wallet')">
+        <div class="nav-tab-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <rect x="2" y="6" width="20" height="14" rx="3" stroke="#222" stroke-width="1.5"/>
+            <path d="M16 13a1 1 0 1 0 2 0 1 1 0 0 0-2 0Z" fill="#222"/>
+            <path d="M2 10h20" stroke="#222" stroke-width="1.5"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Home tab (active example) — *** REPLACE onclick with navigate() *** -->
+      <div class="nav-tab active" onclick="showToast('Home')">
+        <span class="nav-tab-label">Home</span>
+        <div class="nav-dot"></div>
+      </div>
+
+      <!-- Stones tab -->
+      <div class="nav-tab inactive" onclick="showToast('Stones')">
+        <div class="nav-tab-icon">
+          <img src="https://www.figma.com/api/mcp/asset/9a3f9800-0854-4b38-9a8b-6786461d7093"
+               width="24" height="24" alt="Stones"
+               onerror="this.outerHTML='<svg width=24 height=24 viewBox=&quot;0 0 24 24&quot; fill=none><circle cx=9 cy=14 r=4.5 stroke=&quot;#222&quot; stroke-width=1.5/><circle cx=15.5 cy=10.5 r=4 stroke=&quot;#222&quot; stroke-width=1.5/></svg>'">
+        </div>
+      </div>
+
+      <!-- Cashback tab -->
+      <div class="nav-tab inactive" onclick="showToast('Cashback')">
+        <div class="nav-tab-icon">
+          <img src="https://www.figma.com/api/mcp/asset/c6a13259-ad00-4e5a-98f5-eb9238fd5c66"
+               width="24" height="24" alt="Cashback"
+               onerror="this.outerHTML='<svg width=24 height=24 viewBox=&quot;0 0 24 24&quot; fill=none><path d=&quot;M12 3L14.5 9H21L16 13l2 7-6-4-6 4 2-7L3 9h6.5L12 3Z&quot; stroke=&quot;#222&quot; stroke-width=1.5 stroke-linejoin=round/></svg>'">
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Toast (required on every screen) -->
+  <div class="toast" id="toast"></div>
+
+</div><!-- /phone -->
+
+<script src="./shared.js"></script>
+<script>
+  // *** REPLACE: screen-specific JS goes here ***
+</script>
+
+</body>
+</html>
