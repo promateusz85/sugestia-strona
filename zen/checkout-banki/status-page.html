@@ -539,12 +539,9 @@ document.getElementById('oD').textContent=mo[n.getMonth()]+' '+n.getDate()+', '+
       } else if (data.method) {
         const methodNames = {
           'applepay': 'Apple Pay', 'googlepay': 'Google Pay', 'banktransfer': 'Bank Transfer',
-          'zenapp': 'ZEN.COM App', 'zencashcard': 'ZEN.COM CashCard', 'crypto': 'Cryptocurrency'
+          'zenapp': 'ZEN.COM App', 'zencashcard': 'ZEN.COM CashCard'
         };
-        let name = methodNames[data.method] || data.method;
-        if (data.method === 'crypto' && data.cryptoCurrencyTicker && data.cryptoNetworkName) {
-          name = 'Cryptocurrency (' + data.cryptoCurrencyTicker + ' · ' + data.cryptoNetworkName + ')';
-        }
+        const name = methodNames[data.method] || data.method;
         pmDisplay.innerHTML = name;
       }
     }

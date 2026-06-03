@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/zen/checkout-banki/static/css/main.5e6c2781.css",
+    "main.js": "/zen/checkout-banki/static/js/main.d0c191a3.js",
+    "index.html": "/zen/checkout-banki/index.html",
+    "main.5e6c2781.css.map": "/zen/checkout-banki/static/css/main.5e6c2781.css.map",
+    "main.d0c191a3.js.map": "/zen/checkout-banki/static/js/main.d0c191a3.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.5e6c2781.css",
+    "static/js/main.d0c191a3.js"
+  ]
+}

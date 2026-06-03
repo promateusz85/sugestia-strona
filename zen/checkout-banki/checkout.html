@@ -895,6 +895,152 @@
     content: '';
   }
 
+  /* ── Order summary box ── */
+  .order-summary-box {
+    border: 1px solid var(--SurfaceMedium);
+    border-radius: 8px;
+    background: var(--Background);
+    overflow: hidden;
+  }
+
+  .os-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 20px 12px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .os-header:hover { background: var(--SurfaceSuperLight); }
+
+  .os-header-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .os-header-label {
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 16px;
+    color: var(--Secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  .os-header-count {
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 16px;
+    color: var(--Secondary);
+  }
+
+  .os-chevron {
+    transition: transform 0.25s cubic-bezier(0.4,0,0.2,1);
+    flex-shrink: 0;
+  }
+
+  .os-collapsed .os-chevron { transform: rotate(-90deg); }
+
+  .os-body {
+    display: grid;
+    grid-template-rows: 1fr;
+    transition: grid-template-rows 0.3s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .os-collapsed .os-body {
+    grid-template-rows: 0fr;
+  }
+
+  .os-body-inner {
+    overflow: hidden;
+    border-top: 1px solid var(--SurfaceMedium);
+  }
+
+  .order-items {
+    max-height: 280px;
+    overflow-y: auto;
+    padding: 4px 20px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--SurfaceStrong) transparent;
+  }
+
+  .order-items::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .order-items::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .order-items::-webkit-scrollbar-thumb {
+    background: var(--SurfaceStrong);
+    border-radius: 2px;
+  }
+
+  .order-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--SurfaceLight);
+  }
+
+  .order-item:last-child {
+    border-bottom: none;
+  }
+
+  .oi-name {
+    flex: 1;
+    min-width: 0;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 18px;
+    color: var(--Primary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .oi-qty {
+    flex-shrink: 0;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--Secondary);
+    margin: 0 12px;
+  }
+
+  .oi-price {
+    flex-shrink: 0;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--Primary);
+  }
+
+  .os-subtotal {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    border-top: 1px solid var(--SurfaceMedium);
+    background: var(--SurfaceLight);
+  }
+
+  .os-subtotal-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--Secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.2px;
+  }
+
+  .os-subtotal-value {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--Primary);
+  }
+
   .total-box {
     padding: 20px;
     background: var(--SurfaceLight);
@@ -1155,8 +1301,6 @@
     opacity: 1;
   }
 
-  .expandable-content > .expandable-inner.allow-overflow { overflow: visible; }
-
   /* Redirect info text in expanded BLIK */
   .redirect-info {
     display: flex;
@@ -1181,94 +1325,288 @@
     color: var(--Secondary);
   }
 
-  /* ── Crypto dropdown selectors ── */
-  .crypto-selects { display: flex; flex-direction: row; gap: 24px; }
-  .crypto-selects .crypto-select { flex: 1; min-width: 0; }
-  .crypto-select { position: relative; }
+  /* ── Bank picker dropdowns ── */
+  .bank-picker-row {
+    display: flex;
+    gap: 16px;
+    width: 100%;
+  }
 
-  .crypto-select__trigger {
-    display: flex; align-items: flex-end; justify-content: space-between; gap: 8px;
-    height: 50px; padding: 0 0 6px 0;
-    border: none; border-bottom: 1px solid var(--Secondary, #727272);
-    background: transparent; cursor: pointer;
+  .bank-select-wrap {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    position: relative;
+  }
+
+  .bank-select-label {
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 16px;
+    color: var(--Secondary);
+    letter-spacing: 0.02em;
+  }
+
+  .bank-select-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 50px;
+    padding: 0 12px;
+    background: #fff;
+    border: 1px solid var(--SurfaceStrong);
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: Nunito, sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--Primary);
+    width: 100%;
+    text-align: left;
     transition: border-color 0.15s;
-    -webkit-tap-highlight-color: transparent;
+    gap: 8px;
   }
-  .crypto-select--disabled .crypto-select__trigger {
-    border-bottom-color: var(--Disabled, #B5B5B5);
-    pointer-events: none; cursor: default;
+
+  .bank-select-btn:hover { border-color: var(--Primary); }
+  .bank-select-btn:focus { outline: none; border-color: var(--Primary); }
+  .bank-select-btn.placeholder-state { color: var(--Secondary); font-weight: 500; }
+
+  .bank-select-value {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
   }
-  .crypto-select--open .crypto-select__trigger { border-bottom-color: var(--Primary, #222); }
 
-  .crypto-select__label {
-    position: absolute; top: 0; left: 0;
-    font-size: 12px; line-height: 14px; font-weight: 600;
-    color: var(--Secondary, #727272);
-    pointer-events: none; display: none;
+  .bank-select-value-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
-  .crypto-select--has-value .crypto-select__label { display: block; }
-  .crypto-select--has-value .crypto-select__trigger { padding-top: 18px; }
 
-  .crypto-select__display { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
-  .crypto-select__placeholder {
-    font-size: 16px; line-height: 20px; font-weight: 600;
-    color: var(--Secondary, #727272);
-  }
-  .crypto-select--disabled .crypto-select__placeholder { color: var(--Disabled, #B5B5B5); }
-
-  .crypto-select__selected-icon   { width: 24px; height: 24px; flex-shrink: 0; display: block; }
-  .crypto-select__selected-name   { font-size: 16px; line-height: 20px; font-weight: 700; color: var(--Primary, #222); }
-  .crypto-select__selected-ticker { font-size: 16px; line-height: 20px; font-weight: 700; color: var(--Tertiary, #A3A3A3); }
-
-  .crypto-select__chevron { flex-shrink: 0; transition: transform 0.2s; }
-  .crypto-select--open .crypto-select__chevron { transform: rotate(180deg); }
-  .crypto-select--disabled .crypto-select__chevron path { stroke: var(--Disabled, #B5B5B5); }
-
-  .crypto-select__dropdown {
-    position: absolute; top: calc(100% + 8px); left: 0; right: 0;
-    background: #fff; border-radius: 16px;
-    box-shadow: 0 12px 32px rgba(34,34,34,0.10);
-    z-index: 200; overflow: hidden;
-    max-height: 370px; display: flex; flex-direction: column;
-  }
-  .crypto-select__dropdown[hidden] { display: none; }
-  .crypto-select__search {
-    display: flex; align-items: center; gap: 10px;
-    padding: 12px;
-    border-bottom: 1px solid var(--SurfaceMedium, #EBEBEB);
+  .bank-select-right {
+    display: flex;
+    align-items: center;
+    gap: 6px;
     flex-shrink: 0;
   }
-  .crypto-select__search input {
-    flex: 1; border: none; outline: none; background: transparent;
-    font-family: inherit; font-size: 14px; line-height: 18px; font-weight: 600;
-    color: var(--Primary, #222);
-  }
-  .crypto-select__search input::placeholder { color: var(--Secondary, #727272); font-weight: 600; }
-  .crypto-select__list { flex: 1 1 auto; overflow-y: auto; padding: 8px 0; }
-  .crypto-select__list::-webkit-scrollbar { width: 4px; }
-  .crypto-select__list::-webkit-scrollbar-thumb { background: var(--Disabled, #B5B5B5); border-radius: 2px; }
-  .crypto-select__item {
-    display: flex; align-items: center; gap: 8px;
-    padding: 14px 12px; cursor: pointer;
-    transition: background 0.1s;
-    border-bottom: 1px solid var(--SurfaceMedium, #EBEBEB);
-  }
-  .crypto-select__item:last-child { border-bottom: none; }
-  .crypto-select__item:hover { background: var(--SurfaceLight, #F7F7F7); }
-  .crypto-select__item-icon   { width: 24px; height: 24px; flex-shrink: 0; display: block; }
-  .crypto-select__item-name   { font-size: 16px; line-height: 20px; font-weight: 700; color: var(--Primary, #222); }
-  .crypto-select__item-ticker { font-size: 16px; line-height: 20px; font-weight: 700; color: var(--Tertiary, #A3A3A3); }
 
-  .crypto-info {
+  .suggested-badge {
     display: flex;
-    gap: 10px;
-    align-items: flex-start;
-    padding: 10px 12px;
-    background: var(--SurfaceLight, #F7F7F7);
-    border-radius: 10px;
+    align-items: center;
+    gap: 3px;
+    padding: 2px 7px;
+    border-radius: 999px;
+    background: var(--SurfaceLight);
+    border: 0.5px solid var(--SurfaceStrong);
+    font-size: 11px;
+    font-weight: 500;
     color: var(--Secondary);
-    font-size: 12px;
-    line-height: 1.5;
+    white-space: nowrap;
+  }
+
+  .caret-icon {
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
+    transition: transform 0.2s;
+  }
+
+  .bank-select-btn.open .caret-icon { transform: rotate(180deg); }
+
+  .bank-select-popup {
+    position: fixed;
+    background: #fff;
+    border: 1px solid var(--SurfaceStrong);
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    z-index: 9999;
+    overflow: hidden;
+    max-height: 340px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .bank-search-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--SurfaceMedium);
+    flex-shrink: 0;
+    background: #fff;
+  }
+
+  .bank-search-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-family: Nunito, sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--Primary);
+    background: transparent;
+  }
+
+  .bank-search-input::placeholder { color: var(--Secondary); }
+
+  .bank-dropdown-list {
+    overflow-y: auto;
+    flex: 1;
+  }
+
+  .dropdown-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    gap: 10px;
+    cursor: pointer;
+    border: none;
+    border-bottom: 1px solid var(--SurfaceMedium);
+    background: transparent;
+    width: 100%;
+    text-align: left;
+    font-family: Nunito, sans-serif;
+  }
+
+  .dropdown-row:last-child { border-bottom: none; }
+  .dropdown-row:hover { background: var(--SurfaceSuperLight); }
+  .dropdown-row.selected { background: var(--SurfaceLight); }
+
+  .dropdown-row-left {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  #countryList .dropdown-row-left { align-items: center; }
+
+  .dropdown-row-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .dropdown-row-icon {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    border-radius: 4px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2px;
+  }
+
+  .bank-logo-fallback {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Nunito, sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+  }
+
+  .dropdown-row-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--Primary);
+    line-height: 1.3;
+    word-break: break-word;
+  }
+
+  .dropdown-speed {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 2px 6px;
+    border-radius: 4px;
+    white-space: nowrap;
+    align-self: flex-start;
+  }
+
+  .speed-instant { color: #16A34A; background: rgba(22,163,74,0.08); }
+  .speed-slow { color: var(--Secondary); background: var(--SurfaceLight); }
+
+  .dropdown-empty {
+    padding: 24px 16px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--Secondary);
+    font-weight: 500;
+  }
+
+  .skeleton-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    height: 52px;
+    border-bottom: 1px solid var(--SurfaceMedium);
+    pointer-events: none;
+  }
+
+  .skeleton-row:last-child { border-bottom: none; }
+
+  .skel-block {
+    border-radius: 4px;
+    background: linear-gradient(90deg, #EBEBEB 0%, #F5F5F5 50%, #EBEBEB 100%);
+    background-size: 200% 100%;
+    animation: skel-shimmer 1.2s ease-in-out infinite;
+  }
+
+  .skel-circle-bank {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background: linear-gradient(90deg, #EBEBEB 0%, #F5F5F5 50%, #EBEBEB 100%);
+    background-size: 200% 100%;
+    animation: skel-shimmer 1.2s ease-in-out infinite;
+  }
+
+  @keyframes skel-shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  .pm-icon-flag-overlay {
+    position: absolute;
+    bottom: 1px;
+    right: 1px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255,255,255,0.9);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #eee;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .pm-icon-flag-overlay svg { width: 14px; height: 14px; display: block; }
+
+  .bank-select-speed {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 2px 6px;
+    border-radius: 4px;
+    flex-shrink: 0;
   }
 
   /* ── Card panels (animated) ── */
@@ -1647,6 +1985,17 @@
 
     /* Prevent card brands from stretching in flex column */
 
+    .bank-picker-row { flex-direction: column; gap: 12px; }
+    .bank-select-popup {
+      position: fixed;
+      left: 12px;
+      right: 12px;
+      top: auto;
+      bottom: 80px;
+      max-height: 60vh;
+      border-radius: 16px;
+    }
+
     .show-all { padding: 14px 16px; font-size: 13px; }
 
     /* === MOBILE: show all payment methods without toggle === */
@@ -1948,161 +2297,6 @@
     align-items: center;
     gap: 12px;
   }
-
-  /* ── Order items — itemized cart summary ── */
-  .order-items {
-    display: flex;
-    flex-direction: column;
-  }
-  .order-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 16px;
-    padding: 12px 0;
-    border-top: 1px solid var(--SurfaceMedium);
-  }
-  .order-item:first-child {
-    border-top: 0;
-    padding-top: 0;
-  }
-  .order-item__main {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    min-width: 0;
-  }
-  .order-item__name {
-    font-size: 14px;
-    font-weight: 600;
-    line-height: 18px;
-    color: var(--Primary);
-  }
-  .order-item__meta {
-    font-size: 12px;
-    font-weight: 500;
-    line-height: 16px;
-    color: var(--Secondary);
-  }
-  .order-item__amount {
-    font-size: 14px;
-    font-weight: 600;
-    line-height: 18px;
-    color: var(--Primary);
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-  .order-subtotal {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    padding-top: 12px;
-    margin-top: 4px;
-    border-top: 1px solid var(--SurfaceMedium);
-  }
-  .order-subtotal__label {
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--Secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-  }
-  .order-subtotal__value {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--Primary);
-  }
-
-  /* ── Order summary collapsible block inside .total-box ── */
-  .ord-sum {
-    display: block;
-    margin: 0 0 16px;
-  }
-  .ord-sum > summary {
-    list-style: none;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 4px 0;
-    user-select: none;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .ord-sum > summary::-webkit-details-marker { display: none; }
-  .ord-sum__label {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--Secondary);
-  }
-  .ord-sum__meta {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--Secondary);
-  }
-  .ord-sum__chev {
-    flex-shrink: 0;
-    transition: transform 0.2s ease;
-  }
-  .ord-sum[open] .ord-sum__chev { transform: rotate(180deg); }
-  .ord-sum__body {
-    margin-top: 8px;
-    padding-top: 12px;
-    border-top: 1px solid var(--SurfaceMedium);
-    max-height: 320px;
-    overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: var(--SurfaceStrong) transparent;
-  }
-  .ord-sum__body::-webkit-scrollbar { width: 4px; }
-  .ord-sum__body::-webkit-scrollbar-track { background: transparent; }
-  .ord-sum__body::-webkit-scrollbar-thumb { background: var(--SurfaceStrong); border-radius: 2px; }
-  .ord-sum__subtotal {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    padding-top: 12px;
-    margin-top: 8px;
-    border-top: 1px solid var(--SurfaceMedium);
-  }
-  .ord-sum__subtotal-label {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--Secondary);
-  }
-  .ord-sum__subtotal-value {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--Primary);
-  }
-  /* Divider + spacing between collapsible and Total to pay row */
-  .ord-sum[open] + .total-top-row {
-    padding-top: 16px;
-    border-top: 1px solid var(--SurfaceMedium);
-    margin-top: 4px;
-  }
-  .ord-sum:not([open]) + .total-top-row {
-    padding-top: 12px;
-    border-top: 1px solid var(--SurfaceMedium);
-    margin-top: 4px;
-  }
-
-  @media (max-width: 768px) {
-    .ord-sum { margin: 0 0 6px; }
-    .ord-sum__body {
-      max-height: 50vh;
-      overflow-y: auto;
-      padding-top: 10px;
-    }
-    .ord-sum[open] + .total-top-row { padding-top: 10px; margin-top: 2px; }
-    .ord-sum:not([open]) + .total-top-row { padding-top: 8px; margin-top: 2px; }
-  }
 </style>
 </head>
 <body>
@@ -2202,7 +2396,7 @@ document.addEventListener('click',function(e){
       <div class="header-row">
         <div>
           <div class="header-title">Select payment method</div>
-          <div class="header-subtitle">13 methods available</div>
+          <div class="header-subtitle">12 methods available</div>
         </div>
         <div class="country-selector">
           <div class="country-label">Country</div>
@@ -2442,30 +2636,85 @@ document.addEventListener('click',function(e){
             </div>
           </div>
         </div>
-        <hr class="payment-separator">
+        <hr class="payment-separator" id="sep-gpay-bank">
 
         <!-- Instant Bank Transfer -->
-        <div class="payment-item" onclick="collapseAll()">
-          <div class="payment-item-left">
-            <div class="pm-icon" style="overflow:hidden;padding:0;">
-              <img src="./icons/BankTransfer2.svg" alt="Bank Transfer" style="width:40px;height:40px;border-radius:12px;display:block;">
-            </div>
-            <div class="pm-info">
-              <div class="pm-name">Instant Bank Transfer</div>
-              <div class="pm-desc">Choose your bank</div>
-              <div class="bank-logos-mobile">
-                <div class="bank-chip"><img src="./icons/Bank-Pekao.svg" alt="Pekao" style="height:20px;width:auto;border-radius:4px;"></div>
-                <div class="bank-chip"><img src="./icons/Bank-Ing.svg" alt="ING" style="height:20px;width:auto;border-radius:4px;"></div>
-                <div class="bank-chip"><img src="./icons/Bank-Mbank.svg" alt="mBank" style="height:20px;width:auto;border-radius:4px;"></div>
-                <span class="bank-more">15+ more</span>
+        <div class="expandable-item" id="bankItem" onclick="expandItem('bank')">
+          <div class="expandable-header">
+            <div class="payment-item-left">
+              <div class="pm-icon" style="overflow:hidden;padding:0;">
+                <img src="./icons/BankTransfer2.svg" alt="Bank Transfer" style="width:40px;height:40px;border-radius:12px;display:block;">
+                <span class="pm-icon-flag-overlay" id="bankFlagOverlay"></span>
+              </div>
+              <div class="pm-info">
+                <div class="pm-name">Instant Bank Transfer</div>
+                <div class="pm-desc" id="bankDesc">Choose your bank</div>
+                <div class="bank-logos-mobile">
+                  <div class="bank-chip"><img src="./icons/Bank-Pekao.svg" alt="Pekao" style="height:20px;width:auto;border-radius:4px;"></div>
+                  <div class="bank-chip"><img src="./icons/Bank-Ing.svg" alt="ING" style="height:20px;width:auto;border-radius:4px;"></div>
+                  <div class="bank-chip"><img src="./icons/Bank-Mbank.svg" alt="mBank" style="height:20px;width:auto;border-radius:4px;"></div>
+                  <span class="bank-more">15+ more</span>
+                </div>
               </div>
             </div>
+            <div class="bank-logos">
+              <div class="bank-chip"><img src="./icons/Bank-Pekao.svg" alt="Pekao" style="height:20px;width:auto;border-radius:4px;"></div>
+              <div class="bank-chip"><img src="./icons/Bank-Ing.svg" alt="ING" style="height:20px;width:auto;border-radius:4px;"></div>
+              <div class="bank-chip"><img src="./icons/Bank-Mbank.svg" alt="mBank" style="height:20px;width:auto;border-radius:4px;"></div>
+              <span class="bank-more">15+ more</span>
+            </div>
           </div>
-          <div class="bank-logos">
-            <div class="bank-chip"><img src="./icons/Bank-Pekao.svg" alt="Pekao" style="height:20px;width:auto;border-radius:4px;"></div>
-            <div class="bank-chip"><img src="./icons/Bank-Ing.svg" alt="ING" style="height:20px;width:auto;border-radius:4px;"></div>
-            <div class="bank-chip"><img src="./icons/Bank-Mbank.svg" alt="mBank" style="height:20px;width:auto;border-radius:4px;"></div>
-            <span class="bank-more">15+ more</span>
+          <div class="expandable-content" id="bankExpanded">
+            <div class="expandable-inner" style="gap:16px;">
+              <div class="bank-picker-row">
+                <!-- Country dropdown -->
+                <div class="bank-select-wrap">
+                  <span class="bank-select-label">Country</span>
+                  <button type="button" class="bank-select-btn" id="countrySelectBtn" onclick="toggleCountryPopup(event)">
+                    <span class="bank-select-value">
+                      <span id="countryFlagInline"></span>
+                      <span class="bank-select-value-text" id="countrySelectText">Poland</span>
+                    </span>
+                    <span class="bank-select-right">
+                      <svg class="caret-icon" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="#222" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </span>
+                  </button>
+                  <div class="bank-select-popup" id="countryPopup" style="display:none;">
+                    <div class="bank-search-row">
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="5" stroke="#727272" stroke-width="1.4"/><line x1="11" y1="11" x2="14" y2="14" stroke="#727272" stroke-width="1.4" stroke-linecap="round"/></svg>
+                      <input type="text" class="bank-search-input" id="countrySearchInput" placeholder="Search country..." oninput="onCountrySearch(this.value)" autocomplete="off">
+                    </div>
+                    <div class="bank-dropdown-list" id="countryList"></div>
+                  </div>
+                </div>
+                <!-- Bank dropdown -->
+                <div class="bank-select-wrap">
+                  <span class="bank-select-label">Bank</span>
+                  <button type="button" class="bank-select-btn placeholder-state" id="bankSelectBtn" onclick="toggleBankPopup(event)">
+                    <span class="bank-select-value">
+                      <span id="bankLogoInline"></span>
+                      <span class="bank-select-value-text" id="bankSelectText">Select bank</span>
+                    </span>
+                    <span class="bank-select-right">
+                      <span class="bank-select-speed speed-instant" id="bankSpeedBadge" style="display:none;"></span>
+                      <svg class="caret-icon" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="#222" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </span>
+                  </button>
+                  <div class="bank-select-popup" id="bankPopup" style="display:none;">
+                    <div class="bank-search-row">
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="5" stroke="#727272" stroke-width="1.4"/><line x1="11" y1="11" x2="14" y2="14" stroke="#727272" stroke-width="1.4" stroke-linecap="round"/></svg>
+                      <input type="text" class="bank-search-input" id="bankSearchInput" placeholder="Search bank..." oninput="onBankSearch(this.value)" autocomplete="off">
+                    </div>
+                    <div class="bank-dropdown-list" id="bankList"></div>
+                  </div>
+                </div>
+              </div>
+              <!-- BLIK-style redirect info, hidden until bank selected -->
+              <div class="redirect-info" id="bankRedirectInfo" style="display:none;">
+                <img src="./icons/after-confirming.svg" alt="" style="width:16px;height:16px;flex-shrink:0;">
+                <span id="bankRedirectText"></span>
+              </div>
+            </div>
           </div>
         </div>
         <hr class="payment-separator" id="sep-bank-zenapp">
@@ -2521,78 +2770,6 @@ document.addEventListener('click',function(e){
             <div class="pm-info">
               <div class="pm-name">ZEN.COM CashCard</div>
               <div class="pm-desc">Pay with prepaid card</div>
-            </div>
-          </div>
-        </div>
-
-        <hr class="payment-separator" id="sep-cashcard-crypto">
-
-        <!-- Cryptocurrency (expandable) -->
-        <div class="expandable-item" id="cryptoItem" onclick="expandItem('crypto')">
-          <div class="expandable-header">
-            <div class="payment-item-left">
-              <div class="pm-icon" style="background:#FAFAFA;border:1px solid #EBEBEB;border-radius:12px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0;">
-                <svg width="14" height="20" viewBox="28 7 21 37" fill="none"><path d="M42.4223 7.69824C43.2362 7.69849 43.8964 8.35839 43.8964 9.17238V13.3401C45.7517 13.9789 47.4944 15.0379 48.9753 16.5188C49.5509 17.0944 49.5509 18.0276 48.9753 18.6033C48.3996 19.179 47.4664 19.179 46.8907 18.6033C42.8334 14.5462 36.2553 14.5462 32.198 18.6033C28.1407 22.6606 28.1409 29.2387 32.198 33.296C36.2553 37.3534 42.8334 37.3534 46.8907 33.296C47.4663 32.7207 48.3996 32.7209 48.9753 33.296C49.5509 33.8716 49.5507 34.8048 48.9753 35.3806C47.4944 36.8614 45.7517 37.9203 43.8964 38.5592V43.2413C43.8964 44.0553 43.2362 44.7152 42.4223 44.7155C41.6081 44.7155 40.9481 44.0555 40.9481 43.2413V39.2118C39.7487 39.338 38.5362 39.3 37.3447 39.1017V43.2413C37.3447 44.0553 36.6845 44.7152 35.8705 44.7155C35.0564 44.7155 34.3964 44.0555 34.3964 43.2413V38.2546C32.8397 37.604 31.3804 36.6475 30.1135 35.3806C24.905 30.1718 24.9048 21.7274 30.1135 16.5188C31.3805 15.2517 32.8395 14.294 34.3964 13.6434V9.17238C34.3964 8.35824 35.0564 7.69824 35.8705 7.69824C36.6845 7.69849 37.3447 8.35839 37.3447 9.17238V12.7976C38.5362 12.5993 39.7487 12.5613 40.9481 12.6875V9.17238C40.9481 8.35824 41.6081 7.69824 42.4223 7.69824Z" fill="#222222"/></svg>
-              </div>
-              <div class="pm-info">
-                <div class="pm-name">Cryptocurrency</div>
-                <div class="pm-desc">Choose currency and network</div>
-              </div>
-            </div>
-          </div>
-          <div class="expandable-content" id="cryptoExpanded">
-            <div class="expandable-inner" onclick="event.stopPropagation()">
-
-              <div class="crypto-selects">
-
-                <!-- Currency dropdown -->
-                <div class="crypto-select" id="cryptoCurrencySelect">
-                  <span class="crypto-select__label">Currency</span>
-                  <div class="crypto-select__trigger" onclick="toggleCryptoDropdown('currency')">
-                    <div class="crypto-select__display" id="currencyDisplay">
-                      <span class="crypto-select__placeholder">Choose currency</span>
-                    </div>
-                    <svg class="crypto-select__chevron" width="12" height="12" viewBox="0 0 12 12" fill="none">
-                      <path d="M2 4.5L6 7.5L10 4.5" stroke="#222" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                  </div>
-                  <div class="crypto-select__dropdown" id="currencyDropdown" hidden>
-                    <div class="crypto-select__search">
-                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="5" stroke="#727272" stroke-width="1.5"/><path d="M11 11L14 14" stroke="#727272" stroke-width="1.5" stroke-linecap="round"/></svg>
-                      <input type="text" placeholder="Search ..." id="currencySearch" oninput="filterCryptoDropdown('currency',this.value)" autocomplete="off">
-                    </div>
-                    <div class="crypto-select__list" id="currencyList"></div>
-                  </div>
-                </div>
-
-                <!-- Network dropdown -->
-                <div class="crypto-select crypto-select--disabled" id="cryptoNetworkSelect">
-                  <span class="crypto-select__label">Network</span>
-                  <div class="crypto-select__trigger" onclick="toggleCryptoDropdown('network')">
-                    <div class="crypto-select__display" id="networkDisplay">
-                      <span class="crypto-select__placeholder">Choose network</span>
-                    </div>
-                    <svg class="crypto-select__chevron" width="12" height="12" viewBox="0 0 12 12" fill="none">
-                      <path d="M2 4.5L6 7.5L10 4.5" stroke="#B5B5B5" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                  </div>
-                  <div class="crypto-select__dropdown" id="networkDropdown" hidden>
-                    <div class="crypto-select__search">
-                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="5" stroke="#727272" stroke-width="1.5"/><path d="M11 11L14 14" stroke="#727272" stroke-width="1.5" stroke-linecap="round"/></svg>
-                      <input type="text" placeholder="Search ..." id="networkSearch" oninput="filterCryptoDropdown('network',this.value)" autocomplete="off">
-                    </div>
-                    <div class="crypto-select__list" id="networkList"></div>
-                  </div>
-                </div>
-
-              </div>
-
-              <!-- Info (shown after both selected) -->
-              <div class="crypto-info" id="cryptoInfo" hidden style="margin-top:12px">
-                <img src="./icons/after-confirming.svg" alt="" style="width:16px;height:16px;flex-shrink:0;margin-top:1px">
-                <span>After clicking "Pay" you'll send funds from your crypto wallet to the provided address or via QR code.</span>
-              </div>
-
             </div>
           </div>
         </div>
@@ -2690,27 +2867,107 @@ document.addEventListener('click',function(e){
           </div>
         </div>
 
+        <!-- Order summary (15 items) -->
+        <div class="order-summary-box os-collapsed" id="orderSummaryBox">
+          <div class="os-header" onclick="toggleOrderSummary()">
+            <div class="os-header-left">
+              <span class="os-header-label">Order summary</span>
+              <span class="os-header-count">15 items</span>
+            </div>
+            <svg class="os-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="#727272" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="os-body">
+          <div class="os-body-inner">
+          <div class="order-items">
+            <div class="order-item">
+              <span class="oi-name">Steam Wallet Code €20</span>
+              <span class="oi-qty">× 1</span>
+              <span class="oi-price">20.00</span>
+            </div>
+            <div class="order-item">
+              <span class="oi-name">Riot Points 1380 RP</span>
+              <span class="oi-qty">× 2</span>
+              <span class="oi-price">20.00</span>
+            </div>
+            <div class="order-item">
+              <span class="oi-name">Xbox Live Gold 3M</span>
+              <span class="oi-qty">× 1</span>
+              <span class="oi-price">19.99</span>
+            </div>
+            <div class="order-item">
+              <span class="oi-name">PlayStation Plus 12M</span>
+              <span class="oi-qty">× 1</span>
+              <span class="oi-price">59.99</span>
+            </div>
+            <div class="order-item">
+              <span class="oi-name">Nintendo eShop €25</span>
+              <span class="oi-qty">× 1</span>
+              <span class="oi-price">25.00</span>
+            </div>
+            <div class="order-item">
+              <span class="oi-name">Fortnite V-Bucks 1000</span>
+              <span class="oi-qty">× 3</span>
+              <span class="oi-price">23.97</span>
+            </div>
+            <div class="order-item">
+              <span class="oi-name">Roblox Robux 800</span>
+              <span class="oi-qty">× 2</span>
+              <span class="oi-price">19.98</span>
+            </div>
+            <div class="order-item">
+              <span class="oi-name">Spotify Premium 3M</span>
+              <span class="oi-qty">× 1</span>
+              <span class="oi-price">29.97</span>
+            </div>
+            <div class="order-item">
+              <span class="oi-name">Netflix Standard 1M</span>
+              <span class="oi-qty">× 1</span>
+              <span class="oi-price">13.49</span>
+            </div>
+            <div class="order-item">
+              <span class="oi-name">Discord Nitro Classic 1M</span>
+              <span class="oi-qty">× 1</span>
+              <span class="oi-price">9.99</span>
+            </div>
+            <div class="order-item">
+              <span class="oi-name">Apple Gift Card €15</span>
+              <span class="oi-qty">× 2</span>
+              <span class="oi-price">30.00</span>
+            </div>
+            <div class="order-item">
+              <span class="oi-name">Google Play €10</span>
+              <span class="oi-qty">× 4</span>
+              <span class="oi-price">40.00</span>
+            </div>
+            <div class="order-item">
+              <span class="oi-name">Amazon Gift Card €25</span>
+              <span class="oi-qty">× 1</span>
+              <span class="oi-price">25.00</span>
+            </div>
+            <div class="order-item">
+              <span class="oi-name">Twitch Bits 500</span>
+              <span class="oi-qty">× 1</span>
+              <span class="oi-price">7.99</span>
+            </div>
+            <div class="order-item">
+              <span class="oi-name">Battle.net Balance €20</span>
+              <span class="oi-qty">× 2</span>
+              <span class="oi-price">40.00</span>
+            </div>
+          </div>
+          <div class="os-subtotal">
+            <span class="os-subtotal-label">Subtotal (15 items)</span>
+            <span class="os-subtotal-value">384.36 EUR</span>
+          </div>
+          </div><!-- /os-body-inner -->
+          </div><!-- /os-body -->
+        </div>
+
         <div class="total-box">
-          <details class="ord-sum" id="orderSummary">
-            <summary class="ord-sum__summary">
-              <span class="ord-sum__label">Order summary</span>
-              <span class="ord-sum__meta">
-                <span class="ord-sum__count" id="orderItemsCount">3 items</span>
-                <svg class="ord-sum__chev" width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3.5 5.25L7 8.75L10.5 5.25" stroke="#727272" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </span>
-            </summary>
-            <div class="ord-sum__body">
-              <div class="ord-sum__items order-items" id="orderItemsList"></div>
-            </div>
-            <div class="ord-sum__subtotal">
-              <span class="ord-sum__subtotal-label">Subtotal</span>
-              <span class="ord-sum__subtotal-value" id="subtotalValue"></span>
-            </div>
-          </details>
           <div class="total-top-row">
             <div class="total-label">Total to pay</div>
             <div class="total-amount">
-              <span class="amount" id="totalAmount">250.00</span>
+              <span class="amount" id="totalAmount">100.00</span>
               <span class="currency" id="totalCurrency">EUR</span>
               <span class="mobile-currency-chevron" id="mobileCurrChevron"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 4.5L6 7.5L9 4.5" stroke="#222" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
             </div>
@@ -2774,54 +3031,6 @@ document.addEventListener('click',function(e){
 </div>
 
 <script>
-  // ── Order items data ──
-  const ORDER_ITEMS = [
-    { code: 'itemCode1',  category: 'Subscription', name: 'Pro plan · monthly',          price: 50,    quantity: 4, lineAmountTotal: 200   },
-    { code: 'itemCode2',  category: 'Add-on',        name: 'Extra seat',                  price: 10,    quantity: 2, lineAmountTotal: 20    },
-    { code: 'itemCode3',  category: 'Service',       name: 'Priority support',            price: 30,    quantity: 1, lineAmountTotal: 30    },
-    { code: 'itemCode4',  category: 'Add-on',        name: 'Custom domain',               price: 15,    quantity: 1, lineAmountTotal: 15    },
-    { code: 'itemCode5',  category: 'Add-on',        name: 'API requests pack 100k',      price: 25,    quantity: 3, lineAmountTotal: 75    },
-    { code: 'itemCode6',  category: 'Service',       name: 'Onboarding session',          price: 120,   quantity: 1, lineAmountTotal: 120   },
-    { code: 'itemCode7',  category: 'One-time',      name: 'Setup fee',                   price: 49.99, quantity: 1, lineAmountTotal: 49.99 },
-    { code: 'itemCode8',  category: 'Usage',         name: 'Bandwidth overage 50 GB',     price: 8,     quantity: 5, lineAmountTotal: 40    },
-    { code: 'itemCode9',  category: 'Subscription',  name: 'Analytics add-on',            price: 19,    quantity: 1, lineAmountTotal: 19    },
-    { code: 'itemCode10', category: 'Add-on',        name: 'SSO integration',             price: 35,    quantity: 1, lineAmountTotal: 35    },
-    { code: 'itemCode11', category: 'Service',       name: 'Dedicated success manager',   price: 99,    quantity: 1, lineAmountTotal: 99    },
-    { code: 'itemCode12', category: 'Add-on',        name: 'Backup retention 90d',        price: 12,    quantity: 2, lineAmountTotal: 24    },
-    { code: 'itemCode13', category: 'Usage',         name: 'Webhook events 10k',          price: 5,     quantity: 4, lineAmountTotal: 20    },
-    { code: 'itemCode14', category: 'One-time',      name: 'Migration assistance',        price: 75,    quantity: 1, lineAmountTotal: 75    },
-    { code: 'itemCode15', category: 'Subscription',  name: 'White-label branding',        price: 45,    quantity: 1, lineAmountTotal: 45    },
-  ];
-
-  function formatMoney(value, curr) {
-    return parseFloat(value).toFixed(2) + ' ' + curr;
-  }
-
-  function renderOrderItems() {
-    const list = document.getElementById('orderItemsList');
-    const subtotalEl = document.getElementById('subtotalValue');
-    if (!list) return;
-
-    const subtotal = ORDER_ITEMS.reduce((s, i) => s + i.lineAmountTotal, 0);
-
-    list.innerHTML = ORDER_ITEMS.map(item => {
-      const metaParts = [item.category];
-      if (item.quantity > 1) metaParts.push('qty ' + item.quantity);
-      return '<div class="order-item">'
-        + '<div class="order-item__main">'
-        + '<span class="order-item__name">' + item.name + '</span>'
-        + '<span class="order-item__meta">' + metaParts.join(' · ') + '</span>'
-        + '</div>'
-        + '<span class="order-item__amount">' + formatMoney(item.lineAmountTotal, 'EUR') + '</span>'
-        + '</div>';
-    }).join('');
-
-    if (subtotalEl) subtotalEl.textContent = formatMoney(subtotal, 'EUR');
-
-    const countEl = document.getElementById('orderItemsCount');
-    if (countEl) countEl.textContent = ORDER_ITEMS.length + ' items';
-  }
-
   // ── Mobile card detail view ──
   const isMobile = () => window.innerWidth <= 768;
 
@@ -2837,51 +3046,7 @@ document.addEventListener('click',function(e){
   }
 
   // ── Generic expand/collapse system ──
-  let activeItem = null; // 'blik', 'card', 'zenapp', 'crypto', or null
-
-  const CRYPTO = {
-    btc:  { name:'Bitcoin',  ticker:'BTC',  icon:'./icons/crypto/btc.svg',
-            networks:[
-              { id:'bitcoin',   name:'Bitcoin',   note:'~10 min confirmation' },
-              { id:'lightning', name:'Lightning', note:'Instant' }
-            ] },
-    eth:  { name:'Ethereum', ticker:'ETH',  icon:'./icons/crypto/eth.svg',
-            networks:[{ id:'erc20',    name:'Ethereum (ERC-20)',      note:'Higher gas fee' }] },
-    usdt: { name:'Tether',   ticker:'USDT', icon:'./icons/crypto/usdt.svg',
-            networks:[
-              { id:'trc20',   name:'Tron (TRC-20)',               note:'Low fee · Recommended' },
-              { id:'erc20',   name:'Ethereum (ERC-20)',           note:'Higher gas fee' },
-              { id:'polygon', name:'Polygon',                      note:'Low fee' },
-              { id:'solana',  name:'Solana',                       note:'Low fee' },
-              { id:'bsc',     name:'BNB Smart Chain (BEP-20)',     note:'Low fee' }
-            ] },
-    usdc: { name:'USD Coin', ticker:'USDC', icon:'./icons/crypto/usdc.svg',
-            networks:[
-              { id:'erc20',   name:'Ethereum (ERC-20)',           note:'Higher gas fee' },
-              { id:'polygon', name:'Polygon',                      note:'Low fee · Recommended' },
-              { id:'solana',  name:'Solana',                       note:'Low fee' },
-              { id:'bsc',     name:'BNB Smart Chain (BEP-20)',     note:'Low fee' }
-            ] },
-    sol:  { name:'Solana',   ticker:'SOL',  icon:'./icons/crypto/sol.svg',
-            networks:[{ id:'solana',   name:'Solana',                 note:'~1 sec confirmation' }] },
-    ltc:  { name:'Litecoin', ticker:'LTC',  icon:'./icons/crypto/ltc.svg',
-            networks:[{ id:'litecoin', name:'Litecoin',               note:'~2 min confirmation' }] }
-  };
-
-  const MOCK_ADDRESSES = {
-    bitcoin:  'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh',
-    lightning: 'lnbc1pvjluezpp5qqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqypqdpl2pkx2ctnv5sxxmmw',
-    erc20:    '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
-    trc20:    'TNVzimMBCPJPMnMZXFxqXdkvCTxhnxuiXD',
-    polygon:  '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
-    solana:   '7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU',
-    bsc:      '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
-    litecoin: 'ltc1qg9stkxrszkdqsuj92lm4c7akvk36zvhqw7p6ck'
-  };
-
-  const CRYPTO_RATES = { btc:0.000023, eth:0.00038, usdt:1.005, usdc:1.005, sol:0.0066, ltc:0.014 };
-
-  let cryptoState = { currency: null, network: null };
+  let activeItem = null; // 'blik', 'card', 'zenapp', or null
 
   const items = {
     blik: {
@@ -2905,12 +3070,12 @@ document.addEventListener('click',function(e){
       sepBefore: 'sep-blik-card',
       sepAfter: 'sep-card-apple',
     },
-    crypto: {
-      wrapper: 'cryptoItem',
-      content: 'cryptoExpanded',
+    bank: {
+      wrapper: 'bankItem',
+      content: 'bankExpanded',
       brands: null,
-      sepBefore: 'sep-cashcard-crypto',
-      sepAfter: null,
+      sepBefore: 'sep-gpay-bank',
+      sepAfter: 'sep-bank-zenapp',
     }
   };
 
@@ -2942,12 +3107,12 @@ document.addEventListener('click',function(e){
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         content.classList.add('open');
-        setTimeout(() => content.querySelector('.expandable-inner')?.classList.add('allow-overflow'), 500);
       });
     });
 
     // Mobile: show card detail view
     if (id === 'card') enterMobileCardView();
+    if (id === 'bank') initBankPicker();
 
     // Mobile: scroll expanded item fully into view (clear of bottom bar)
     if (id !== 'card' && isMobile()) {
@@ -2971,22 +3136,6 @@ document.addEventListener('click',function(e){
       if (plnTab) selectCurrency(plnTab);
       document.getElementById('currencyTabs')?.classList.add('blik-mode');
     }
-
-    // Crypto: reset to blank state on each open
-    if (id === 'crypto') {
-      closeCryptoDropdown();
-      cryptoState = { currency: null, network: null };
-      var cd = document.getElementById('currencyDisplay');
-      var nd = document.getElementById('networkDisplay');
-      if (cd) cd.innerHTML = '<span class="crypto-select__placeholder">Choose currency</span>';
-      if (nd) nd.innerHTML = '<span class="crypto-select__placeholder">Choose network</span>';
-      var cs = document.getElementById('cryptoCurrencySelect');
-      var ns = document.getElementById('cryptoNetworkSelect');
-      if (cs) cs.classList.remove('crypto-select--has-value');
-      if (ns) { ns.classList.add('crypto-select--disabled'); ns.classList.remove('crypto-select--has-value'); }
-      var ci = document.getElementById('cryptoInfo');
-      if (ci) ci.hidden = true;
-    }
   }
 
   function collapseItem(id, instant) {
@@ -2996,7 +3145,6 @@ document.addEventListener('click',function(e){
     const wrapper = document.getElementById(cfg.wrapper);
     const content = document.getElementById(cfg.content);
 
-    content.querySelector('.expandable-inner')?.classList.remove('allow-overflow');
     content.classList.remove('open');
 
     const finish = () => {
@@ -3008,6 +3156,13 @@ document.addEventListener('click',function(e){
       if (cfg.sepAfter) document.getElementById(cfg.sepAfter).style.opacity = '1';
       // Reset card panels to default
       if (id === 'card') showCardPanel('saved');
+      // Close bank popups on collapse
+      if (id === 'bank') {
+        const cp = document.getElementById('countryPopup');
+        const bp = document.getElementById('bankPopup');
+        if (cp) { cp.style.display = 'none'; document.getElementById('countrySelectBtn')?.classList.remove('open'); }
+        if (bp) { bp.style.display = 'none'; document.getElementById('bankSelectBtn')?.classList.remove('open'); }
+      }
       // BLIK: remove blik-mode from currency tabs
       if (id === 'blik') document.getElementById('currencyTabs')?.classList.remove('blik-mode');
     };
@@ -3023,106 +3178,6 @@ document.addEventListener('click',function(e){
 
   function collapseAll() {
     if (activeItem) collapseItem(activeItem, false);
-  }
-
-  // ── Crypto dropdown selection ──
-  let cryptoDropdownOpen = null; // 'currency' | 'network' | null
-
-  function toggleCryptoDropdown(which) {
-    if (which === 'network' && !cryptoState.currency) return;
-    if (cryptoDropdownOpen === which) { closeCryptoDropdown(); return; }
-    closeCryptoDropdown();
-    cryptoDropdownOpen = which;
-    const selectEl = document.getElementById(which === 'currency' ? 'cryptoCurrencySelect' : 'cryptoNetworkSelect');
-    const dropEl   = document.getElementById(which === 'currency' ? 'currencyDropdown'     : 'networkDropdown');
-    selectEl.classList.add('crypto-select--open');
-    dropEl.hidden = false;
-    filterCryptoDropdown(which, '');
-    const inp = dropEl.querySelector('input');
-    if (inp) { inp.value = ''; inp.focus(); }
-    setTimeout(function() {
-      document.addEventListener('click', cryptoOutsideClick);
-    }, 0);
-  }
-
-  function cryptoOutsideClick(e) {
-    if (!e.target.closest('#cryptoCurrencySelect') && !e.target.closest('#cryptoNetworkSelect')) {
-      closeCryptoDropdown();
-    } else {
-      document.addEventListener('click', cryptoOutsideClick);
-    }
-  }
-
-  function closeCryptoDropdown() {
-    if (!cryptoDropdownOpen) return;
-    const selectEl = document.getElementById(cryptoDropdownOpen === 'currency' ? 'cryptoCurrencySelect' : 'cryptoNetworkSelect');
-    const dropEl   = document.getElementById(cryptoDropdownOpen === 'currency' ? 'currencyDropdown'     : 'networkDropdown');
-    selectEl.classList.remove('crypto-select--open');
-    dropEl.hidden = true;
-    cryptoDropdownOpen = null;
-    document.removeEventListener('click', cryptoOutsideClick);
-  }
-
-  function filterCryptoDropdown(which, q) {
-    q = q.toLowerCase();
-    if (which === 'currency') {
-      document.getElementById('currencyList').innerHTML = Object.entries(CRYPTO)
-        .filter(function(e) { var d=e[1]; return !q || d.name.toLowerCase().includes(q) || d.ticker.toLowerCase().includes(q); })
-        .map(function(e) {
-          var id=e[0], d=e[1];
-          return '<div class="crypto-select__item" onclick="selectCryptoCurrency(\''+id+'\')">'
-            + '<img class="crypto-select__item-icon" src="'+d.icon+'" alt="">'
-            + '<span class="crypto-select__item-name">'+d.name+'</span>'
-            + '<span class="crypto-select__item-ticker">'+d.ticker+'</span>'
-            + '</div>';
-        }).join('');
-    } else {
-      var data = CRYPTO[cryptoState.currency];
-      document.getElementById('networkList').innerHTML = data.networks
-        .filter(function(n) { return !q || n.name.toLowerCase().includes(q); })
-        .map(function(n) {
-          return '<div class="crypto-select__item" onclick="selectCryptoNetwork(\''+n.id+'\')">'
-            + '<img class="crypto-select__item-icon" src="'+(n.icon || data.icon)+'" alt="">'
-            + '<span class="crypto-select__item-name">'+n.name+'</span>'
-            + '</div>';
-        }).join('');
-    }
-  }
-
-  function selectCryptoCurrency(id) {
-    cryptoState.currency = id;
-    cryptoState.network = null;
-    closeCryptoDropdown();
-    var d = CRYPTO[id];
-    document.getElementById('cryptoCurrencySelect').classList.add('crypto-select--has-value');
-    document.getElementById('currencyDisplay').innerHTML =
-      '<img class="crypto-select__selected-icon" src="'+d.icon+'" alt="">'
-      + '<span class="crypto-select__selected-name">'+d.name+'</span>'
-      + '<span class="crypto-select__selected-ticker">'+d.ticker+'</span>';
-    var ns = document.getElementById('cryptoNetworkSelect');
-    ns.classList.remove('crypto-select--disabled');
-    ns.classList.remove('crypto-select--has-value');
-    document.getElementById('networkDisplay').innerHTML =
-      '<span class="crypto-select__placeholder">Choose network</span>';
-    document.getElementById('cryptoInfo').hidden = true;
-    updateCryptoConfirmState();
-  }
-
-  function selectCryptoNetwork(id) {
-    cryptoState.network = id;
-    closeCryptoDropdown();
-    var data = CRYPTO[cryptoState.currency];
-    var net = data.networks.find(function(n){ return n.id === id; });
-    document.getElementById('cryptoNetworkSelect').classList.add('crypto-select--has-value');
-    document.getElementById('networkDisplay').innerHTML =
-      '<img class="crypto-select__selected-icon" src="'+data.icon+'" alt="">'
-      + '<span class="crypto-select__selected-name">'+net.name+'</span>';
-    document.getElementById('cryptoInfo').hidden = false;
-    updateCryptoConfirmState();
-  }
-
-  function updateCryptoConfirmState() {
-    updateStepperDisabled();
   }
 
   // ── Card panel switcher (animated) ──
@@ -3198,11 +3253,416 @@ document.addEventListener('click',function(e){
     showCardPanel('saved');
   }
 
+  function toggleOrderSummary() {
+    document.getElementById('orderSummaryBox').classList.toggle('os-collapsed');
+  }
+
   function toggleCheckbox(id) {
     event.stopPropagation();
     const box = id === 'saveCard' ? document.getElementById('saveCardBox') : document.getElementById('saveBrowserBox');
     box.classList.toggle('checked');
   }
+
+  // ════════════════════════════════════════════════════
+  //  INSTANT BANK TRANSFER — Country + Bank Picker
+  // ════════════════════════════════════════════════════
+
+  function flagSvg(code, size) {
+    size = size || 20;
+    const shapes = {
+      pl: '<rect width="24" height="12" fill="#fff"/><rect y="12" width="24" height="12" fill="#DC143C"/>',
+      de: '<rect width="24" height="8" fill="#222"/><rect y="8" width="24" height="8" fill="#DC143C"/><rect y="16" width="24" height="8" fill="#FFCE00"/>',
+      nl: '<rect width="24" height="8" fill="#AE1C28"/><rect y="8" width="24" height="8" fill="#fff"/><rect y="16" width="24" height="8" fill="#21468B"/>',
+      be: '<rect width="8" height="24" fill="#222"/><rect x="8" width="8" height="24" fill="#FAE042"/><rect x="16" width="8" height="24" fill="#EF3340"/>',
+      es: '<rect width="24" height="6" fill="#c60b1e"/><rect y="6" width="24" height="12" fill="#ffc400"/><rect y="18" width="24" height="6" fill="#c60b1e"/>',
+      it: '<rect width="8" height="24" fill="#009246"/><rect x="8" width="8" height="24" fill="#fff"/><rect x="16" width="8" height="24" fill="#CE2B37"/>',
+      fr: '<rect width="8" height="24" fill="#002395"/><rect x="8" width="8" height="24" fill="#fff"/><rect x="16" width="8" height="24" fill="#ED2939"/>',
+    };
+    const sh = shapes[code] || '<rect width="24" height="24" fill="#CCC"/>';
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="' + size + '" height="' + size + '"><defs><clipPath id="fc' + code + size + '"><circle cx="12" cy="12" r="12"/></clipPath></defs><g clip-path="url(#fc' + code + size + ')">' + sh + '</g></svg>';
+  }
+
+  const COUNTRIES = [
+    { code:'pl', name:'Poland' },
+    { code:'de', name:'Germany' },
+    { code:'nl', name:'Netherlands' },
+    { code:'be', name:'Belgium' },
+    { code:'es', name:'Spain' },
+    { code:'it', name:'Italy' },
+    { code:'fr', name:'France' },
+  ];
+
+  function bankLogoHtml(bank, size) {
+    size = size || 24;
+    if (bank.logo) {
+      return '<img src="' + bank.logo + '" alt="" style="width:' + size + 'px;height:' + size + 'px;object-fit:contain;border-radius:4px;">';
+    }
+    const initials = bank.name.split(/\s+/).map(function(w){ return w[0]; }).join('').toUpperCase().slice(0, 2);
+    return '<span class="bank-logo-fallback" style="background:' + (bank.color || '#555') + ';width:' + size + 'px;height:' + size + 'px;">' + initials + '</span>';
+  }
+
+  const BANKS = {
+    pl: [
+      { id:'pko-bp',     name:'PKO BP',          color:'#004C7F', speed:'instant' },
+      { id:'pekao',      name:'Pekao',            logo:'./icons/Bank-Pekao.svg', speed:'instant' },
+      { id:'mbank',      name:'mBank',            logo:'./icons/Bank-Mbank.svg', speed:'instant' },
+      { id:'ing-pl',     name:'ING Bank Śląski',  logo:'./icons/Bank-Ing.svg', speed:'instant' },
+      { id:'alior',      name:'Alior Bank',       logo:'./icons/alior-bank-logo.svg', speed:'instant' },
+      { id:'santander',  name:'Santander',        color:'#EC0000', speed:'instant' },
+      { id:'millennium', name:'Millennium',       color:'#C8102E', speed:'instant' },
+      { id:'bnp-pl',     name:'BNP Paribas',      color:'#009E60', speed:'1-2 days' },
+      { id:'citi-pl',    name:'Citi Handlowy',    color:'#003D7A', speed:'instant' },
+      { id:'ca-pl',      name:'Credit Agricole',  color:'#005844', speed:'1-2 days' },
+      { id:'nest',       name:'Nest Bank',        color:'#FF6B00', speed:'instant' },
+      { id:'pocztowy',   name:'Pocztowy',         color:'#E10000', speed:'2-4 days' },
+      { id:'bos',        name:'BOŚ',              color:'#00A859', speed:'1-2 days' },
+      { id:'inteligo',   name:'Inteligo',         color:'#0066B3', speed:'instant' },
+      { id:'velo',       name:'Velo Bank',        color:'#FF4D00', speed:'instant' },
+    ],
+    de: [
+      { id:'deutsche',      name:'Deutsche Bank',          color:'#0018A8', speed:'instant' },
+      { id:'commerzbank',   name:'Commerzbank',            color:'#FFEE00', speed:'instant' },
+      { id:'hypo',          name:'HypoVereinsbank',        color:'#CC0000', speed:'instant' },
+      { id:'postbank',      name:'Postbank',               color:'#FFDD00', speed:'instant' },
+      { id:'ing-diba',      name:'ING-DiBa',               logo:'./icons/Bank-Ing.svg', speed:'instant' },
+      { id:'dkb',           name:'DKB',                    color:'#005AA0', speed:'instant' },
+      { id:'comdirect',     name:'Comdirect',              color:'#FFDD00', speed:'instant' },
+      { id:'consorsbank',   name:'Consorsbank',            color:'#E1001A', speed:'instant' },
+      { id:'n26',           name:'N26',                    color:'#222',    speed:'instant' },
+      { id:'norisbank',     name:'Norisbank',              color:'#0070B8', speed:'instant' },
+      { id:'1822direkt',    name:'1822direkt',             color:'#E2001A', speed:'instant' },
+      { id:'targobank',     name:'Targobank',              color:'#004B9A', speed:'instant' },
+      { id:'santander-de',  name:'Santander DE',           color:'#EC0000', speed:'instant' },
+      { id:'bbbank',        name:'BBBank',                 color:'#004A99', speed:'instant' },
+      { id:'gls',           name:'GLS Bank',               color:'#006837', speed:'1-2 days' },
+      { id:'triodos-de',    name:'Triodos Bank DE',        color:'#006D3B', speed:'1-2 days' },
+      { id:'ethikbank',     name:'Ethikbank',              color:'#367C2B', speed:'2-4 days' },
+      { id:'hsbc-de',       name:'HSBC DE',                color:'#DB0011', speed:'instant' },
+      { id:'citi-de',       name:'Citibank DE',            color:'#003D7A', speed:'instant' },
+      { id:'ubs-de',        name:'UBS DE',                 color:'#E60028', speed:'1-2 days' },
+      { id:'apobank',       name:'Apobank',                color:'#004E9E', speed:'1-2 days' },
+      { id:'degussa',       name:'Degussa Bank',           color:'#8B1A1A', speed:'2-4 days' },
+      { id:'wuestenrot',    name:'Wüstenrot Bank',         color:'#D4002A', speed:'1-2 days' },
+      { id:'aareal',        name:'Aareal Bank',            color:'#004C93', speed:'2-4 days' },
+      { id:'helaba',        name:'Helaba',                 color:'#004A99', speed:'instant' },
+      { id:'bayernlb',      name:'BayernLB',               color:'#004F9E', speed:'instant' },
+      { id:'nordlb',        name:'NORD/LB',                color:'#003366', speed:'1-2 days' },
+      { id:'lbbw',          name:'LBBW',                   color:'#005EB8', speed:'instant' },
+      { id:'vw-bank',       name:'Volkswagen Bank',        color:'#001E50', speed:'2-4 days' },
+      { id:'bmw-bank',      name:'BMW Bank',               color:'#1C69D4', speed:'2-4 days' },
+      { id:'mercedes-bank', name:'Mercedes-Benz Bank',     color:'#222',    speed:'2-4 days' },
+      { id:'spar-berlin',   name:'Berliner Sparkasse',     color:'#FF0000', speed:'instant' },
+      { id:'spar-hamburg',  name:'Hamburger Sparkasse',    color:'#FF0000', speed:'instant' },
+      { id:'spar-frankfurt',name:'Frankfurter Sparkasse',  color:'#FF0000', speed:'instant' },
+      { id:'spar-muenchen', name:'Stadtsparkasse München', color:'#FF0000', speed:'instant' },
+      { id:'spar-koeln',    name:'Sparkasse KölnBonn',     color:'#FF0000', speed:'instant' },
+      { id:'spar-dues',     name:'Sparkasse Düsseldorf',   color:'#FF0000', speed:'instant' },
+      { id:'spar-stuttgart',name:'Sparkasse Stuttgart',    color:'#FF0000', speed:'instant' },
+      { id:'spar-nbg',      name:'Sparkasse Nürnberg',     color:'#FF0000', speed:'instant' },
+      { id:'spar-hannover', name:'Sparkasse Hannover',     color:'#FF0000', speed:'1-2 days' },
+      { id:'spar-bremen',   name:'Sparkasse Bremen',       color:'#FF0000', speed:'1-2 days' },
+      { id:'spar-dresden',  name:'Ostsächsische Sparkasse Dresden', color:'#FF0000', speed:'1-2 days' },
+      { id:'spar-leipzig',  name:'Sparkasse Leipzig',      color:'#FF0000', speed:'1-2 days' },
+      { id:'spar-dortmund', name:'Sparkasse Dortmund',     color:'#FF0000', speed:'instant' },
+      { id:'spar-essen',    name:'Sparkasse Essen',        color:'#FF0000', speed:'instant' },
+      { id:'spar-aachen',   name:'Sparkasse Aachen',       color:'#FF0000', speed:'1-2 days' },
+      { id:'spar-kiel',     name:'Förde Sparkasse Kiel',   color:'#FF0000', speed:'1-2 days' },
+      { id:'spar-freiburg', name:'Sparkasse Freiburg',     color:'#FF0000', speed:'2-4 days' },
+      { id:'spar-augsburg', name:'Stadtsparkasse Augsburg',color:'#FF0000', speed:'1-2 days' },
+      { id:'spar-wuppertal',name:'Stadtsparkasse Wuppertal',color:'#FF0000',speed:'2-4 days' },
+      { id:'spar-mainz',    name:'Sparkasse Mainz',        color:'#FF0000', speed:'2-4 days' },
+      { id:'spar-bielefeld',name:'Sparkasse Bielefeld',    color:'#FF0000', speed:'2-4 days' },
+      { id:'spar-bochum',   name:'Sparkasse Bochum',       color:'#FF0000', speed:'1-2 days' },
+      { id:'spar-bonn',     name:'Stadtsparkasse Bonn',    color:'#FF0000', speed:'1-2 days' },
+      { id:'spar-chemnitz', name:'Sparkasse Chemnitz',     color:'#FF0000', speed:'2-4 days' },
+      { id:'spar-erfurt',   name:'Sparkasse Mittelthüringen', color:'#FF0000', speed:'2-4 days' },
+      { id:'spar-rostock',  name:'Sparkasse Rostock',      color:'#FF0000', speed:'2-4 days' },
+      { id:'spar-muenster', name:'Stadtsparkasse Münster', color:'#FF0000', speed:'1-2 days' },
+      { id:'spar-halle',    name:'Stadtsparkasse Halle',   color:'#FF0000', speed:'2-4 days' },
+      { id:'spar-magdeburg',name:'Sparkasse Magdeburg',    color:'#FF0000', speed:'2-4 days' },
+      { id:'spar-koblenz',  name:'Sparkasse Koblenz',      color:'#FF0000', speed:'2-4 days' },
+      { id:'vr-muenchen',   name:'VR Bank München',        color:'#004B9A', speed:'1-2 days' },
+      { id:'voba-koeln',    name:'Volksbank Köln-Bonn',    color:'#004B9A', speed:'1-2 days' },
+      { id:'voba-berlin',   name:'Berliner Volksbank',     color:'#004B9A', speed:'instant' },
+      { id:'voba-hamburg',  name:'Hamburger Volksbank',    color:'#004B9A', speed:'instant' },
+      { id:'voba-stuttgart',name:'Volksbank Stuttgart',    color:'#004B9A', speed:'1-2 days' },
+      { id:'voba-frankfurt',name:'Volksbank Frankfurt',    color:'#004B9A', speed:'1-2 days' },
+      { id:'voba-nbg',      name:'Volksbank Nürnberg',     color:'#004B9A', speed:'2-4 days' },
+      { id:'voba-hannover', name:'Volksbank Hannover',     color:'#004B9A', speed:'2-4 days' },
+      { id:'voba-dresden',  name:'Volksbank Dresden-Bautzen', color:'#004B9A', speed:'2-4 days' },
+      { id:'voba-freiburg', name:'Volksbank Freiburg',     color:'#004B9A', speed:'2-4 days' },
+      { id:'voba-rr',       name:'VR Bank Rhein-Ruhr',     color:'#004B9A', speed:'1-2 days' },
+      { id:'voba-mh',       name:'Volksbank Mittelhessen', color:'#004B9A', speed:'2-4 days' },
+      { id:'voba-dn',       name:'Volksbank Donau-Neckar', color:'#004B9A', speed:'2-4 days' },
+      { id:'raiff-muc',     name:'Raiffeisenbank München', color:'#004B9A', speed:'2-4 days' },
+      { id:'sparda-berlin', name:'Sparda-Bank Berlin',     color:'#0055A0', speed:'instant' },
+      { id:'sparda-muc',    name:'Sparda-Bank München',    color:'#0055A0', speed:'instant' },
+      { id:'sparda-west',   name:'Sparda-Bank West',       color:'#0055A0', speed:'instant' },
+      { id:'sparda-sw',     name:'Sparda-Bank Südwest',    color:'#0055A0', speed:'1-2 days' },
+      { id:'sparda-nbg',    name:'Sparda-Bank Nürnberg',   color:'#0055A0', speed:'1-2 days' },
+      { id:'sparda-hh',     name:'Sparda-Bank Hamburg',    color:'#0055A0', speed:'instant' },
+      { id:'sparda-han',    name:'Sparda-Bank Hannover',   color:'#0055A0', speed:'1-2 days' },
+      { id:'sparda-hessen', name:'Sparda-Bank Hessen',     color:'#0055A0', speed:'1-2 days' },
+      { id:'sparda-ost',    name:'Sparda-Bank Ostbayern',  color:'#0055A0', speed:'2-4 days' },
+      { id:'psd-rr',        name:'PSD Bank Rhein-Ruhr',    color:'#005AA0', speed:'1-2 days' },
+      { id:'psd-muc',       name:'PSD Bank München',       color:'#005AA0', speed:'1-2 days' },
+      { id:'psd-nord',      name:'PSD Bank Nord',          color:'#005AA0', speed:'2-4 days' },
+    ],
+    nl: [
+      { id:'ing-nl',    name:'ING',         logo:'./icons/Bank-Ing.svg', speed:'instant' },
+      { id:'rabobank',  name:'Rabobank',    color:'#FF6900', speed:'instant' },
+      { id:'abn-amro',  name:'ABN AMRO',    color:'#006C35', speed:'instant' },
+      { id:'bunq',      name:'Bunq',        color:'#00C28B', speed:'instant' },
+      { id:'triodos-nl',name:'Triodos',     color:'#006D3B', speed:'1-2 days' },
+      { id:'asn',       name:'ASN Bank',    color:'#005C28', speed:'1-2 days' },
+      { id:'sns',       name:'SNS',         color:'#F08B00', speed:'instant' },
+      { id:'knab',      name:'Knab',        color:'#009A44', speed:'instant' },
+    ],
+    be: [
+      { id:'kbc',       name:'KBC',                   color:'#009A44', speed:'instant' },
+      { id:'belfius',   name:'Belfius',               color:'#D10069', speed:'instant' },
+      { id:'ing-be',    name:'ING BE',                logo:'./icons/Bank-Ing.svg', speed:'instant' },
+      { id:'bnp-be',    name:'BNP Paribas Fortis',    color:'#009E60', speed:'instant' },
+      { id:'argenta',   name:'Argenta',               color:'#004A8F', speed:'1-2 days' },
+      { id:'beobank',   name:'Beobank',               color:'#E31837', speed:'1-2 days' },
+      { id:'axa-be',    name:'AXA Bank',              color:'#00008F', speed:'1-2 days' },
+      { id:'crelan',    name:'Crelan',                color:'#0055A5', speed:'2-4 days' },
+    ],
+    es: [
+      { id:'santander-es',name:'Santander',   color:'#EC0000', speed:'instant' },
+      { id:'bbva',        name:'BBVA',        color:'#004B9A', speed:'instant' },
+      { id:'caixa',       name:'CaixaBank',   color:'#005DA4', speed:'instant' },
+      { id:'sabadell',    name:'Sabadell',    color:'#005395', speed:'instant' },
+      { id:'bankinter',   name:'Bankinter',   color:'#FF5900', speed:'instant' },
+      { id:'unicaja',     name:'Unicaja',     color:'#004C97', speed:'1-2 days' },
+      { id:'kutxabank',   name:'Kutxabank',   color:'#E6001E', speed:'1-2 days' },
+      { id:'ibercaja',    name:'Ibercaja',    color:'#005AA0', speed:'1-2 days' },
+      { id:'abanca',      name:'Abanca',      color:'#00B140', speed:'1-2 days' },
+      { id:'evo-banco',   name:'EVO Banco',   color:'#00C800', speed:'instant' },
+    ],
+    it: [
+      { id:'intesa',      name:'Intesa Sanpaolo',      color:'#006CB7', speed:'instant' },
+      { id:'unicredit',   name:'UniCredit',            color:'#DD1414', speed:'instant' },
+      { id:'bper',        name:'BPER Banca',           color:'#009E73', speed:'1-2 days' },
+      { id:'banco-bpm',   name:'Banco BPM',            color:'#005EB8', speed:'instant' },
+      { id:'mps',         name:'Monte dei Paschi',     color:'#004792', speed:'1-2 days' },
+      { id:'mediobanca',  name:'Mediobanca',           color:'#000F5C', speed:'2-4 days' },
+      { id:'fineco',      name:'FinecoBank',           color:'#FF5000', speed:'instant' },
+      { id:'banca-sella', name:'Banca Sella',          color:'#005EB8', speed:'1-2 days' },
+      { id:'ca-it',       name:'Crédit Agricole IT',   color:'#005844', speed:'1-2 days' },
+      { id:'hype',        name:'Hype',                 color:'#FF4B00', speed:'instant' },
+    ],
+    fr: [
+      { id:'bnp-fr',        name:'BNP Paribas',          color:'#009E60', speed:'instant' },
+      { id:'ca-fr',         name:'Crédit Agricole',      color:'#005844', speed:'instant' },
+      { id:'soc-gen',       name:'Société Générale',     color:'#E60028', speed:'instant' },
+      { id:'lcl',           name:'LCL',                  color:'#009A3D', speed:'instant' },
+      { id:'la-poste',      name:'La Banque Postale',    color:'#FFCE00', speed:'1-2 days' },
+      { id:'boursorama',    name:'Boursorama',           color:'#FF9D00', speed:'instant' },
+      { id:'credit-mutuel', name:'Crédit Mutuel',        color:'#003F87', speed:'instant' },
+      { id:'caisse-epargne',name:"Caisse d'Épargne",     color:'#007A3D', speed:'1-2 days' },
+      { id:'hsbc-fr',       name:'HSBC FR',              color:'#DB0011', speed:'instant' },
+    ],
+  };
+
+  let selectedBankCountry = 'pl';
+  let selectedBankId = null;
+  let bankSearchTimer = null;
+  let bankPickerInited = false;
+
+  function initBankPicker() {
+    if (bankPickerInited) return;
+    bankPickerInited = true;
+    document.getElementById('bankFlagOverlay').innerHTML = flagSvg('pl', 14);
+    document.getElementById('countryFlagInline').innerHTML = flagSvg('pl', 20);
+    renderCountryRows(COUNTRIES);
+    renderBankRows(BANKS['pl']);
+  }
+
+  function positionBankPopup(btnId, popupId) {
+    var btn = document.getElementById(btnId);
+    var popup = document.getElementById(popupId);
+    var rect = btn.getBoundingClientRect();
+    popup.style.top = (rect.bottom + 4) + 'px';
+    popup.style.left = rect.left + 'px';
+    popup.style.width = rect.width + 'px';
+    // Flip up if no space below
+    var spaceBelow = window.innerHeight - rect.bottom - 8;
+    if (spaceBelow < 200 && rect.top > 200) {
+      popup.style.top = '';
+      popup.style.bottom = (window.innerHeight - rect.top + 4) + 'px';
+    } else {
+      popup.style.bottom = '';
+    }
+  }
+
+  function toggleCountryPopup(e) {
+    e.stopPropagation();
+    var popup = document.getElementById('countryPopup');
+    var btn = document.getElementById('countrySelectBtn');
+    var isOpen = popup.style.display !== 'none';
+    document.getElementById('bankPopup').style.display = 'none';
+    document.getElementById('bankSelectBtn').classList.remove('open');
+    if (isOpen) {
+      popup.style.display = 'none';
+      btn.classList.remove('open');
+    } else {
+      document.getElementById('countrySearchInput').value = '';
+      renderCountryRows(COUNTRIES);
+      positionBankPopup('countrySelectBtn', 'countryPopup');
+      popup.style.display = 'flex';
+      btn.classList.add('open');
+      setTimeout(function(){ document.getElementById('countrySearchInput').focus(); }, 50);
+    }
+  }
+
+  function toggleBankPopup(e) {
+    e.stopPropagation();
+    var popup = document.getElementById('bankPopup');
+    var btn = document.getElementById('bankSelectBtn');
+    var isOpen = popup.style.display !== 'none';
+    document.getElementById('countryPopup').style.display = 'none';
+    document.getElementById('countrySelectBtn').classList.remove('open');
+    if (isOpen) {
+      popup.style.display = 'none';
+      btn.classList.remove('open');
+    } else {
+      document.getElementById('bankSearchInput').value = '';
+      renderBankRows(BANKS[selectedBankCountry]);
+      positionBankPopup('bankSelectBtn', 'bankPopup');
+      popup.style.display = 'flex';
+      btn.classList.add('open');
+      setTimeout(function(){ document.getElementById('bankSearchInput').focus(); }, 50);
+    }
+  }
+
+  function onCountrySearch(q) {
+    var results = q.trim() ? COUNTRIES.filter(function(c){ return c.name.toLowerCase().indexOf(q.trim().toLowerCase()) !== -1; }) : COUNTRIES;
+    renderCountryRows(results, q);
+  }
+
+  function onBankSearch(q) {
+    clearTimeout(bankSearchTimer);
+    renderBankSkeletons();
+    bankSearchTimer = setTimeout(function() {
+      var query = q.trim().toLowerCase();
+      var results = query ? BANKS[selectedBankCountry].filter(function(b){ return b.name.toLowerCase().indexOf(query) !== -1; }) : BANKS[selectedBankCountry];
+      renderBankRows(results, q);
+    }, 250);
+  }
+
+  function renderCountryRows(list, query) {
+    var container = document.getElementById('countryList');
+    if (!list || !list.length) {
+      container.innerHTML = '<div class="dropdown-empty">No countries found</div>';
+      return;
+    }
+    container.innerHTML = list.map(function(c) {
+      var sel = c.code === selectedBankCountry ? ' selected' : '';
+      var check = c.code === selectedBankCountry ? '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8L6.5 11.5L13 5" stroke="#222" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>' : '';
+      return '<button type="button" class="dropdown-row' + sel + '" onclick="chooseCountry(\'' + c.code + '\')">'
+        + '<div class="dropdown-row-left">'
+        + '<div class="dropdown-row-icon">' + flagSvg(c.code, 24) + '</div>'
+        + '<span class="dropdown-row-name">' + c.name + '</span>'
+        + '</div>' + check + '</button>';
+    }).join('');
+  }
+
+  function renderBankRows(list, query) {
+    var container = document.getElementById('bankList');
+    if (!list || !list.length) {
+      container.innerHTML = '<div class="dropdown-empty">No banks match &ldquo;' + escHtml(query || '') + '&rdquo;</div>';
+      return;
+    }
+    container.innerHTML = list.map(function(b) {
+      var sel = b.id === selectedBankId ? ' selected' : '';
+      var check = b.id === selectedBankId ? '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8L6.5 11.5L13 5" stroke="#222" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>' : '';
+      var speedCls = b.speed === 'instant' ? 'speed-instant' : 'speed-slow';
+      var speedTxt = b.speed === 'instant' ? '⚡ Instant' : '🕐 ' + b.speed;
+      return '<button type="button" class="dropdown-row' + sel + '" onclick="chooseBank(\'' + b.id + '\')">'
+        + '<div class="dropdown-row-left">'
+        + '<div class="dropdown-row-icon">' + bankLogoHtml(b, 24) + '</div>'
+        + '<div class="dropdown-row-text">'
+        + '<span class="dropdown-row-name">' + b.name + '</span>'
+        + '<span class="dropdown-speed ' + speedCls + '">' + speedTxt + '</span>'
+        + '</div>'
+        + '</div>' + check + '</button>';
+    }).join('');
+  }
+
+  function renderBankSkeletons() {
+    var container = document.getElementById('bankList');
+    container.innerHTML = [80,120,70,100,90,110].map(function(w) {
+      return '<div class="skeleton-row"><span class="skel-circle-bank"></span>'
+        + '<span class="skel-block" style="height:14px;flex:1;max-width:' + w + 'px;"></span>'
+        + '<span class="skel-block" style="height:12px;width:50px;opacity:0.7;"></span>'
+        + '</div>';
+    }).join('');
+  }
+
+  function escHtml(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function chooseCountry(code) {
+    selectedBankCountry = code;
+    selectedBankId = null;
+    var country = COUNTRIES.find(function(c){ return c.code === code; });
+    document.getElementById('countryFlagInline').innerHTML = flagSvg(code, 20);
+    document.getElementById('countrySelectText').textContent = country.name;
+    // countrySuggestedBadge removed from UI
+    document.getElementById('bankLogoInline').innerHTML = '';
+    document.getElementById('bankSelectText').textContent = 'Select bank';
+    document.getElementById('bankSelectBtn').classList.add('placeholder-state');
+    document.getElementById('bankSpeedBadge').style.display = 'none';
+    document.getElementById('bankFlagOverlay').innerHTML = flagSvg(code, 14);
+    document.getElementById('bankDesc').textContent = 'Choose your bank';
+    document.getElementById('bankRedirectInfo').style.display = 'none';
+    document.getElementById('countryPopup').style.display = 'none';
+    document.getElementById('countrySelectBtn').classList.remove('open');
+  }
+
+  function chooseBank(id) {
+    selectedBankId = id;
+    var bank = BANKS[selectedBankCountry].find(function(b){ return b.id === id; });
+    document.getElementById('bankLogoInline').innerHTML = bankLogoHtml(bank, 20);
+    document.getElementById('bankSelectText').textContent = bank.name;
+    document.getElementById('bankSelectBtn').classList.remove('placeholder-state');
+    var speedBadge = document.getElementById('bankSpeedBadge');
+    speedBadge.className = 'bank-select-speed ' + (bank.speed === 'instant' ? 'speed-instant' : 'speed-slow');
+    speedBadge.textContent = bank.speed === 'instant' ? '⚡ Instant' : '🕐 ' + bank.speed;
+    speedBadge.style.display = '';
+    document.getElementById('bankDesc').textContent = bank.name;
+    var infoEl = document.getElementById('bankRedirectInfo');
+    var infoText = document.getElementById('bankRedirectText');
+    if (bank.speed === 'instant') {
+      infoText.textContent = `Once you click “Confirm payment”, you'll be redirected to ${bank.name}'s online banking to authorize the transfer.`;
+    } else {
+      infoText.textContent = `Once you click “Confirm payment”, you'll be redirected to ${bank.name}. The transfer may take ${bank.speed} business days to settle.`;
+    }
+    infoEl.style.display = 'flex';
+    document.getElementById('bankPopup').style.display = 'none';
+    document.getElementById('bankSelectBtn').classList.remove('open');
+    renderBankRows(BANKS[selectedBankCountry]);
+  }
+
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest || !e.target.closest('.bank-select-wrap')) {
+      var cp = document.getElementById('countryPopup');
+      var bp = document.getElementById('bankPopup');
+      if (cp) { cp.style.display = 'none'; var csb = document.getElementById('countrySelectBtn'); if (csb) csb.classList.remove('open'); }
+      if (bp) { bp.style.display = 'none'; var bsb = document.getElementById('bankSelectBtn'); if (bsb) bsb.classList.remove('open'); }
+    }
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      var cp = document.getElementById('countryPopup');
+      var bp = document.getElementById('bankPopup');
+      if (cp) { cp.style.display = 'none'; var csb = document.getElementById('countrySelectBtn'); if (csb) csb.classList.remove('open'); }
+      if (bp) { bp.style.display = 'none'; var bsb = document.getElementById('bankSelectBtn'); if (bsb) bsb.classList.remove('open'); }
+    }
+  });
 
   function selectCurrency(el) {
     document.querySelectorAll('.currency-tab').forEach(t => t.classList.remove('active'));
@@ -3215,7 +3675,7 @@ document.addEventListener('click',function(e){
     currencyEl.classList.add('updating');
 
     const curr = el.dataset.currency;
-    const baseAmount = ORDER_ITEMS.reduce((s, i) => s + i.lineAmountTotal, 0);
+    const baseAmount = 100.00;
     const rates = { EUR: 1, PLN: 4.4537, GBP: 0.8612 };
     const rate = rates[curr] || 1;
     const converted = (baseAmount * rate).toFixed(2);
@@ -3521,8 +3981,6 @@ document.addEventListener('click',function(e){
       const requiredCvv = detectedBrand === 'amex' ? 4 : 3;
       const minCard = detectedBrand === 'amex' ? 15 : 16;
       stepper.disabled = !(num.length >= minCard && exp.length === 4 && cvv.length >= requiredCvv);
-    } else if (activeItem === 'crypto') {
-      stepper.disabled = !(cryptoState.currency && cryptoState.network);
     } else {
       stepper.disabled = false;
     }
@@ -3648,26 +4106,15 @@ document.addEventListener('click',function(e){
           paymentData.cardBrand = 'Visa';
         }
       }
-      if (activeItem === 'crypto') {
-        const c = CRYPTO[cryptoState.currency];
-        const n = c.networks.find(x => x.id === cryptoState.network);
-        const amountEur = parseFloat(document.getElementById('totalAmount')?.textContent || '100');
-        const decimals = cryptoState.currency === 'btc' ? 8 : cryptoState.currency === 'eth' ? 6 : 2;
-        const cryptoAmt = (amountEur * CRYPTO_RATES[cryptoState.currency]).toFixed(decimals);
-        paymentData.cryptoCurrency       = cryptoState.currency;
-        paymentData.cryptoCurrencyName   = c.name;
-        paymentData.cryptoCurrencyTicker = c.ticker;
-        paymentData.cryptoNetwork        = cryptoState.network;
-        paymentData.cryptoNetworkName    = n.name;
-        paymentData.cryptoAddress        = MOCK_ADDRESSES[cryptoState.network];
-        paymentData.cryptoAmount         = cryptoAmt + ' ' + c.ticker;
-      }
       paymentData.currency = document.getElementById('totalCurrency')?.textContent || 'EUR';
       paymentData.amount = document.getElementById('totalAmount')?.textContent || '100.00';
+      if (activeItem === 'bank') {
+        paymentData.bankCountry = selectedBankCountry;
+        paymentData.bankId = selectedBankId;
+      }
       try { sessionStorage.setItem('zenPaymentData', JSON.stringify(paymentData)); } catch(e) {}
-      const nextRoute = activeItem === 'blik' ? '/blik' : activeItem === 'zenapp' ? '/zen-payment' : activeItem === 'card' ? '/3ds' : activeItem === 'crypto' ? '/crypto-payment' : '/status';
+      const nextRoute = activeItem === 'blik' ? '/blik' : activeItem === 'zenapp' ? '/zen-payment' : activeItem === 'card' ? '/3ds' : '/status';
       window.parent.postMessage({ type: 'navigate', to: nextRoute }, '*');
-      if (window === window.parent && activeItem === 'crypto') window.location.href = './crypto-payment.html';
       return;
     }
     stepper.step = 2;
@@ -3908,7 +4355,6 @@ document.addEventListener('click',function(e){
   // Initial draw
   resizeCanvas();
   drawStepper();
-  renderOrderItems();
 
   // Resize canvas on window resize (debounced 100ms)
   let _resizeTimer = null;
