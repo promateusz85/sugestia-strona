@@ -1,0 +1,176 @@
+/* ── Google Fonts ── */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap');
+
+/* ── Design tokens ── */
+:root {
+  --color-primary:   #222222;
+  --color-secondary: #727272;
+  --color-accent:    #22e243;
+  --color-surface:   #ffffff;
+  --color-border:    #dfdfdf;
+  --color-error:     #ff3b30;
+
+  --radius-sm:   8px;
+  --radius-md:   14px;
+  --radius-full: 999px;
+}
+
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  background: #e8e8e8;
+  font-family: 'Nunito', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100dvh;
+}
+
+/* ── Phone shell ── */
+.phone {
+  position: relative;
+  width: 375px;
+  height: 812px;
+  background: var(--color-surface);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+/* Full-screen on narrow viewports */
+@media (max-width: 420px) {
+  body {
+    background: var(--color-surface);
+    align-items: stretch;
+    justify-content: stretch;
+  }
+  .phone {
+    width: 100%;
+    height: 100dvh;
+    border-radius: 0;
+    box-shadow: none;
+  }
+}
+
+/* Soft frame on desktop */
+@media (min-width: 421px) {
+  .phone {
+    border-radius: 40px;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.18);
+  }
+}
+
+/* ── Status bar ── */
+.status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px 0;
+  height: 44px;
+  flex-shrink: 0;
+}
+
+.status-time {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-primary);
+  letter-spacing: -0.3px;
+}
+
+.status-icons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ── Navbar ── */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 44px;
+  padding: 0 8px;
+  flex-shrink: 0;
+}
+
+/* ── Icon button (back arrow, close X, etc.) ── */
+.icon-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--color-primary);
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.12s;
+  padding: 0;
+  flex-shrink: 0;
+}
+.icon-btn:hover  { background: rgba(0, 0, 0, 0.05); }
+.icon-btn:active { background: rgba(0, 0, 0, 0.10); }
+
+/* ── Toast ── */
+.toast {
+  position: absolute;
+  bottom: 96px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.76);
+  color: #fff;
+  padding: 9px 18px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.18s ease-out;
+  z-index: 200;
+}
+.toast.visible { opacity: 1; }
+
+/* ── Page transition animations ── */
+@keyframes slideOutRight {
+  to { transform: translateX(105%); opacity: 0; }
+}
+@keyframes slideOutLeft {
+  to { transform: translateX(-105%); opacity: 0; }
+}
+@keyframes slideInFromRight {
+  from { transform: translateX(105%); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+@keyframes slideInFromLeft {
+  from { transform: translateX(-105%); opacity: 0; }
+  to   { transform: translateX(0);     opacity: 1; }
+}
+@keyframes fadeOutAnim {
+  to { opacity: 0; }
+}
+@keyframes fadeInAnim {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.phone.exit-right { animation: slideOutRight   0.28s cubic-bezier(.22, 1, .36, 1) forwards; }
+.phone.exit-left  { animation: slideOutLeft    0.28s cubic-bezier(.22, 1, .36, 1) forwards; }
+.phone.exit-fade  { animation: fadeOutAnim     0.24s ease-out forwards; }
+.phone.enter-right { animation: slideInFromRight 0.30s cubic-bezier(.22, 1, .36, 1) both; }
+.phone.enter-left  { animation: slideInFromLeft  0.30s cubic-bezier(.22, 1, .36, 1) both; }
+.phone.enter-fade  { animation: fadeInAnim       0.28s ease-out both; }
+
+/* Hidden on pre-load morph entry (removed by 02-confirm script) */
+.js-morph-entry { opacity: 0; }

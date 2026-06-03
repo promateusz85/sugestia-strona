@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ZEN — Exchange</title>
+  <link rel="stylesheet" href="shared.css">
+  <style>
+    .phone { overflow: hidden; }
+
+    /* Navbar — centered title only, no back button (matches Figma) */
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 0 16px;
+    }
+    .navbar-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--color-primary);
+      white-space: nowrap;
+    }
+
+    /* ── Main area ── */
+    .confirm-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      /* Bottom padding = space for cta-bar (60+10+32+17 ≈ 180px) */
+      padding-bottom: 176px;
+    }
+
+    /* Decorative hatched circle — absolutely positioned, decorative */
+    .deco-circle {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 402px;
+      height: 402px;
+      border-radius: 50%;
+      background-color: #ebebeb;
+      background-image: repeating-linear-gradient(
+        -45deg,
+        rgba(255,255,255,0.55) 0px,
+        rgba(255,255,255,0.55) 3px,
+        transparent 3px,
+        transparent 9px
+      );
+      pointer-events: none;
+    }
+
+    /* Summary text — floats above the circle */
+    .summary-text {
+      position: relative;
+      z-index: 1;
+      margin-top: 118px;
+      width: 300px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+    }
+
+    .sum-connector {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--color-secondary);
+      line-height: 20px;
+      text-align: center;
+    }
+    .sum-amount {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--color-primary);
+      line-height: 38px;
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+    }
+    .sum-rate {
+      margin-top: 6px;
+      font-size: 19px;
+      font-weight: 700;
+      color: var(--color-primary);
+      line-height: 26px;
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ── Circular timer ── */
+    .timer-section {
+      position: relative;
+      z-index: 1;
+      margin-top: 56px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .timer-desc {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--color-primary);
+      text-align: center;
+      line-height: 20px;
+      max-width: 224px;
+    }
+
+    /* ── CTA bar ── */
+    .cta-bar {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 20px 20px 34px;
+      background: var(--color-surface);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+    }
+    .cta-confirm {
+      width: 100%;
+      height: 60px;
+      border-radius: 32px;
+      border: 2px solid var(--color-primary);
+      background: transparent;
+      color: var(--color-primary);
+      font-family: inherit;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.14s, color 0.14s, transform 0.08s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .cta-confirm:hover  { background: var(--color-primary); color: white; }
+    .cta-confirm:active { transform: scale(0.98); }
+
+    .reject-link {
+      display: inline-block;
+      margin-top: 10px;
+      background: transparent;
+      border: none;
+      padding: 4px 0;
+      font-family: inherit;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--color-primary);
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .reject-link:hover { opacity: 0.65; }
+
+  </style>
+</head>
+<body>
+
+<div class="phone">
+
+  <!-- Status bar -->
+  <div class="status-bar">
+    <span class="status-time">9:41</span>
+    <div class="status-icons">
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="none">
+        <rect x="0"    y="5"   width="3" height="7"    rx="1" fill="#222"/>
+        <rect x="4.5"  y="3.5" width="3" height="8.5"  rx="1" fill="#222"/>
+        <rect x="9"    y="1.5" width="3" height="10.5" rx="1" fill="#222"/>
+        <rect x="13.5" y="0"   width="3" height="12"   rx="1" fill="#222"/>
+      </svg>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+        <path d="M8 3.5C9.9 3.5 11.6 4.3 12.9 5.5L14.2 4.1C12.5 2.5 10.4 1.5 8 1.5C5.6 1.5 3.5 2.5 1.8 4.1L3.1 5.5C4.4 4.3 6.1 3.5 8 3.5Z" fill="#222"/>
+        <path d="M8 6.5C9.2 6.5 10.3 7 11.1 7.9L12.4 6.5C11.2 5.3 9.7 4.5 8 4.5C6.3 4.5 4.8 5.3 3.6 6.5L4.9 7.9C5.7 7 6.8 6.5 8 6.5Z" fill="#222"/>
+        <circle cx="8" cy="10.5" r="1.5" fill="#222"/>
+      </svg>
+      <svg width="26" height="12" viewBox="0 0 26 12" fill="none">
+        <rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="#222" stroke-opacity="0.35"/>
+        <rect x="2" y="2" width="18" height="8" rx="2" fill="#222"/>
+        <path d="M23.5 4V8C24.4 7.4 25 6.7 25 6C25 5.3 24.4 4.6 23.5 4Z" fill="#222" fill-opacity="0.4"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Navbar: Exchange title only (no back button per Figma) -->
+  <div class="navbar">
+    <span class="navbar-title">Exchange</span>
+  </div>
+
+  <!-- Main content -->
+  <div class="confirm-main">
+
+    <!-- Decorative hatched circle (background) -->
+    <div class="deco-circle"></div>
+
+    <!-- Exchange summary text -->
+    <div class="summary-text">
+      <span class="sum-connector">Exchange</span>
+      <span class="sum-amount" id="sumFrom">100 PLN</span>
+      <span class="sum-connector">to</span>
+      <span class="sum-amount" id="sumTo">43 EUR</span>
+      <span class="sum-connector">at</span>
+      <span class="sum-rate" id="sumRate">1 PLN = 0.230864 EUR</span>
+    </div>
+
+    <!-- Circular countdown timer -->
+    <div class="timer-section">
+      <svg id="timerSvg" width="90" height="90" viewBox="0 0 90 90" aria-label="Time remaining">
+        <!-- White background circle -->
+        <circle cx="45" cy="45" r="44" fill="white"/>
+        <!-- Gray track ring -->
+        <circle cx="45" cy="45" r="40" fill="none"
+                stroke="#EBEBEB" stroke-width="2"/>
+        <!-- Black progress arc (rotated so start is top) -->
+        <circle id="timerArc" cx="45" cy="45" r="40" fill="none"
+                stroke="#222222" stroke-width="2"
+                stroke-dasharray="251.33"
+                stroke-dashoffset="0"
+                stroke-linecap="round"
+                transform="rotate(-90 45 45)"/>
+        <!-- Timer text -->
+        <text id="timerText" x="45" y="51.5"
+              text-anchor="middle"
+              font-family="Nunito, sans-serif"
+              font-size="19" font-weight="600"
+              fill="#222222">2:50</text>
+      </svg>
+      <p class="timer-desc">
+        The exchange will be completed<br>automatically in 30 seconds.
+      </p>
+    </div>
+
+    <!-- CTA bar (absolute bottom) -->
+    <div class="cta-bar">
+      <button class="cta-confirm" id="confirmBtn" onclick="confirmExchange()">Confirm</button>
+      <button class="reject-link" onclick="rejectExchange()">Reject</button>
+    </div>
+
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+</div><!-- /phone -->
+
+<script src="shared.js"></script>
+<script>
+  // ── Load state from previous screen ──
+  let fx = {
+    from:    { code: 'PLN', balance: 4850 },
+    to:      { code: 'EUR', balance: 127.34 },
+    rate:    0.230864,
+    invRate: 4.330883,
+    amount:  100
+  };
+  try {
+    const saved = JSON.parse(sessionStorage.getItem('zen_fx') || 'null');
+    if (saved) Object.assign(fx, saved);
+  } catch (e) {}
+
+  // ── Format helpers ──
+  function fmt(n) {
+    return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  // ── Format: omit .00 for whole numbers ──
+  function fmtAmt(n) {
+    return n % 1 === 0
+      ? n.toLocaleString('en-US')
+      : n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  // ── Render amounts ──
+  const received = +(fx.amount * fx.rate).toFixed(2);
+  document.getElementById('sumFrom').textContent = `${fmtAmt(fx.amount)} ${fx.from.code}`;
+  document.getElementById('sumTo').textContent   = `${fmtAmt(received)} ${fx.to.code}`;
+  document.getElementById('sumRate').textContent = `1 ${fx.from.code} = ${fx.rate.toFixed(6)} ${fx.to.code}`;
+
+  // ── Circular timer countdown (2:50 = 170s) ──
+  const TOTAL = 170;
+  const CIRC  = 2 * Math.PI * 40; // ≈ 251.33
+  let secondsLeft = TOTAL;
+
+  const arcEl  = document.getElementById('timerArc');
+  const textEl = document.getElementById('timerText');
+
+  function tick() {
+    // Update text
+    const m = Math.floor(secondsLeft / 60);
+    const s = secondsLeft % 60;
+    textEl.textContent = `${m}:${String(s).padStart(2, '0')}`;
+
+    // Update arc: full = remaining; shrinks as time passes
+    arcEl.style.strokeDashoffset = CIRC * (1 - secondsLeft / TOTAL);
+
+    if (secondsLeft <= 0) {
+      clearInterval(timerInterval);
+      showToast('Rate expired — please re-enter');
+      setTimeout(() => navigate('01-amount.html', 'exit-right', 'enter-left'), 1200);
+      return;
+    }
+    secondsLeft--;
+  }
+
+  tick();
+  const timerInterval = setInterval(tick, 1000);
+
+  // ── Actions ──
+  function confirmExchange() {
+    clearInterval(timerInterval);
+    navigate('03-processing.html', 'exit-fade', 'enter-fade');
+  }
+
+  function rejectExchange() {
+    clearInterval(timerInterval);
+    navigate('01-amount.html', 'exit-right', 'enter-left');
+  }
+
+  // ── Morph entry: simple fade-in ───────────────────
+  if (sessionStorage.getItem('zen_morph') === '1') {
+    sessionStorage.removeItem('zen_morph');
+    document.documentElement.classList.remove('js-morph-entry');
+    // Gentle fade-in of the whole screen
+    const ph = document.querySelector('.phone');
+    ph.style.opacity = '0';
+    ph.style.transition = 'none';
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        ph.style.transition = 'opacity 0.32s ease-out';
+        ph.style.opacity    = '1';
+      });
+    });
+  }
+</script>
+
+</body>
+</html>
