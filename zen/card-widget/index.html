@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>ZEN.COM Pay 2.0 — Card widget customizer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Roboto:wght@400;500;700&family=Montserrat:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════════════════════
+   ZEN.COM Pay 2.0 — Card widget customizer (Stripe-style)
+   Left: controls (Features / Style). Right: live ZEN card widget.
+   The preview renders ONLY what lives inside the merchant's "Card"
+   method — no merchant chrome, no Pay button. Engine ported from the
+   v6 embedded-widget prototype, re-skinned to the Figma spec.
+   Single self-contained file — no build step, no assets.
+   ══════════════════════════════════════════════════════════ */
+
+/* ---------- customizer shell tokens ---------- */
+:root{
+  --ui-font:'Inter',-apple-system,system-ui,'Segoe UI',sans-serif;
+  --ui-bg:#f6f7f9; --ui-panel:#fff; --ui-line:#e6e8eb; --ui-ink:#1a1f24;
+  --ui-muted:#6b7480; --ui-accent:#635bff; --ui-track:#d7dbe0;
+  --stage-bg:#eceff1;
+}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%}
+body{
+  font-family:var(--ui-font);color:var(--ui-ink);background:var(--ui-bg);
+  -webkit-font-smoothing:antialiased;display:flex;flex-direction:column;min-height:100vh;
+}
+.num{font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1}
+button{font-family:inherit}
+
+/* ---------- top bar ---------- */
+.topbar{height:60px;flex:none;display:flex;align-items:center;gap:14px;padding:0 22px;background:var(--ui-panel);border-bottom:1px solid var(--ui-line)}
+.topbar .logo{display:flex;align-items:center;gap:9px;font-weight:700;font-size:15px}
+.topbar .logo .mark{width:26px;height:26px;border-radius:50%;background:#111;display:grid;place-items:center}
+.topbar .logo .mark svg{width:16px;height:16px}
+.topbar .sep{width:1px;height:22px;background:var(--ui-line)}
+.topbar .zenlogo{display:flex;align-items:center;color:var(--ui-ink)}
+.topbar .zenmark{height:15px;width:auto;display:block}
+.topbar .sub{color:var(--ui-muted);font-size:13px;font-weight:600}
+.topbar .spacer{flex:1}
+.topbar .reset{height:34px;padding:0 14px;border-radius:8px;border:1px solid var(--ui-line);background:#fff;color:var(--ui-ink);font-weight:600;font-size:13px;cursor:pointer}
+.topbar .reset:hover{border-color:#c4c9ce}
+
+/* ---------- layout ---------- */
+.app{flex:1;display:flex;min-height:0}
+.panel{width:360px;flex:none;background:var(--ui-panel);border-right:1px solid var(--ui-line);display:flex;flex-direction:column;min-height:0}
+.stage{flex:1;min-width:0;overflow:auto;background:var(--stage-bg);display:flex;align-items:flex-start;justify-content:center;padding:44px 24px}
+
+/* ---------- tabs ---------- */
+.tabs{display:flex;flex:none;border-bottom:1px solid var(--ui-line);padding:0 14px}
+.tab{appearance:none;border:0;background:none;cursor:pointer;padding:16px 12px;font-weight:600;font-size:14px;color:var(--ui-muted);position:relative;display:flex;align-items:center;gap:7px}
+.tab svg{width:16px;height:16px}
+.tab.on{color:var(--ui-accent)}
+.tab.on::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--ui-accent);border-radius:2px}
+.tabpanes{flex:1;overflow:auto;min-height:0}
+.pane{display:none;padding:16px 20px 0}
+.pane.on{display:block}
+.pane#pane-style{border-top:1px solid var(--ui-line);padding-top:18px}
+.secttl{font-weight:700;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ui-muted);margin-bottom:14px}
+.secttl-row{display:flex;align-items:center;justify-content:space-between}
+.mini-reset{appearance:none;border:0;background:none;cursor:pointer;display:inline-flex;align-items:center;gap:5px;color:var(--ui-accent);font:700 11px/1 var(--ui-font);letter-spacing:0;text-transform:none;padding:0}
+.mini-reset svg{width:13px;height:13px}
+.mini-reset:hover{opacity:.7}
+
+/* ---------- control groups ---------- */
+.group{margin-bottom:26px}
+.group>.gt{font-weight:700;font-size:13px;letter-spacing:.01em;margin-bottom:12px}
+.ctrl{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:36px;padding:5px 0}
+.ctrl .cl{font-size:14px;color:var(--ui-ink)}
+.ctrl .cl small{display:block;font-size:12px;color:var(--ui-muted);font-weight:400;margin-top:1px}
+.ctrl.dis{opacity:.42;pointer-events:none}
+
+/* toggle switch */
+.sw{position:relative;width:38px;height:22px;flex:none;cursor:pointer}
+.sw input{position:absolute;opacity:0;width:100%;height:100%;margin:0;cursor:pointer}
+.sw .tk{position:absolute;inset:0;background:var(--ui-track);border-radius:22px;transition:background .18s}
+.sw .tk::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .18s}
+.sw input:checked+.tk{background:var(--ui-accent)}
+.sw input:checked+.tk::after{transform:translateX(16px)}
+.sw input:focus-visible+.tk{outline:2px solid var(--ui-accent);outline-offset:2px}
+
+/* segmented control */
+.seg{display:inline-flex;background:#f0f1f3;border-radius:9px;padding:3px;gap:2px}
+.seg button{appearance:none;border:0;background:none;cursor:pointer;padding:7px 12px;border-radius:7px;font-weight:600;font-size:13px;color:var(--ui-muted);white-space:nowrap;transition:.15s}
+.seg button.on{background:#fff;color:var(--ui-ink);box-shadow:0 1px 2px rgba(0,0,0,.12)}
+
+/* select */
+.sel{appearance:none;height:36px;padding:0 30px 0 11px;border:1px solid var(--ui-line);border-radius:8px;
+  background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7480' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 9px center;
+  font-family:inherit;font-weight:600;font-size:13px;color:var(--ui-ink);cursor:pointer;min-width:150px}
+
+/* color row */
+.color{display:flex;align-items:center;gap:9px}
+.color .swatch{width:34px;height:34px;flex:none;border-radius:8px;border:1px solid var(--ui-line);padding:0;cursor:pointer;overflow:hidden;background:none}
+.color .swatch::-webkit-color-swatch-wrapper{padding:0}
+.color .swatch::-webkit-color-swatch{border:0;border-radius:7px}
+.color .hex{width:104px;height:34px;border:1px solid var(--ui-line);border-radius:8px;padding:0 10px;font-family:var(--ui-font);font-weight:600;font-size:13px;color:var(--ui-ink);text-transform:uppercase;outline:none}
+.color .hex:focus{border-color:var(--ui-accent)}
+
+.hint{background:#f3f4f6;border-radius:10px;padding:12px 14px;font-size:12.5px;line-height:1.5;color:var(--ui-muted)}
+.hint b{color:var(--ui-ink)}
+
+/* footer action bar */
+.actions{flex:none;border-top:1px solid var(--ui-line);padding:14px 20px;display:flex;gap:10px;background:var(--ui-panel)}
+.actions button{flex:1;height:40px;border-radius:9px;font-weight:700;font-size:13px;cursor:pointer;border:1px solid var(--ui-line);background:#fff;color:var(--ui-ink);display:flex;align-items:center;justify-content:center;gap:7px}
+.actions button svg{width:15px;height:15px}
+.actions .primary{background:#111;color:#fff;border-color:#111}
+.actions button:hover{filter:brightness(.97)}
+.actions .primary:hover{background:#000}
+
+/* ════════════════ THE ZEN WIDGET SURFACE ════════════════
+   .wcard is the whole widget background (this is what the Background
+   control paints). Widget design tokens live here so children inherit;
+   the Style panel writes --bg / --primary / --secondary / --s-strong onto it. */
+.wcard{
+  --font:'Inter',-apple-system,system-ui,sans-serif;
+  --primary:#222222; --secondary:#727272; --tertiary:#a3a3a3; --disabled:#b5b5b5;
+  --bg:#ffffff; --s-light:#f7f7f7; --s-medium:#ebebeb; --s-strong:#dfdfdf; --error:#d92c2c;
+  --r-6:6px; --r-8:8px; --r-10:10px;
+  --ease-out:cubic-bezier(.23,1,.32,1); --ease-inout:cubic-bezier(.77,0,.175,1);
+  --t-press:120ms; --t-hover:160ms; --t-expand:280ms;
+  position:relative;width:100%;max-width:420px;
+  background:var(--bg);border-radius:16px;padding:26px 24px;
+  box-shadow:0 10px 40px rgba(20,25,35,.08);
+  font-family:var(--font);color:var(--primary);
+}
+.zen{display:block}
+.zen *{font-family:var(--font)}
+
+.brands{display:inline-flex;align-items:center;gap:7px;background:#fff;border:1px solid #e6e6e6;border-radius:8px;padding:7px 11px}
+.brands .c2pmark{height:14px;width:auto;display:block}
+.login .brands{background:none;border:0;padding:0}
+
+/* login-to-C2P button (unrecognized) */
+.login{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;border:1.5px solid #222;border-radius:var(--r-8);height:46px;padding:0 15px;background:#fff;cursor:pointer}
+.login .lt{font:600 14px/18px var(--font);color:#222}
+.orline{display:flex;align-items:center;gap:10px;margin:14px 0}
+.orline .ln{flex:1;height:1px;background:var(--s-medium)}
+.orline .ot{font:600 10px/1 var(--font);letter-spacing:.04em;color:var(--secondary);text-transform:uppercase}
+
+/* card fields */
+.fields{display:grid;gap:20px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.field{position:relative}
+.field label{position:absolute;top:-9px;left:7px;padding:0 4px;z-index:1;background:var(--bg);font:400 13px/14px var(--font);color:var(--secondary);pointer-events:none;transition:color var(--t-hover)}
+.field input{width:100%;height:40px;padding:0 40px 0 13px;font:400 14px/1 var(--font);color:var(--primary);background:transparent;border:1px solid var(--s-strong);border-radius:var(--r-6);outline:none;transition:border-color var(--t-hover),box-shadow var(--t-hover)}
+.field input::placeholder{color:var(--s-strong)}
+@media (hover:hover){.field input:hover{border-color:var(--tertiary)}}
+.field input:focus{border-color:var(--primary);box-shadow:0 0 0 1px var(--primary)}
+.field:focus-within label{color:var(--primary)}
+.field.err input{border-color:var(--error);box-shadow:0 0 0 1px var(--error)}
+.field.err label{color:var(--error)}
+.field.shake input{animation:shake 340ms var(--ease-inout)}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-4px)}40%{transform:translateX(3px)}60%{transform:translateX(-2px)}80%{transform:translateX(1px)}}
+.adorn{position:absolute;right:12px;top:20px;transform:translateY(-50%);display:flex;align-items:center}
+.brand{width:28px;height:20px;border-radius:3px;opacity:0;transform:scale(.9);transition:opacity .22s var(--ease-out),transform .22s var(--ease-out)}
+.brand.on{opacity:1;transform:scale(1)}
+.help{width:16px;height:16px;border-radius:50%;border:0;cursor:pointer;background:var(--s-medium);color:var(--secondary);font:700 10px/1 var(--font)}
+@media (hover:hover){.help:hover{background:var(--primary);color:var(--bg)}}
+.msg{font:italic 600 12px/15px var(--font);color:var(--error);padding:4px 0 0 3px;opacity:0;transform:translateY(-3px);transition:opacity .17s var(--ease-out),transform .17s var(--ease-out)}
+.field.err .msg{opacity:1;transform:none}
+
+/* recognized: header row + saved card + card list */
+.rec-top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-bottom:16px}
+.notyours{font:600 14px/18px var(--font);color:var(--primary);text-decoration:underline;text-underline-offset:2px;background:none;border:0;padding:0;cursor:pointer}
+.entertitle{font:600 14px/18px var(--font);color:var(--primary)}
+.savedcard{display:flex;align-items:center;gap:14px}
+.zencard{width:104px;height:66px;border-radius:8px;flex:none;background:#000 url(data:image/png;base64,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) center/cover no-repeat;overflow:hidden;position:relative}
+.zencard .zt{font-family:'Nunito',var(--font);font-weight:800;color:#22e243;font-size:22px;font-style:italic;transform:rotate(-8deg);text-shadow:0 1px 2px rgba(0,0,0,.55)}
+.savedcard .snum{font:400 17px/22px var(--font);letter-spacing:1px;color:var(--primary)}
+.savedcard .change{margin-left:auto;font:600 15px/20px var(--font);color:var(--primary);text-decoration:underline;text-underline-offset:2px;background:none;border:0;cursor:pointer}
+.clist{display:flex;flex-direction:column}
+.clist .it{display:flex;align-items:center;gap:14px;padding:8px 0}
+.clist .snum{font:400 16px/20px var(--font);letter-spacing:1px;color:var(--primary)}
+.clist .rt{margin-left:auto;font:400 15px/19px var(--font)}
+.clist .rt.cur{color:var(--secondary)}
+.clist .rt.choose{color:var(--primary);text-decoration:underline;text-underline-offset:2px;cursor:pointer;background:none;border:0;font-weight:600}
+.manual{display:flex;align-items:center;gap:12px;border:1px solid var(--s-strong);border-radius:var(--r-8);height:54px;padding:0 11px;margin-top:10px;cursor:pointer;background:none;width:100%}
+.manual .plusbox{width:32px;height:32px;flex:none;border:1px solid var(--s-strong);border-radius:8px;display:grid;place-items:center;color:var(--primary)}
+.manual .plusbox svg{width:16px;height:16px}
+.manual .mt{font:500 14px/1 var(--font);color:var(--primary)}
+.manual .chev{margin-left:auto;width:7px;height:7px;border-right:1.6px solid var(--secondary);border-bottom:1.6px solid var(--secondary);transform:rotate(-45deg)}
+.retrn{display:flex;align-items:center;gap:7px;font:600 13px/1 var(--font);padding-top:14px;cursor:pointer;background:none;border:0;color:var(--primary)}
+.retrn .chev{width:7px;height:7px;border-left:1.6px solid var(--primary);border-bottom:1.6px solid var(--primary);transform:rotate(45deg)}
+
+/* reveal (checks + currency + charge) */
+.reveal{display:grid;grid-template-rows:0fr;transition:grid-template-rows var(--t-expand) var(--ease-out)}
+.reveal.on{grid-template-rows:1fr}
+.reveal>.in{overflow:hidden;min-height:0}
+.reveal .checks,.reveal .cur{opacity:0;transform:translateY(5px)}
+.reveal.on .checks{opacity:1;transform:none;transition:opacity .22s var(--ease-out) 50ms,transform .22s var(--ease-out) 50ms}
+.reveal.on .cur{opacity:1;transform:none;transition:opacity .22s var(--ease-out) .11s,transform .22s var(--ease-out) .11s}
+
+.checks{padding-top:16px;display:grid;gap:12px}
+.check{display:flex;align-items:flex-start;gap:10px;cursor:pointer}
+.check input{position:absolute;opacity:0;pointer-events:none}
+.box{width:22px;height:22px;flex:none;border:1.5px solid var(--s-strong);border-radius:5px;display:grid;place-items:center;background:var(--bg);transition:background var(--t-press),border-color var(--t-press),transform var(--t-press) var(--ease-out)}
+.check:active .box{transform:scale(.92)}
+.check input:checked+.box{background:var(--primary);border-color:var(--primary)}
+.box svg{opacity:0;transform:scale(.7);transition:opacity .1s,transform .14s var(--ease-out)}
+.box svg path{stroke:var(--bg)}
+.check input:checked+.box svg{opacity:1;transform:none}
+.check input:focus-visible+.box{outline:2px solid var(--primary);outline-offset:3px}
+.ck-l{font:600 14px/18px var(--font);color:var(--primary)}
+.ck-b{display:inline-flex;align-items:center;gap:7px}
+.ck-n{font:400 11px/15px var(--font);color:var(--secondary);padding-top:3px}
+.ck-n a{color:var(--primary);font-weight:600;text-decoration:underline;text-underline-offset:2px}
+
+/* currency (DCC) */
+.cur{margin-top:16px;padding-top:14px;border-top:1px solid var(--s-strong)}
+.cur-t{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;padding:0;border:0;background:none;cursor:pointer;color:var(--primary);transition:opacity var(--t-hover)}
+@media (hover:hover){.cur-t:hover{opacity:.62}}
+.cur-t:focus-visible{outline:2px solid var(--primary);outline-offset:5px;border-radius:4px}
+.cur-t.hide{display:none}
+.cur-l{display:flex;align-items:center;gap:6px;font:400 14px/18px var(--font);min-width:0}
+.cur-l svg{color:var(--secondary);flex:none}
+.cur-l b{font-weight:600}
+.cur-c{font:600 14px/18px var(--font);text-decoration:underline;text-underline-offset:2px;white-space:nowrap}
+.cur-p{display:grid;grid-template-rows:0fr;transition:grid-template-rows var(--t-expand) var(--ease-out)}
+.cur-p.on{grid-template-rows:1fr}
+.cur-p>div{overflow:hidden;min-height:0}
+.cur-h{font:600 14px/18px var(--font);padding-bottom:6px}
+.cur-s{font:400 12px/16px var(--font);color:var(--primary);padding-bottom:12px}
+.cur-list{display:grid;gap:12px}
+.opt{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;padding:8px;border:1px solid var(--s-strong);border-radius:var(--r-8);cursor:pointer;transition:border-color var(--t-hover),box-shadow var(--t-hover),transform var(--t-press) var(--ease-out)}
+@media (hover:hover){.opt:hover{border-color:var(--tertiary)}}
+.opt:active{transform:scale(.995)}
+.opt.sel{border:2px solid var(--primary);padding:7px}
+.opt input{position:absolute;opacity:0;pointer-events:none}
+.opt-l{display:flex;align-items:center;gap:8px;min-width:0}
+.dot{width:16px;height:16px;flex:none;border-radius:50%;border:1.5px solid var(--s-strong);display:grid;place-items:center;transition:border-color var(--t-hover)}
+.opt.sel .dot{border-color:var(--primary)}
+.dot i{width:8px;height:8px;border-radius:50%;background:var(--primary);transform:scale(0);transition:transform .17s var(--ease-out)}
+.opt.sel .dot i{transform:scale(1)}
+.opt-c{font:600 14px/18px var(--font);color:var(--primary)}
+.opt-n{font:400 12px/16px var(--font);color:var(--primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.opt-a{font:600 14px/18px var(--font);white-space:nowrap;color:var(--primary)}
+.opt-a.muted{font-weight:400;color:var(--secondary)}
+
+/* charge / authorisation-fee box */
+.chg{margin-top:14px;padding:8px;border-radius:var(--r-8);background:var(--s-light);display:none}
+.chg.on{display:block}
+.chg-r{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.chg-r+.chg-r{padding-top:8px}
+.chg-k{font:400 12px/14px var(--font);color:var(--primary);display:inline-flex;align-items:center;gap:4px}
+.chg-k svg{color:var(--tertiary);cursor:help}
+.chg-v{font:600 12px/14px var(--font);color:var(--primary)}
+.chg-r.tot{margin-top:8px;padding-top:8px;border-top:1px solid var(--s-strong)}
+.chg-r.tot .chg-k{font:600 12px/14px var(--font);color:var(--primary)}
+.chg-r.tot .chg-v{font:600 14px/18px var(--font);color:var(--primary)}
+.chg-s{font:400 10px/14px var(--font);color:var(--primary);padding-top:8px}
+.chg-s a{color:var(--primary);font-weight:400;text-decoration:underline;text-underline-offset:2px}
+.chg-e{font:600 11px/15px var(--font);color:var(--error);padding-top:6px}
+.sk{display:inline-block;height:12px;width:70px;border-radius:3px;background:var(--s-medium);position:relative;overflow:hidden;vertical-align:-1px}
+.sk.lg{height:16px;width:88px}
+.sk::after{content:"";position:absolute;inset:0;transform:translateX(-100%);background:linear-gradient(90deg,transparent,rgba(255,255,255,.6),transparent);animation:sweep 1.1s infinite}
+@keyframes sweep{100%{transform:translateX(100%)}}
+.flash{animation:flash .9s var(--ease-out)}
+@keyframes flash{0%{background:var(--s-medium)}100%{background:transparent}}
+
+/* secured footer */
+.secured{display:flex;align-items:center;justify-content:flex-end;gap:5px;padding-top:16px}
+.secured{color:var(--secondary)}
+.secured .lock{width:12px;height:12px;color:var(--secondary)}
+.secured .stxt{font:400 10px/12px var(--font);color:var(--secondary)}
+.secured .zs{height:11px;width:auto;display:block;color:var(--secondary)}
+
+/* currency search sheet (>4 currencies) */
+.sheet{position:absolute;inset:0;z-index:10;background:var(--bg);border-radius:16px;display:flex;flex-direction:column;padding:26px 24px;opacity:0;transform:scale(.99);pointer-events:none;transition:opacity .18s var(--ease-out),transform .18s var(--ease-out)}
+.sheet.on{opacity:1;transform:none;pointer-events:auto}
+.sh-h{display:flex;align-items:center;gap:10px;padding:0 0 10px}
+.sh-t{font:600 14px/19px var(--font);flex:1;color:var(--primary)}
+.sh-x{width:28px;height:28px;flex:none;border:0;border-radius:50%;background:var(--s-light);color:var(--primary);display:grid;place-items:center;cursor:pointer}
+@media (hover:hover){.sh-x:hover{background:var(--s-medium)}}
+.sh-q{position:relative;padding-bottom:8px}
+.sh-q svg{position:absolute;left:11px;top:11px;color:var(--tertiary)}
+.sh-q input{width:100%;height:38px;padding:0 12px 0 34px;font:400 13px/1 var(--font);color:var(--primary);background:var(--s-light);border:1px solid transparent;border-radius:var(--r-8);outline:none}
+.sh-q input:focus{background:var(--bg);border-color:var(--primary)}
+.sh-b{flex:1;overflow-y:auto;min-height:120px;max-height:300px;overscroll-behavior:contain;margin:0 -6px;padding:0 2px}
+.sh-b::-webkit-scrollbar{width:9px}
+.sh-b::-webkit-scrollbar-thumb{background:var(--s-strong);border-radius:9px;border:3px solid var(--bg);background-clip:padding-box}
+.sh-b::-webkit-scrollbar-track{background:transparent}
+.sh-g{font:700 10px/12px var(--font);letter-spacing:.06em;text-transform:uppercase;color:var(--tertiary);padding:12px 8px 6px}
+.sr{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;padding:11px 8px;border:0;border-radius:var(--r-8);background:none;cursor:pointer;color:var(--primary);text-align:left}
+@media (hover:hover){.sr:hover{background:var(--s-light)}}
+.sr-c{font:600 14px/18px var(--font);min-width:44px}
+.sr-n{font:400 12px/16px var(--font);color:var(--secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sr .tick{color:var(--primary);opacity:0;transform:scale(.7);transition:opacity .11s,transform .15s var(--ease-out);flex:none}
+.sr.sel .tick{opacity:1;transform:none}
+.sh-e{padding:24px 4px;text-align:center;font:400 12px/16px var(--font);color:var(--tertiary)}
+
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition-duration:1ms!important;animation-duration:1ms!important}.sk::after{display:none}}
+@media (max-width:880px){.panel{width:320px}}
+</style>
+</head>
+<body>
+
+<!-- ══════════════ TOP BAR ══════════════ -->
+<div class="topbar">
+  <span class="zenlogo"><svg class="zenmark" viewBox="0 0 48 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.44434 0C5.77475 2.37961e-05 5.88124 0.0166796 6.03418 0.0449219C6.33262 0.0997066 6.54281 0.322715 6.51367 0.617188C6.49182 0.833879 6.3441 1.00773 6.15137 1.07324C5.89271 1.15923 5.19098 1.00131 4.83301 1.29102C4.65803 1.43307 4.58339 1.58437 4.50879 1.77637C4.43412 1.96861 4.36837 2.24926 3.87988 2.51758C2.82264 3.09871 2.11928 4.18713 2.11914 5.46191C2.11914 7.30424 3.60707 8.79667 5.44336 8.79688C7.09554 8.79664 8.47426 7.58771 8.72461 6.00195C8.74321 5.88402 8.74706 5.777 8.72461 5.68652C8.67889 5.50328 8.60764 5.3932 8.31152 5.17285C7.92859 4.88768 7.62119 4.4757 7.62109 3.94629C7.62125 3.13443 8.2771 2.47572 9.08594 2.47559C9.64133 2.47579 10.0773 2.82436 10.2998 3.15918C10.4643 3.4068 10.6259 3.73115 10.7227 4.10938C10.816 4.47404 10.8886 4.88631 10.8887 5.46191C10.8887 8.47827 8.45118 10.9244 5.44434 10.9248C2.43717 10.9248 0 8.47851 0 5.46191C0.000196728 2.44549 2.43729 0 5.44434 0ZM33.4287 2.66699C34.0661 2.66705 34.6311 2.83497 35.1074 3.16602C35.3423 3.32305 35.4618 3.52335 35.4619 3.75977C35.4619 4.11342 35.1891 4.39062 34.8408 4.39062C34.657 4.39055 34.5024 4.3078 34.4053 4.23828C34.1694 4.06548 33.8854 3.90628 33.4053 3.90625C32.512 3.90625 31.8389 4.59862 31.8389 5.5166C31.8391 6.43437 32.5121 7.12695 33.4053 7.12695C33.9912 7.12692 34.2703 6.90046 34.4551 6.75098C34.5328 6.68522 34.6975 6.57227 34.9102 6.57227C35.2656 6.57231 35.5233 6.83094 35.5234 7.1875C35.5234 7.36949 35.4391 7.55279 35.292 7.69043C35.0823 7.89275 34.4755 8.36523 33.3896 8.36523C31.7488 8.36511 30.5117 7.14974 30.5117 5.53906C30.512 3.92852 31.7932 2.66699 33.4287 2.66699ZM38.6992 2.66699C40.3348 2.66699 41.5781 3.88206 41.5781 5.49316C41.5781 7.10392 40.2968 8.36522 38.6611 8.36523C37.0255 8.36523 35.7832 7.15021 35.7832 5.53906C35.7834 3.92826 37.0639 2.66719 38.6992 2.66699ZM27.748 2.70605C28.1214 2.70613 28.3926 2.97791 28.3926 3.35254V7.52734C28.3924 7.99125 28.0591 8.32715 27.6016 8.32715C27.3277 8.32701 27.0543 8.16773 26.8711 7.90137L24.6992 4.8252V7.67285C24.6992 8.05786 24.4384 8.32715 24.0547 8.32715C23.6712 8.32694 23.4033 8.05771 23.4033 7.67285V3.55273C23.4033 3.06225 23.7582 2.70612 24.2471 2.70605C24.5317 2.70605 24.799 2.8589 24.9785 3.125L27.0957 6.11621V3.35254C27.0957 2.97785 27.3704 2.70605 27.748 2.70605ZM29.7432 7.03906L29.8721 7.05176C30.163 7.11112 30.3828 7.36857 30.3828 7.68066C30.3826 8.03716 30.0986 8.32715 29.7432 8.32715C29.3878 8.32709 29.0979 8.03407 29.0977 7.68066C29.0977 7.32704 29.3873 7.03912 29.7432 7.03906ZM47.2402 2.70605C47.6804 2.70605 48 3.02946 48 3.47559V7.68066C48 8.05534 47.7409 8.32714 47.3633 8.32715C46.9856 8.32715 46.7109 8.05535 46.7109 7.68066V5.12305L45.7109 7.01562C45.6187 7.20067 45.4528 7.44922 45.1289 7.44922C44.8053 7.44902 44.64 7.21741 44.5322 7.01562L43.5322 5.12305V7.68066C43.5322 8.05535 43.2612 8.32715 42.8877 8.32715C42.5143 8.32712 42.2432 8.05533 42.2432 7.68066V3.51367C42.2433 3.04549 42.5821 2.70612 43.0488 2.70605C43.367 2.70605 43.6416 2.89531 43.8223 3.23926L45.1523 5.77637L46.5283 3.16992C46.6604 2.91191 46.876 2.75025 47.1299 2.71387L47.2402 2.70605ZM17.2246 2.74414C17.6175 2.74414 17.8926 3.01665 17.8926 3.40625C17.8925 3.57481 17.8262 3.74763 17.7119 3.87988L15.0596 7.14258H17.3252C17.6538 7.1428 17.8926 7.38211 17.8926 7.71191C17.8924 8.04152 17.6537 8.28786 17.3252 8.28809H13.8701C13.482 8.28806 13.2112 8.01951 13.2109 7.63477C13.2109 7.46807 13.2852 7.27784 13.4053 7.13867L16.0361 3.89062H13.9316C13.5974 3.89062 13.3643 3.65299 13.3643 3.31348C13.3643 2.97402 13.6028 2.74414 13.9316 2.74414H17.2246ZM22.0723 2.74414C22.4156 2.74414 22.6553 2.98003 22.6553 3.3291C22.6552 3.67805 22.4156 3.92188 22.0723 3.92188H19.8379V4.88574H21.7188C22.0438 4.88574 22.2715 5.11332 22.2715 5.43945C22.2714 5.76552 22.0438 5.99316 21.7188 5.99316H19.8379V7.11133H22.1494C22.4925 7.11155 22.7324 7.34738 22.7324 7.69629C22.7322 8.04497 22.4924 8.28786 22.1494 8.28809H19.1699C18.788 8.28788 18.5108 8.00699 18.5107 7.61914V3.40527C18.511 3.02217 18.7881 2.74435 19.1699 2.74414H22.0723ZM38.6768 3.90625C37.7793 3.90625 37.1094 4.59862 37.1094 5.5166C37.1094 6.43456 37.7835 7.12695 38.6768 7.12695C39.5698 7.12675 40.251 6.43443 40.251 5.5166C40.251 4.59876 39.574 3.90646 38.6768 3.90625ZM7.69727 0.484375C8.03838 0.484639 8.31524 0.762251 8.31543 1.10449C8.31543 1.4469 8.0385 1.72434 7.69727 1.72461C7.35592 1.72448 7.0791 1.44698 7.0791 1.10449C7.07929 0.762166 7.35604 0.484501 7.69727 0.484375Z" fill="currentColor"/></svg></span>
+  <span class="sub">card widget customizer</span>
+  <span class="spacer"></span>
+</div>
+
+<div class="app">
+  <!-- ══════════════ CONTROL PANEL ══════════════ -->
+  <div class="panel">
+    <div class="tabpanes">
+      <!-- ---- FEATURES ---- -->
+      <div class="pane on" id="pane-features">
+        <div class="secttl">Features</div>
+        <div class="group">
+          <div class="gt">User recognition</div>
+          <div class="ctrl">
+            <span class="cl">Buyer<small>Whether Click to Pay recognizes the device</small></span>
+            <div class="seg" id="seg-rec">
+              <button data-rec="0" class="on">Not recognized</button>
+              <button data-rec="1">Recognized</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="group">
+          <div class="gt">Payment setup</div>
+          <div class="ctrl">
+            <span class="cl">Currency choice (DCC)<small>Let the buyer pay in their own currency</small></span>
+            <label class="sw"><input type="checkbox" id="f-dcc" checked><span class="tk"></span></label>
+          </div>
+          <div class="ctrl" id="ctrl-count">
+            <span class="cl">Available currencies</span>
+            <div class="seg" id="seg-count">
+              <button data-count="3" class="on">3 · inline</button>
+              <button data-count="20">20 · search</button>
+            </div>
+          </div>
+          <div class="ctrl">
+            <span class="cl">Authorization fee<small>Show an added fee &amp; amount breakdown</small></span>
+            <label class="sw"><input type="checkbox" id="f-fee"><span class="tk"></span></label>
+          </div>
+        </div>
+
+        <div class="group">
+          <div class="hint">The preview shows only what renders <b>inside the merchant's Card method</b> — the merchant draws its own box, total and Pay button around it.</div>
+        </div>
+      </div>
+
+      <!-- ---- STYLE ---- -->
+      <div class="pane on" id="pane-style">
+        <div class="secttl secttl-row"><span>Style</span><button class="mini-reset" id="d-reset-styles" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 109-9 9 9 0 00-7 3.3M3 3v3.3h3.3"/></svg>Reset styles</button></div>
+        <div class="group">
+          <div class="gt">Color</div>
+          <div class="ctrl">
+            <span class="cl">Background<small>The whole widget surface</small></span>
+            <div class="color">
+              <input type="color" class="swatch" id="c-bg" value="#ffffff">
+              <input type="text" class="hex" id="h-bg" value="#FFFFFF" maxlength="7">
+            </div>
+          </div>
+          <div class="ctrl">
+            <span class="cl">Text — primary<small>Values, titles, links, checkbox</small></span>
+            <div class="color">
+              <input type="color" class="swatch" id="c-primary" value="#222222">
+              <input type="text" class="hex" id="h-primary" value="#222222" maxlength="7">
+            </div>
+          </div>
+          <div class="ctrl">
+            <span class="cl">Text — secondary<small>Labels &amp; captions</small></span>
+            <div class="color">
+              <input type="color" class="swatch" id="c-secondary" value="#727272">
+              <input type="text" class="hex" id="h-secondary" value="#727272" maxlength="7">
+            </div>
+          </div>
+          <div class="ctrl">
+            <span class="cl">Input borders<small>Fields, currency rows, dividers</small></span>
+            <div class="color">
+              <input type="color" class="swatch" id="c-border" value="#dfdfdf">
+              <input type="text" class="hex" id="h-border" value="#DFDFDF" maxlength="7">
+            </div>
+          </div>
+        </div>
+        <div class="group">
+          <div class="gt">Typography</div>
+          <div class="ctrl">
+            <span class="cl">Font</span>
+            <select class="sel" id="s-font">
+              <option value="'Inter',-apple-system,system-ui,sans-serif" selected>Inter</option>
+              <option value="-apple-system,system-ui,'Segoe UI',sans-serif">System default</option>
+              <option value="'Poppins',sans-serif">Poppins</option>
+              <option value="'Roboto',sans-serif">Roboto</option>
+              <option value="'Montserrat',sans-serif">Montserrat</option>
+              <option value="'Nunito',sans-serif">Nunito</option>
+            </select>
+          </div>
+          <div class="hint">Colors and font update the live widget instantly via CSS variables — the same tokens a merchant would theme in production.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="d-fill" class="primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4.5 13H11l-1 9 8.5-11H12z"/></svg>Autofill card</button>
+      <button id="d-reset"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 109-9 9 9 0 00-7 3.3M3 3v3.3h3.3"/></svg>Reset to defaults</button>
+    </div>
+  </div>
+
+  <!-- ══════════════ PREVIEW ══════════════ -->
+  <div class="stage">
+    <!-- .wcard = the widget surface (== what lives inside the merchant's Card method) -->
+    <div class="wcard" id="slot">
+      <div class="zen" id="zen">
+
+        <!-- UNRECOGNIZED: login + fields -->
+        <div id="mode-unrec">
+          <button class="login" type="button" id="btn-login">
+            <span class="lt">Log in to Click to Pay</span>
+            <span class="brands" data-brands></span>
+          </button>
+          <div class="orline"><span class="ln"></span><span class="ot">or enter card details</span><span class="ln"></span></div>
+        </div>
+
+        <!-- RECOGNIZED: saved card / card list -->
+        <div id="mode-rec" style="display:none">
+          <div id="rec-single">
+            <div class="rec-top"><button class="notyours" type="button" id="btn-notyours">Not your card?</button><span class="brands" data-brands></span></div>
+            <div class="savedcard">
+              <span class="zencard"></span>
+              <span class="snum">**** 5555</span>
+              <button class="change" type="button" id="btn-change">Change</button>
+            </div>
+          </div>
+          <div id="rec-list" style="display:none">
+            <div class="rec-top"><button class="notyours" type="button">Not your card?</button><span class="brands" data-brands></span></div>
+            <div class="clist">
+              <div class="it"><span class="zencard"></span><span class="snum">**** 5555</span><span class="rt cur">Current</span></div>
+              <div class="it"><span class="zencard"></span><span class="snum">**** 2323</span><button class="rt choose" type="button" data-return>Choose</button></div>
+              <div class="it"><span class="zencard"></span><span class="snum">**** 4235</span><button class="rt choose" type="button" data-return>Choose</button></div>
+            </div>
+            <button class="manual" type="button" id="btn-manual"><span class="plusbox"><svg viewBox="0 0 18 18" fill="none"><path d="M9 4v10M4 9h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span><span class="mt">Enter card manually</span><span class="chev"></span></button>
+            <button class="retrn" type="button" data-return><span class="chev"></span>Return</button>
+          </div>
+        </div>
+
+        <!-- CARD FIELDS (shared) -->
+        <div id="mode-manual" style="display:none">
+          <div class="rec-top"><span class="entertitle">Enter card details</span><span class="brands" data-brands></span></div>
+        </div>
+        <div class="fields" id="fields">
+          <div class="field" id="w-num">
+            <label for="cc-n">Card number</label>
+            <input id="cc-n" type="text" inputmode="numeric" autocomplete="cc-number" placeholder="1234 1234 1234 1234" maxlength="19" class="num" aria-describedby="m-n">
+            <span class="adorn">
+              <svg class="brand" id="b-mc" viewBox="0 0 30 21"><rect width="30" height="21" rx="3" fill="#1A1A1A"/><circle cx="12.4" cy="10.5" r="5.6" fill="#EB001B"/><circle cx="17.6" cy="10.5" r="5.6" fill="#F79E1B" fill-opacity=".92"/></svg>
+              <svg class="brand" id="b-ax" viewBox="0 0 30 21" style="position:absolute;right:0"><rect width="30" height="21" rx="3" fill="#2E77BC"/><path d="M6 13.6 8.4 7.4h1.9l2.4 6.2h-1.8l-.4-1.2H8.2l-.5 1.2H6Zm2.7-2.6h1.4l-.7-2-.7 2Zm5 2.6V7.4h5.2V8.8h-3.5v1h3.4v1.3h-3.4v1h3.6v1.5h-5.3Z" fill="#fff"/></svg>
+            </span>
+            <div class="msg" id="m-n" role="alert">Check your card number</div>
+          </div>
+          <div class="row2">
+            <div class="field" id="w-e">
+              <label for="cc-e">Expiry date</label>
+              <input id="cc-e" type="text" inputmode="numeric" autocomplete="cc-exp" placeholder="MM / RR" maxlength="7" class="num" aria-describedby="m-e">
+              <div class="msg" id="m-e" role="alert">Invalid date</div>
+            </div>
+            <div class="field" id="w-c">
+              <label for="cc-c">CVC</label>
+              <input id="cc-c" type="text" inputmode="numeric" autocomplete="cc-csc" placeholder="e.g. 123" maxlength="4" class="num" aria-describedby="m-c">
+              <span class="adorn"><button class="help" type="button" title="3 digits on the back of your card" aria-label="Where to find the CVC">?</button></span>
+              <div class="msg" id="m-c" role="alert">Too short</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- REVEAL: checks + currency + charge -->
+        <div class="reveal" id="rev">
+          <div class="in">
+            <div class="checks" id="checks">
+              <label class="check">
+                <input type="checkbox" checked id="chk-savecard">
+                <span class="box" aria-hidden="true"><svg width="12" height="9" viewBox="0 0 12 9" fill="none"><path d="M1 4.6 4.3 8 11 1" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                <span>
+                  <span class="ck-b"><span class="ck-l">Save your card</span><span class="brands" data-brands-sm></span></span>
+                  <span class="ck-n">Your data will be stored securely in <b style="font-weight:600">Mastercard</b>. <a href="#" onclick="return false">Learn more</a></span>
+                </span>
+              </label>
+              <label class="check" id="chk-savedata">
+                <input type="checkbox">
+                <span class="box" aria-hidden="true"><svg width="12" height="9" viewBox="0 0 12 9" fill="none"><path d="M1 4.6 4.3 8 11 1" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                <span class="ck-l">Save my data in this browser</span>
+              </label>
+            </div>
+
+            <section class="cur" id="cur-sec" aria-label="Payment currency">
+              <button class="cur-t" id="cur-t" type="button" aria-expanded="false">
+                <span class="cur-l">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 21V5m0 0-3.2 3.2M7 5l3.2 3.2"/><path d="M17 3v16m0 0 3.2-3.2M17 19l-3.2-3.2"/></svg>
+                  <span>Paying in <b id="cur-code">PLN</b></span>
+                </span>
+                <span class="cur-c">Change</span>
+              </button>
+              <div class="cur-p" id="cur-p">
+                <div>
+                  <div class="cur-h">Choose your payment currency</div>
+                  <div class="cur-s">We&rsquo;ll show the exact amount once you pick.</div>
+                  <div class="cur-list" id="cur-list" role="radiogroup" aria-label="Payment currency"></div>
+                </div>
+              </div>
+            </section>
+
+            <div class="chg" id="chg"></div>
+          </div>
+        </div>
+
+        <button class="retrn" id="btn-return-saved" type="button" style="display:none"><span class="chev"></span>Return to saved cards</button>
+
+        <div class="secured">
+          <svg class="lock" viewBox="0 0 12 12" fill="none"><rect x="2" y="5" width="8" height="6" rx="1" stroke="currentColor" stroke-width="1"/><path d="M4 5V4a2 2 0 014 0v1" stroke="currentColor" stroke-width="1"/></svg>
+          <span class="stxt">Payments secured by</span><svg class="zs" viewBox="0 0 48 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.44434 0C5.77475 2.37961e-05 5.88124 0.0166796 6.03418 0.0449219C6.33262 0.0997066 6.54281 0.322715 6.51367 0.617188C6.49182 0.833879 6.3441 1.00773 6.15137 1.07324C5.89271 1.15923 5.19098 1.00131 4.83301 1.29102C4.65803 1.43307 4.58339 1.58437 4.50879 1.77637C4.43412 1.96861 4.36837 2.24926 3.87988 2.51758C2.82264 3.09871 2.11928 4.18713 2.11914 5.46191C2.11914 7.30424 3.60707 8.79667 5.44336 8.79688C7.09554 8.79664 8.47426 7.58771 8.72461 6.00195C8.74321 5.88402 8.74706 5.777 8.72461 5.68652C8.67889 5.50328 8.60764 5.3932 8.31152 5.17285C7.92859 4.88768 7.62119 4.4757 7.62109 3.94629C7.62125 3.13443 8.2771 2.47572 9.08594 2.47559C9.64133 2.47579 10.0773 2.82436 10.2998 3.15918C10.4643 3.4068 10.6259 3.73115 10.7227 4.10938C10.816 4.47404 10.8886 4.88631 10.8887 5.46191C10.8887 8.47827 8.45118 10.9244 5.44434 10.9248C2.43717 10.9248 0 8.47851 0 5.46191C0.000196728 2.44549 2.43729 0 5.44434 0ZM33.4287 2.66699C34.0661 2.66705 34.6311 2.83497 35.1074 3.16602C35.3423 3.32305 35.4618 3.52335 35.4619 3.75977C35.4619 4.11342 35.1891 4.39062 34.8408 4.39062C34.657 4.39055 34.5024 4.3078 34.4053 4.23828C34.1694 4.06548 33.8854 3.90628 33.4053 3.90625C32.512 3.90625 31.8389 4.59862 31.8389 5.5166C31.8391 6.43437 32.5121 7.12695 33.4053 7.12695C33.9912 7.12692 34.2703 6.90046 34.4551 6.75098C34.5328 6.68522 34.6975 6.57227 34.9102 6.57227C35.2656 6.57231 35.5233 6.83094 35.5234 7.1875C35.5234 7.36949 35.4391 7.55279 35.292 7.69043C35.0823 7.89275 34.4755 8.36523 33.3896 8.36523C31.7488 8.36511 30.5117 7.14974 30.5117 5.53906C30.512 3.92852 31.7932 2.66699 33.4287 2.66699ZM38.6992 2.66699C40.3348 2.66699 41.5781 3.88206 41.5781 5.49316C41.5781 7.10392 40.2968 8.36522 38.6611 8.36523C37.0255 8.36523 35.7832 7.15021 35.7832 5.53906C35.7834 3.92826 37.0639 2.66719 38.6992 2.66699ZM27.748 2.70605C28.1214 2.70613 28.3926 2.97791 28.3926 3.35254V7.52734C28.3924 7.99125 28.0591 8.32715 27.6016 8.32715C27.3277 8.32701 27.0543 8.16773 26.8711 7.90137L24.6992 4.8252V7.67285C24.6992 8.05786 24.4384 8.32715 24.0547 8.32715C23.6712 8.32694 23.4033 8.05771 23.4033 7.67285V3.55273C23.4033 3.06225 23.7582 2.70612 24.2471 2.70605C24.5317 2.70605 24.799 2.8589 24.9785 3.125L27.0957 6.11621V3.35254C27.0957 2.97785 27.3704 2.70605 27.748 2.70605ZM29.7432 7.03906L29.8721 7.05176C30.163 7.11112 30.3828 7.36857 30.3828 7.68066C30.3826 8.03716 30.0986 8.32715 29.7432 8.32715C29.3878 8.32709 29.0979 8.03407 29.0977 7.68066C29.0977 7.32704 29.3873 7.03912 29.7432 7.03906ZM47.2402 2.70605C47.6804 2.70605 48 3.02946 48 3.47559V7.68066C48 8.05534 47.7409 8.32714 47.3633 8.32715C46.9856 8.32715 46.7109 8.05535 46.7109 7.68066V5.12305L45.7109 7.01562C45.6187 7.20067 45.4528 7.44922 45.1289 7.44922C44.8053 7.44902 44.64 7.21741 44.5322 7.01562L43.5322 5.12305V7.68066C43.5322 8.05535 43.2612 8.32715 42.8877 8.32715C42.5143 8.32712 42.2432 8.05533 42.2432 7.68066V3.51367C42.2433 3.04549 42.5821 2.70612 43.0488 2.70605C43.367 2.70605 43.6416 2.89531 43.8223 3.23926L45.1523 5.77637L46.5283 3.16992C46.6604 2.91191 46.876 2.75025 47.1299 2.71387L47.2402 2.70605ZM17.2246 2.74414C17.6175 2.74414 17.8926 3.01665 17.8926 3.40625C17.8925 3.57481 17.8262 3.74763 17.7119 3.87988L15.0596 7.14258H17.3252C17.6538 7.1428 17.8926 7.38211 17.8926 7.71191C17.8924 8.04152 17.6537 8.28786 17.3252 8.28809H13.8701C13.482 8.28806 13.2112 8.01951 13.2109 7.63477C13.2109 7.46807 13.2852 7.27784 13.4053 7.13867L16.0361 3.89062H13.9316C13.5974 3.89062 13.3643 3.65299 13.3643 3.31348C13.3643 2.97402 13.6028 2.74414 13.9316 2.74414H17.2246ZM22.0723 2.74414C22.4156 2.74414 22.6553 2.98003 22.6553 3.3291C22.6552 3.67805 22.4156 3.92188 22.0723 3.92188H19.8379V4.88574H21.7188C22.0438 4.88574 22.2715 5.11332 22.2715 5.43945C22.2714 5.76552 22.0438 5.99316 21.7188 5.99316H19.8379V7.11133H22.1494C22.4925 7.11155 22.7324 7.34738 22.7324 7.69629C22.7322 8.04497 22.4924 8.28786 22.1494 8.28809H19.1699C18.788 8.28788 18.5108 8.00699 18.5107 7.61914V3.40527C18.511 3.02217 18.7881 2.74435 19.1699 2.74414H22.0723ZM38.6768 3.90625C37.7793 3.90625 37.1094 4.59862 37.1094 5.5166C37.1094 6.43456 37.7835 7.12695 38.6768 7.12695C39.5698 7.12675 40.251 6.43443 40.251 5.5166C40.251 4.59876 39.574 3.90646 38.6768 3.90625ZM7.69727 0.484375C8.03838 0.484639 8.31524 0.762251 8.31543 1.10449C8.31543 1.4469 8.0385 1.72434 7.69727 1.72461C7.35592 1.72448 7.0791 1.44698 7.0791 1.10449C7.07929 0.762166 7.35604 0.484501 7.69727 0.484375Z" fill="currentColor"/></svg>
+        </div>
+
+        <!-- currency search sheet -->
+        <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sh-t" hidden>
+          <div class="sh-h">
+            <div class="sh-t" id="sh-t">Payment currency</div>
+            <button class="sh-x" id="sh-x" type="button" aria-label="Close"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+          </div>
+          <div class="sh-q">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            <input id="sh-i" type="search" placeholder="Search currency" autocomplete="off" aria-label="Search currency">
+          </div>
+          <div class="sh-b" id="sh-b"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ═════════ safe DOM-fragment helpers (trusted templates via DOMParser) ═════════ */
+  var _dp = new DOMParser();
+  function setHTML(node, html) {
+    node.textContent = '';
+    var body = _dp.parseFromString('<div id="_r">' + html + '</div>', 'text/html').body.firstChild;
+    while (body.firstChild) node.appendChild(body.firstChild);
+  }
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (ch) {
+      return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[ch];
+    });
+  }
+
+  /* ═════════ brand-mark SVG ═════════ */
+  var brandsFull = '<svg class="c2pmark" viewBox="0 0 84 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M14.5969 0.971788C14.8472 0.730697 15.2441 0.732467 15.4923 0.975778L19.9895 6.43757C20.3032 6.74509 20.3001 7.25082 19.9826 7.55445L15.571 13.0598C15.4624 13.1638 15.3177 13.2218 15.1672 13.2218H11.463C10.941 13.2218 10.6812 12.5897 11.0528 12.2233L15.5731 6.99957L11.463 1.94401H9.81431L13.7451 6.43782C14.0659 6.74393 14.0661 7.25549 13.7457 7.56195L8.58099 13.0598C8.47226 13.1638 8.32759 13.2218 8.17709 13.2218H2.33327C1.04493 13.2218 0.000381238 12.1776 0.000183275 10.8893C-0.000215146 8.29635 0.000123868 5.70348 0.000372411 3.11057C0.000495932 1.82195 1.04515 0.777344 2.33378 0.777344H4.65491C4.97742 0.777344 5.23888 1.03851 5.23888 1.36068C5.23888 1.68284 4.97742 1.94401 4.65491 1.94401H2.72402C1.86491 1.94401 1.16846 2.64046 1.16846 3.49957C1.16846 5.8329 1.16846 8.16623 1.16846 10.4996C1.16846 11.3587 1.86491 12.0551 2.72402 12.0551H7.74494L12.4586 6.99957L7.93831 1.77584C7.56674 1.40947 7.82647 0.777344 8.34851 0.777344H11.9589C12.1094 0.777344 12.254 0.835382 12.3627 0.939347L16.8602 6.43718C17.1806 6.74365 17.1803 7.2552 16.8597 7.56132L12.9288 12.0551H14.6811L18.6877 6.99957L14.5969 1.94401C14.3405 1.69068 14.3372 1.2218 14.5969 0.971788Z" fill="#141413"/><path d="M25.6684 1.16623C25.6684 0.951455 25.4943 0.777344 25.2795 0.777344C25.0647 0.777344 24.8906 0.951455 24.8906 1.16623V12.8329C24.8906 13.0477 25.0647 13.2218 25.2795 13.2218C25.4943 13.2218 25.6684 13.0477 25.6684 12.8329V1.16623Z" fill="#141413"/><path d="M43.9589 1.80273H37.7109V12.1966H43.9589V1.80273Z" fill="#FF5F00"/><path d="M38.3548 6.99954C38.3533 4.97164 39.2673 3.05562 40.8335 1.80356C38.1728 -0.326235 34.3518 -0.0160118 32.0559 2.51621C29.76 5.04843 29.76 8.95246 32.0559 11.4847C34.3518 14.017 38.1728 14.3271 40.8335 12.1973C39.2668 10.9449 38.3527 9.02806 38.3548 6.99954Z" fill="#EB001B"/><path d="M50.5939 11.1695V10.9472H50.6833V10.9102H50.4688V10.9472H50.5581V11.1695H50.5939Z" fill="#F79E1B"/><path d="M51.0047 10.9102H50.9333L50.8618 11.0954L50.7903 10.9102H50.7188V11.1695H50.7724V10.9657L50.8318 11.1324H50.8976L50.955 10.9657V11.1695H51.0047V10.9102Z" fill="#F79E1B"/><path d="M51.3325 7.00014C51.3325 9.53083 49.9137 11.8393 47.6788 12.9452C45.4439 14.0511 42.7853 13.7602 40.832 12.1961C42.3975 10.943 43.3117 9.02722 43.3117 6.99922C43.3117 4.97121 42.3975 3.05545 40.832 1.80232C42.7853 0.238221 45.4439 -0.0526519 47.6788 1.05324C49.9137 2.15913 51.3325 4.46763 51.3325 6.99831V7.00014Z" fill="#F79E1B"/><path fill-rule="evenodd" clip-rule="evenodd" d="M75.4472 8.4462C75.4525 7.13901 74.3398 6.57097 73.45 6.11662C72.8527 5.81167 72.3557 5.55793 72.3644 5.1663C72.3707 4.86946 72.6618 4.55423 73.297 4.47327C73.6121 4.43279 74.4805 4.40212 75.4661 4.84371L75.8517 3.08843C75.3223 2.90076 74.6418 2.72168 73.7935 2.72168C71.6195 2.72168 70.0894 3.84647 70.0755 5.45823C70.0617 6.64926 71.1682 7.31408 72.0014 7.71028C72.8584 8.11627 73.1457 8.37636 73.142 8.73818C73.1369 9.29383 72.4589 9.53789 71.8261 9.54769C70.7537 9.56434 70.1181 9.27578 69.6142 9.04688L69.5664 9.02518L69.1681 10.8381C69.6823 11.0675 70.6301 11.2674 71.6144 11.2772C73.9284 11.2772 75.4395 10.1659 75.4472 8.4462ZM66.3361 2.87256L62.7718 11.1484H60.4465L58.6934 4.54319C58.5862 4.13596 58.4942 3.98754 58.1703 3.81582C57.6422 3.53615 56.7688 3.27488 56 3.11174L56.0529 2.87133H59.7962C60.2726 2.87133 60.7024 3.18044 60.8107 3.71524L61.737 8.50508L64.0259 2.87256H66.3361ZM83.2222 11.1486H81.1883L80.9231 9.91216H78.1013L77.6427 11.1486H75.3324L78.6318 3.47987C78.7904 3.11189 79.1459 2.87271 79.5682 2.87271H81.4466L83.2222 11.1486ZM78.7344 8.21559L79.8926 5.10738L80.5591 8.21559H78.7344ZM67.6607 11.1486L69.4794 2.87271H67.2814L65.4614 11.1486H67.6607Z" fill="#1A1F71"/></svg>';
+  var brandsSm   = '<svg class="c2pmark" viewBox="0 0 52 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M14.5969 0.971788C14.8472 0.730697 15.2441 0.732467 15.4923 0.975778L19.9895 6.43757C20.3032 6.74509 20.3001 7.25082 19.9826 7.55445L15.571 13.0598C15.4624 13.1638 15.3177 13.2218 15.1672 13.2218H11.463C10.941 13.2218 10.6812 12.5897 11.0528 12.2233L15.5731 6.99957L11.463 1.94401H9.81431L13.7451 6.43782C14.0659 6.74393 14.0661 7.25549 13.7457 7.56195L8.58099 13.0598C8.47226 13.1638 8.32759 13.2218 8.17709 13.2218H2.33327C1.04493 13.2218 0.000381238 12.1776 0.000183275 10.8893C-0.000215146 8.29635 0.000123868 5.70348 0.000372411 3.11057C0.000495932 1.82195 1.04515 0.777344 2.33378 0.777344H4.65491C4.97742 0.777344 5.23888 1.03851 5.23888 1.36068C5.23888 1.68284 4.97742 1.94401 4.65491 1.94401H2.72402C1.86491 1.94401 1.16846 2.64046 1.16846 3.49957C1.16846 5.8329 1.16846 8.16623 1.16846 10.4996C1.16846 11.3587 1.86491 12.0551 2.72402 12.0551H7.74494L12.4586 6.99957L7.93831 1.77584C7.56674 1.40947 7.82647 0.777344 8.34851 0.777344H11.9589C12.1094 0.777344 12.254 0.835382 12.3627 0.939347L16.8602 6.43718C17.1806 6.74365 17.1803 7.2552 16.8597 7.56132L12.9288 12.0551H14.6811L18.6877 6.99957L14.5969 1.94401C14.3405 1.69068 14.3372 1.2218 14.5969 0.971788Z" fill="#141413"/><path d="M25.6684 1.16623C25.6684 0.951455 25.4943 0.777344 25.2795 0.777344C25.0647 0.777344 24.8906 0.951455 24.8906 1.16623V12.8329C24.8906 13.0477 25.0647 13.2218 25.2795 13.2218C25.4943 13.2218 25.6684 13.0477 25.6684 12.8329V1.16623Z" fill="#141413"/><path d="M43.9589 1.80273H37.7109V12.1966H43.9589V1.80273Z" fill="#FF5F00"/><path d="M38.3548 6.99954C38.3533 4.97164 39.2673 3.05562 40.8335 1.80356C38.1728 -0.326235 34.3518 -0.0160118 32.0559 2.51621C29.76 5.04843 29.76 8.95246 32.0559 11.4847C34.3518 14.017 38.1728 14.3271 40.8335 12.1973C39.2668 10.9449 38.3527 9.02806 38.3548 6.99954Z" fill="#EB001B"/><path d="M50.5939 11.1695V10.9472H50.6833V10.9102H50.4688V10.9472H50.5581V11.1695H50.5939Z" fill="#F79E1B"/><path d="M51.0047 10.9102H50.9333L50.8618 11.0954L50.7903 10.9102H50.7188V11.1695H50.7724V10.9657L50.8318 11.1324H50.8976L50.955 10.9657V11.1695H51.0047V10.9102Z" fill="#F79E1B"/><path d="M51.3325 7.00014C51.3325 9.53083 49.9137 11.8393 47.6788 12.9452C45.4439 14.0511 42.7853 13.7602 40.832 12.1961C42.3975 10.943 43.3117 9.02722 43.3117 6.99922C43.3117 4.97121 42.3975 3.05545 40.832 1.80232C42.7853 0.238221 45.4439 -0.0526519 47.6788 1.05324C49.9137 2.15913 51.3325 4.46763 51.3325 6.99831V7.00014Z" fill="#F79E1B"/></svg>';
+  Array.prototype.forEach.call(document.querySelectorAll('[data-brands]'),    function (n) { setHTML(n, brandsFull); });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-brands-sm]'), function (n) { setHTML(n, brandsSm); });
+
+  /* ═════════ config ═════════ */
+  var ORDER = 263.99, AUTH_FEE = 0, FEE_PCT = 1.5, INLINE_MAX = 4, TTL = 60000, ORIGIN = '*';
+  var SIMULATE_FAIL = false;
+
+  var ALL = [
+    { c:'PLN', n:'Polish Zloty',       r:1,      base:true, pop:true },
+    { c:'EUR', n:'Euro',               r:4.3120, pop:true },
+    { c:'USD', n:'US Dollar',          r:3.9779, pop:true },
+    { c:'GBP', n:'British pound',      r:5.0410, pop:true },
+    { c:'CHF', n:'Swiss franc',        r:4.4980 },
+    { c:'CZK', n:'Czech koruna',       r:0.1744 },
+    { c:'SEK', n:'Swedish krona',      r:0.3810 },
+    { c:'NOK', n:'Norwegian krone',    r:0.3690 },
+    { c:'DKK', n:'Danish krone',       r:0.5780 },
+    { c:'HUF', n:'Hungarian forint',   r:0.0110 },
+    { c:'RON', n:'Romanian leu',       r:0.8670 },
+    { c:'BGN', n:'Bulgarian lev',      r:2.2050 },
+    { c:'UAH', n:'Ukrainian hryvnia',  r:0.0960 },
+    { c:'TRY', n:'Turkish lira',       r:0.1120 },
+    { c:'CAD', n:'Canadian dollar',    r:2.9010 },
+    { c:'AUD', n:'Australian dollar',  r:2.6180 },
+    { c:'JPY', n:'Japanese yen',       r:0.0262 },
+    { c:'CNY', n:'Chinese yuan',       r:0.5490 },
+    { c:'AED', n:'UAE dirham',         r:1.0830 },
+    { c:'ILS', n:'Israeli shekel',     r:1.0740 }
+  ];
+  var LIST = ALL.slice(0, 3);
+
+  var S = { code:'PLN', quote:null, loading:false, revealed:false, seq:0, timer:null, recognized:false, dcc:true };
+  var $ = function (i) { return document.getElementById(i); };
+  var nI = $('cc-n'), eI = $('cc-e'), cI = $('cc-c');
+
+  var base   = function () { return LIST[0]; };
+  var meta   = function (c) { return LIST.filter(function (x) { return x.c === c; })[0] || base(); };
+  var isBase = function () { return meta(S.code).base; };
+  var m2     = function (v) { return Math.round(v * 100) / 100; };
+  var money  = function (v, c) { return v.toLocaleString('en-GB', { minimumFractionDigits:2, maximumFractionDigits:2 }) + ' ' + c; };
+
+  /* ═════════ quote ═════════ */
+  function fetchQuote(code, done, fail) {
+    var c = meta(code);
+    setTimeout(function () {
+      if (SIMULATE_FAIL && Math.random() < 0.06) return fail();
+      var gross = m2((ORDER + AUTH_FEE) / c.r * (1 + FEE_PCT / 100));
+      done({
+        code:c.c, total:gross,
+        fee:   AUTH_FEE ? m2(AUTH_FEE / c.r * (1 + FEE_PCT / 100)) : 0,
+        amount:AUTH_FEE ? m2(gross - m2(AUTH_FEE / c.r * (1 + FEE_PCT / 100))) : gross,
+        rate:  Math.round((ORDER + AUTH_FEE) / gross * 10000) / 10000
+      });
+    }, 520 + Math.random() * 260);
+  }
+
+  function select(code) {
+    var id = ++S.seq;
+    S.code = code; S.quote = null; clearTimeout(S.timer);
+    $('cur-code').textContent = code; renderList();
+    if (isBase()) { S.loading = false; renderCharge(); return; }
+    S.loading = true; renderCharge();
+    fetchQuote(code, function (q) {
+      if (id !== S.seq) return;
+      S.quote = q; S.loading = false; renderCharge(true);
+      S.timer = setTimeout(function () { select(S.code); }, TTL - 3000);
+    }, function () {
+      if (id !== S.seq) return;
+      S.loading = false; S.quote = null; S.code = base().c;
+      $('cur-code').textContent = S.code; renderList(); renderCharge();
+      var e = document.createElement('div'); e.className = 'chg-e';
+      e.textContent = "We couldn't get the exchange rate. You're paying in " + base().c + '.';
+      $('chg').classList.add('on'); $('chg').appendChild(e); settle();
+    });
+  }
+
+  /* ═════════ charge block ═════════ */
+  function needed() { return !isBase() || AUTH_FEE > 0; }
+  function renderCharge(flash) {
+    var el = $('chg');
+    if ((!S.dcc && !AUTH_FEE) || !needed()) { el.classList.remove('on'); el.textContent = ''; settle(); return; }
+    var c = meta(S.code), q = S.quote, cur = isBase() ? base().c : c.c;
+    var sk = '<span class="sk"></span>', skl = '<span class="sk lg"></span>', h = '';
+    if (AUTH_FEE > 0) {
+      h += '<div class="chg-r"><span class="chg-k">Order amount</span><span class="chg-v num">' +
+             (isBase() ? money(ORDER, cur) : (q ? money(q.amount, cur) : sk)) + '</span></div>';
+      h += '<div class="chg-r"><span class="chg-k">Authorisation fee' +
+             '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01" stroke-linecap="round"/></svg>' +
+           '</span><span class="chg-v num">' + (isBase() ? money(AUTH_FEE, cur) : (q ? money(q.fee, cur) : sk)) + '</span></div>';
+    }
+    h += '<div class="chg-r tot"><span class="chg-k">Charged to your card</span><span class="chg-v num">' +
+           (isBase() ? money(m2(ORDER + AUTH_FEE), cur) : (q ? money(q.total, cur) : skl)) + '</span></div>';
+    if (!isBase()) {
+      h += q
+        ? '<div class="chg-s">1 ' + c.c + ' = ' + q.rate.toLocaleString('en-GB', { minimumFractionDigits:4, maximumFractionDigits:4 }) +
+          ' ' + base().c + ' &middot; includes a ' + FEE_PCT + '% conversion fee. <a href="#" onclick="return false">Learn more</a></div>'
+        : '<div class="chg-s">Getting today&rsquo;s rate&hellip;</div>';
+    }
+    setHTML(el, h); el.classList.add('on');
+    if (flash) { var t = el.querySelector('.tot .chg-v'); if (t) { t.classList.remove('flash'); void t.offsetWidth; t.classList.add('flash'); } }
+    settle();
+  }
+
+  /* ═════════ inline picker ═════════ */
+  function renderList() {
+    var l = $('cur-list'); l.textContent = '';
+    LIST.forEach(function (c) {
+      var on = c.c === S.code;
+      var el = document.createElement('label'); el.className = 'opt' + (on ? ' sel' : '');
+      setHTML(el,
+        '<span class="opt-l"><input type="radio" name="cur"' + (on ? ' checked' : '') + '>' +
+          '<span class="dot" aria-hidden="true"><i></i></span><span class="opt-c">' + c.c + '</span><span class="opt-n">' + c.n + '</span></span>' +
+        (c.base ? '<span class="opt-a num' + (on ? '' : ' muted') + '">' + money(m2(ORDER + AUTH_FEE), c.c) + '</span>'
+                : '<span class="opt-a muted">rate after you pick</span>'));
+      el.querySelector('input').addEventListener('change', function () { select(c.c); });
+      l.appendChild(el);
+    });
+  }
+
+  function renderSheet(q) {
+    q = (q || '').trim().toLowerCase();
+    var b = $('sh-b');
+    var hits = LIST.filter(function (c) { return !q || c.c.toLowerCase().indexOf(q) === 0 || c.n.toLowerCase().indexOf(q) > -1; });
+    if (!hits.length) { setHTML(b, '<div class="sh-e">No currency matches &ldquo;' + esc(q) + '&rdquo;</div>'); return; }
+    b.textContent = '';
+    var groups = q ? [['Results', hits]] : [['Suggested', hits.filter(function (c) { return c.pop; })], ['All currencies', hits.filter(function (c) { return !c.pop; })]];
+    groups.forEach(function (g) {
+      if (!g[1].length) return;
+      var hd = document.createElement('div'); hd.className = 'sh-g'; hd.textContent = g[0]; b.appendChild(hd);
+      g[1].forEach(function (c) {
+        var on = c.c === S.code;
+        var btn = document.createElement('button'); btn.type = 'button'; btn.className = 'sr' + (on ? ' sel' : ''); btn.setAttribute('aria-pressed', String(on));
+        setHTML(btn, '<span class="opt-l"><span class="sr-c">' + c.c + '</span><span class="sr-n">' + c.n + '</span></span>' +
+          '<svg class="tick" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg>');
+        btn.addEventListener('click', function () { select(c.c); closeSheet(); });
+        b.appendChild(btn);
+      });
+    });
+  }
+
+  function openSheet() {
+    var slot = $('slot'), sh = $('sheet');
+    slot.style.minHeight = slot.getBoundingClientRect().height + 'px';
+    sh.hidden = false; requestAnimationFrame(function () { sh.classList.add('on'); });
+    $('sh-i').value = ''; renderSheet('');
+    setTimeout(function () { $('sh-i').focus(); }, 50);
+  }
+  function closeSheet() {
+    var sh = $('sheet'); sh.classList.remove('on');
+    setTimeout(function () { sh.hidden = true; $('slot').style.minHeight = ''; $('cur-t').focus(); settle(); }, 180);
+  }
+  $('sh-x').addEventListener('click', closeSheet);
+  $('sh-i').addEventListener('input', function () { renderSheet(this.value); });
+  addEventListener('keydown', function (e) { if (e.key === 'Escape' && !$('sheet').hidden) closeSheet(); });
+  $('cur-t').addEventListener('click', function () {
+    if (LIST.length > INLINE_MAX) { openSheet(); return; }
+    $('cur-p').classList.add('on'); this.classList.add('hide'); this.setAttribute('aria-expanded', 'true'); settle();
+  });
+
+  /* ═════════ height sync (production iframe contract) ═════════ */
+  var lastH = 0;
+  function postHeight() {
+    var h = Math.ceil(document.documentElement.getBoundingClientRect().height);
+    if (h === lastH) return; lastH = h;
+    try { parent.postMessage({ type:'zen:height', height:h }, ORIGIN); } catch (e) {}
+  }
+  function settle() { setTimeout(postHeight, 300); setTimeout(postHeight, 640); }
+
+  /* ═════════ card input ═════════ */
+  function brand(d) {
+    if (/^3[47]/.test(d)) return 'amex';
+    if (/^5[1-5]|^2(2[2-9]|[3-6]\d|7[01]|720)/.test(d)) return 'mc';
+    if (/^4/.test(d)) return 'visa';
+    return null;
+  }
+  var len = function (b) { return b === 'amex' ? 15 : 16; };
+  function grp(d, b) { return b === 'amex' ? [d.slice(0,4), d.slice(4,10), d.slice(10,15)].filter(Boolean).join(' ') : d.replace(/(.{4})/g, '$1 ').trim(); }
+  nI.addEventListener('input', function () {
+    var d = nI.value.replace(/\D/g, ''), b = brand(d);
+    d = d.slice(0, len(b)); nI.value = grp(d, b);
+    nI.maxLength = b === 'amex' ? 17 : 19; cI.maxLength = b === 'amex' ? 4 : 3;
+    $('b-mc').classList.toggle('on', b === 'mc'); $('b-ax').classList.toggle('on', b === 'amex');
+    $('w-num').classList.remove('err'); check();
+  });
+  eI.addEventListener('input', function () {
+    var d = eI.value.replace(/\D/g, '').slice(0, 4);
+    eI.value = d.length > 2 ? d.slice(0,2) + ' / ' + d.slice(2) : d;
+    $('w-e').classList.remove('err'); check();
+  });
+  cI.addEventListener('input', function () { cI.value = cI.value.replace(/\D/g, '').slice(0, cI.maxLength); $('w-c').classList.remove('err'); check(); });
+  [nI, eI, cI].forEach(function (el) {
+    el.addEventListener('change', function () { el.dispatchEvent(new Event('input')); });
+    el.addEventListener('blur', validate);
+  });
+
+  function luhn(s) { var sum = 0, alt = false; for (var i = s.length - 1; i >= 0; i--) { var n = +s[i]; if (alt) { n *= 2; if (n > 9) n -= 9; } sum += n; alt = !alt; } return sum % 10 === 0; }
+  function nOk() { var d = nI.value.replace(/\s/g,''); return d.length === len(brand(d)) && luhn(d); }
+  function eOk() {
+    var m = eI.value.replace(/\D/g,''); if (m.length !== 4) return false;
+    var mm = +m.slice(0,2), yy = +m.slice(2), n = new Date();
+    return mm >= 1 && mm <= 12 && (2000+yy)*12 + mm >= n.getFullYear()*12 + n.getMonth() + 1;
+  }
+  function cOk() { return cI.value.length === (brand(nI.value.replace(/\s/g,'')) === 'amex' ? 4 : 3); }
+  function ok() { return nOk() && eOk() && cOk(); }
+  function bad(w) { var el = $(w); if (el.classList.contains('err')) return; el.classList.add('err','shake'); setTimeout(function () { el.classList.remove('shake'); }, 360); settle(); }
+  function validate() { if (nI.value && !nOk()) bad('w-num'); if (eI.value && !eOk()) bad('w-e'); if (cI.value && !cOk()) bad('w-c'); }
+
+  function check() {
+    if (S.recognized) return;
+    var v = ok();
+    if (v === S.revealed) return;
+    S.revealed = v; $('rev').classList.toggle('on', v);
+    if (!v) { $('cur-p').classList.remove('on'); $('cur-t').classList.remove('hide'); $('cur-t').setAttribute('aria-expanded','false'); if (!$('sheet').hidden) closeSheet(); }
+    settle();
+  }
+
+  /* ═════════ recognition & DCC visibility ═════════ */
+  function syncSaveData() {
+    var manual = getComputedStyle($('mode-manual')).display !== 'none';
+    $('chk-savedata').style.display = ($('chk-savecard').checked && !manual) ? '' : 'none';
+  }
+  function applyRecognition() {
+    var rec = S.recognized;
+    $('mode-manual').style.display = 'none'; $('btn-return-saved').style.display = 'none'; $('chk-savedata').style.display = '';
+    $('mode-unrec').style.display = rec ? 'none' : '';
+    $('mode-rec').style.display   = rec ? '' : 'none';
+    $('checks').style.display     = rec ? 'none' : '';
+    if (rec) {
+      $('fields').style.display = 'none';
+      $('rec-single').style.display = ''; $('rec-list').style.display = 'none';
+      S.revealed = true; $('rev').classList.add('on');
+    } else {
+      $('fields').style.display = '';
+      $('rec-single').style.display = ''; $('rec-list').style.display = 'none';
+      S.revealed = ok(); $('rev').classList.toggle('on', S.revealed);
+    }
+    syncSaveData();
+    settle();
+  }
+  function applyDcc() {
+    $('cur-sec').style.display = S.dcc ? '' : 'none';
+    if (!S.dcc) { S.code = base().c; $('cur-code').textContent = S.code; }
+    renderList(); renderCharge();
+  }
+
+  $('btn-change').addEventListener('click', function () { $('rec-single').style.display = 'none'; $('rec-list').style.display = ''; $('fields').style.display = 'none'; settle(); });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-return]'), function (b) {
+    b.addEventListener('click', function () { $('rec-list').style.display = 'none'; $('rec-single').style.display = ''; $('fields').style.display = 'none'; settle(); });
+  });
+  $('btn-manual').addEventListener('click', function () {
+    $('mode-rec').style.display = 'none'; $('mode-manual').style.display = '';
+    $('fields').style.display = ''; $('checks').style.display = ''; $('chk-savedata').style.display = 'none';
+    $('btn-return-saved').style.display = '';
+    S.revealed = true; $('rev').classList.add('on'); settle();
+  });
+  $('btn-return-saved').addEventListener('click', function () {
+    $('mode-manual').style.display = 'none'; $('fields').style.display = 'none';
+    $('btn-return-saved').style.display = 'none'; $('checks').style.display = 'none'; $('chk-savedata').style.display = '';
+    $('mode-rec').style.display = ''; $('rec-list').style.display = ''; $('rec-single').style.display = 'none';
+    settle();
+  });
+  $('btn-notyours').addEventListener('click', function () { setRecognized(false); });
+  $('chk-savecard').addEventListener('change', syncSaveData);
+
+  /* ═════════ widget reset ═════════ */
+  function fill(a, b, c) { nI.value = a; eI.value = b; cI.value = c; [nI, eI, cI].forEach(function (el) { el.dispatchEvent(new Event('input')); }); }
+  function reset(list) {
+    LIST = list || LIST; clearTimeout(S.timer); S.seq++;
+    S.code = base().c; S.quote = null; S.loading = false;
+    $('cur-p').classList.remove('on'); $('cur-t').classList.remove('hide'); $('cur-t').setAttribute('aria-expanded','false');
+    $('cur-code').textContent = S.code; renderList(); renderCharge();
+  }
+  function setRecognized(v) {
+    S.recognized = v;
+    $('seg-rec').querySelector('[data-rec="1"]').classList.toggle('on', v);
+    $('seg-rec').querySelector('[data-rec="0"]').classList.toggle('on', !v);
+    applyRecognition();
+  }
+
+  /* ═════════ CUSTOMIZER controls ═════════ */
+  var slot = $('slot');
+
+  Array.prototype.forEach.call($('seg-rec').querySelectorAll('button'), function (b) {
+    b.addEventListener('click', function () { setRecognized(b.dataset.rec === '1'); });
+  });
+
+  Array.prototype.forEach.call($('seg-count').querySelectorAll('button'), function (b) {
+    b.addEventListener('click', function () {
+      var wasOpen = $('cur-p').classList.contains('on') || !$('sheet').hidden;
+      Array.prototype.forEach.call($('seg-count').querySelectorAll('button'), function (x) { x.classList.remove('on'); });
+      b.classList.add('on');
+      if (!$('sheet').hidden) { $('sheet').classList.remove('on'); $('sheet').hidden = true; $('slot').style.minHeight = ''; }
+      reset(ALL.slice(0, +b.dataset.count));
+      $('cur-p').style.display = LIST.length > INLINE_MAX ? 'none' : '';
+      if (wasOpen && S.dcc && S.revealed) {
+        if (LIST.length > INLINE_MAX) { openSheet(); }
+        else { $('cur-p').classList.add('on'); $('cur-t').classList.add('hide'); $('cur-t').setAttribute('aria-expanded', 'true'); settle(); }
+      }
+    });
+  });
+
+  $('f-dcc').addEventListener('change', function () { S.dcc = this.checked; $('ctrl-count').classList.toggle('dis', !this.checked); applyDcc(); });
+  $('f-fee').addEventListener('change', function () { AUTH_FEE = this.checked ? 2.00 : 0; reset(); select(S.code); });
+
+  /* colors */
+  function hex(v) { v = (v || '').trim(); if (v[0] !== '#') v = '#' + v; return /^#[0-9a-fA-F]{6}$/.test(v) ? v : null; }
+  function bindColor(swatchId, hexId, cssVar) {
+    var sw = $(swatchId), hx = $(hexId);
+    function set(v, from) {
+      var h = hex(v); if (!h) return;
+      slot.style.setProperty(cssVar, h);
+      if (from !== 'sw') sw.value = h;
+      if (from !== 'hx') hx.value = h.toUpperCase();
+    }
+    sw.addEventListener('input', function () { set(sw.value, 'sw'); });
+    hx.addEventListener('input',  function () { set(hx.value, 'hx'); });
+  }
+  bindColor('c-bg',        'h-bg',        '--bg');
+  bindColor('c-primary',   'h-primary',   '--primary');
+  bindColor('c-secondary', 'h-secondary', '--secondary');
+  bindColor('c-border',    'h-border',    '--s-strong');
+
+  $('s-font').addEventListener('change', function () { slot.style.setProperty('--font', this.value); });
+
+  /* autofill / reset */
+  function resetStyles() {
+    ['--bg','--primary','--secondary','--s-strong','--font'].forEach(function (v) { slot.style.removeProperty(v); });
+    $('c-bg').value='#ffffff'; $('h-bg').value='#FFFFFF';
+    $('c-primary').value='#222222'; $('h-primary').value='#222222';
+    $('c-secondary').value='#727272'; $('h-secondary').value='#727272';
+    $('c-border').value='#dfdfdf'; $('h-border').value='#DFDFDF';
+    $('s-font').value="'Inter',-apple-system,system-ui,sans-serif";
+  }
+  $('d-reset-styles').addEventListener('click', resetStyles);
+
+  $('d-fill').addEventListener('click', function () {
+    if (S.recognized) { $('rec-single').style.display='none'; $('rec-list').style.display='none'; $('fields').style.display=''; $('checks').style.display=''; }
+    fill('5580123100000006', '1228', '745');   /* Luhn-valid Mastercard test PAN */
+  });
+  $('d-reset').addEventListener('click', function () {
+    $('f-dcc').checked = true; S.dcc = true; $('ctrl-count').classList.remove('dis');
+    $('f-fee').checked = false; AUTH_FEE = 0;
+    Array.prototype.forEach.call($('seg-count').querySelectorAll('button'), function (x) { x.classList.toggle('on', x.dataset.count === '3'); });
+    resetStyles();
+    if (!$('sheet').hidden) { $('sheet').classList.remove('on'); $('sheet').hidden = true; $('slot').style.minHeight = ''; }
+    fill('', '', ''); ['w-num','w-e','w-c'].forEach(function (w) { $(w).classList.remove('err'); });
+    reset(ALL.slice(0, 3)); $('cur-p').style.display = '';
+    setRecognized(false); applyDcc();
+  });
+
+  /* ═════════ init ═════════ */
+  applyRecognition();
+  reset(LIST);
+})();
+</script>
+</body>
+</html>
