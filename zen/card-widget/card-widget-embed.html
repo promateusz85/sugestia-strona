@@ -6,11 +6,12 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<title>ZEN.COM Pay 2.0 — Card widget customizer</title>
+<title>ZEN.COM card widget (embed)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Roboto:wght@400;500;700&family=Montserrat:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
+
 /* ══════════════════════════════════════════════════════════
    ZEN.COM Pay 2.0 — Card widget customizer (Stripe-style)
    Left: controls (Features / Style). Right: live ZEN card widget.
@@ -407,155 +408,14 @@ button{font-family:inherit}
   .opt,.manual,.check,.clist .it,.sr{min-height:44px}
   .notyours,.change,.rt.choose,.c2p-change{padding:6px 0;min-height:44px;display:inline-flex;align-items:center}
 }
+
+/* ── embed overrides: fill the iframe, no chrome ── */
+html,body{height:auto;min-height:0}
+body{background:transparent;padding:0;margin:0;display:block}
+.wcard{margin:0 auto;box-shadow:none;max-width:100%}
 </style>
 </head>
 <body>
-
-<!-- ══════════════ TOP BAR ══════════════ -->
-<div class="topbar">
-  <span class="zenlogo"><svg class="zenmark" viewBox="0 0 48 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.44434 0C5.77475 2.37961e-05 5.88124 0.0166796 6.03418 0.0449219C6.33262 0.0997066 6.54281 0.322715 6.51367 0.617188C6.49182 0.833879 6.3441 1.00773 6.15137 1.07324C5.89271 1.15923 5.19098 1.00131 4.83301 1.29102C4.65803 1.43307 4.58339 1.58437 4.50879 1.77637C4.43412 1.96861 4.36837 2.24926 3.87988 2.51758C2.82264 3.09871 2.11928 4.18713 2.11914 5.46191C2.11914 7.30424 3.60707 8.79667 5.44336 8.79688C7.09554 8.79664 8.47426 7.58771 8.72461 6.00195C8.74321 5.88402 8.74706 5.777 8.72461 5.68652C8.67889 5.50328 8.60764 5.3932 8.31152 5.17285C7.92859 4.88768 7.62119 4.4757 7.62109 3.94629C7.62125 3.13443 8.2771 2.47572 9.08594 2.47559C9.64133 2.47579 10.0773 2.82436 10.2998 3.15918C10.4643 3.4068 10.6259 3.73115 10.7227 4.10938C10.816 4.47404 10.8886 4.88631 10.8887 5.46191C10.8887 8.47827 8.45118 10.9244 5.44434 10.9248C2.43717 10.9248 0 8.47851 0 5.46191C0.000196728 2.44549 2.43729 0 5.44434 0ZM33.4287 2.66699C34.0661 2.66705 34.6311 2.83497 35.1074 3.16602C35.3423 3.32305 35.4618 3.52335 35.4619 3.75977C35.4619 4.11342 35.1891 4.39062 34.8408 4.39062C34.657 4.39055 34.5024 4.3078 34.4053 4.23828C34.1694 4.06548 33.8854 3.90628 33.4053 3.90625C32.512 3.90625 31.8389 4.59862 31.8389 5.5166C31.8391 6.43437 32.5121 7.12695 33.4053 7.12695C33.9912 7.12692 34.2703 6.90046 34.4551 6.75098C34.5328 6.68522 34.6975 6.57227 34.9102 6.57227C35.2656 6.57231 35.5233 6.83094 35.5234 7.1875C35.5234 7.36949 35.4391 7.55279 35.292 7.69043C35.0823 7.89275 34.4755 8.36523 33.3896 8.36523C31.7488 8.36511 30.5117 7.14974 30.5117 5.53906C30.512 3.92852 31.7932 2.66699 33.4287 2.66699ZM38.6992 2.66699C40.3348 2.66699 41.5781 3.88206 41.5781 5.49316C41.5781 7.10392 40.2968 8.36522 38.6611 8.36523C37.0255 8.36523 35.7832 7.15021 35.7832 5.53906C35.7834 3.92826 37.0639 2.66719 38.6992 2.66699ZM27.748 2.70605C28.1214 2.70613 28.3926 2.97791 28.3926 3.35254V7.52734C28.3924 7.99125 28.0591 8.32715 27.6016 8.32715C27.3277 8.32701 27.0543 8.16773 26.8711 7.90137L24.6992 4.8252V7.67285C24.6992 8.05786 24.4384 8.32715 24.0547 8.32715C23.6712 8.32694 23.4033 8.05771 23.4033 7.67285V3.55273C23.4033 3.06225 23.7582 2.70612 24.2471 2.70605C24.5317 2.70605 24.799 2.8589 24.9785 3.125L27.0957 6.11621V3.35254C27.0957 2.97785 27.3704 2.70605 27.748 2.70605ZM29.7432 7.03906L29.8721 7.05176C30.163 7.11112 30.3828 7.36857 30.3828 7.68066C30.3826 8.03716 30.0986 8.32715 29.7432 8.32715C29.3878 8.32709 29.0979 8.03407 29.0977 7.68066C29.0977 7.32704 29.3873 7.03912 29.7432 7.03906ZM47.2402 2.70605C47.6804 2.70605 48 3.02946 48 3.47559V7.68066C48 8.05534 47.7409 8.32714 47.3633 8.32715C46.9856 8.32715 46.7109 8.05535 46.7109 7.68066V5.12305L45.7109 7.01562C45.6187 7.20067 45.4528 7.44922 45.1289 7.44922C44.8053 7.44902 44.64 7.21741 44.5322 7.01562L43.5322 5.12305V7.68066C43.5322 8.05535 43.2612 8.32715 42.8877 8.32715C42.5143 8.32712 42.2432 8.05533 42.2432 7.68066V3.51367C42.2433 3.04549 42.5821 2.70612 43.0488 2.70605C43.367 2.70605 43.6416 2.89531 43.8223 3.23926L45.1523 5.77637L46.5283 3.16992C46.6604 2.91191 46.876 2.75025 47.1299 2.71387L47.2402 2.70605ZM17.2246 2.74414C17.6175 2.74414 17.8926 3.01665 17.8926 3.40625C17.8925 3.57481 17.8262 3.74763 17.7119 3.87988L15.0596 7.14258H17.3252C17.6538 7.1428 17.8926 7.38211 17.8926 7.71191C17.8924 8.04152 17.6537 8.28786 17.3252 8.28809H13.8701C13.482 8.28806 13.2112 8.01951 13.2109 7.63477C13.2109 7.46807 13.2852 7.27784 13.4053 7.13867L16.0361 3.89062H13.9316C13.5974 3.89062 13.3643 3.65299 13.3643 3.31348C13.3643 2.97402 13.6028 2.74414 13.9316 2.74414H17.2246ZM22.0723 2.74414C22.4156 2.74414 22.6553 2.98003 22.6553 3.3291C22.6552 3.67805 22.4156 3.92188 22.0723 3.92188H19.8379V4.88574H21.7188C22.0438 4.88574 22.2715 5.11332 22.2715 5.43945C22.2714 5.76552 22.0438 5.99316 21.7188 5.99316H19.8379V7.11133H22.1494C22.4925 7.11155 22.7324 7.34738 22.7324 7.69629C22.7322 8.04497 22.4924 8.28786 22.1494 8.28809H19.1699C18.788 8.28788 18.5108 8.00699 18.5107 7.61914V3.40527C18.511 3.02217 18.7881 2.74435 19.1699 2.74414H22.0723ZM38.6768 3.90625C37.7793 3.90625 37.1094 4.59862 37.1094 5.5166C37.1094 6.43456 37.7835 7.12695 38.6768 7.12695C39.5698 7.12675 40.251 6.43443 40.251 5.5166C40.251 4.59876 39.574 3.90646 38.6768 3.90625ZM7.69727 0.484375C8.03838 0.484639 8.31524 0.762251 8.31543 1.10449C8.31543 1.4469 8.0385 1.72434 7.69727 1.72461C7.35592 1.72448 7.0791 1.44698 7.0791 1.10449C7.07929 0.762166 7.35604 0.484501 7.69727 0.484375Z" fill="currentColor"/></svg></span>
-  <span class="sub">card widget customizer</span>
-  <span class="spacer"></span>
-</div>
-
-<div class="app">
-  <!-- ══════════════ CONTROL PANEL ══════════════ -->
-  <div class="panel">
-    <div class="tabpanes">
-      <!-- ---- FEATURES ---- -->
-      <div class="pane on" id="pane-features">
-        <div class="secttl">Features</div>
-        <div class="group">
-          <div class="gt">User recognition</div>
-          <div class="ctrl">
-            <span class="cl">Buyer<small>Whether Click to Pay recognizes the device</small></span>
-            <div class="seg" id="seg-rec">
-              <button data-rec="0" class="on">Not recognized</button>
-              <button data-rec="1">Recognized</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="group">
-          <div class="gt">Payment setup</div>
-          <div class="ctrl">
-            <span class="cl">Currency choice (DCC)<small>Let the buyer pay in their own currency</small></span>
-            <label class="sw"><input type="checkbox" id="f-dcc" checked><span class="tk"></span></label>
-          </div>
-          <div class="ctrl" id="ctrl-count">
-            <span class="cl">Available currencies</span>
-            <div class="seg" id="seg-count">
-              <button data-count="3">3</button>
-              <button data-count="20" class="on">20</button>
-            </div>
-          </div>
-          <div class="ctrl">
-            <span class="cl">Authorization fee<small>Show an added fee &amp; amount breakdown</small></span>
-            <label class="sw"><input type="checkbox" id="f-fee"><span class="tk"></span></label>
-          </div>
-        </div>
-
-        <div class="group">
-          <div class="gt">Click to Pay</div>
-          <div class="ctrl">
-            <span class="cl">Verification screens<small>Which OTP / enrollment design to use</small></span>
-            <div class="seg" id="seg-c2p-variant">
-              <button data-c2p="zen" class="on">ZEN</button>
-              <button data-c2p="mc">Mastercard</button>
-            </div>
-          </div>
-          <div class="ctrl">
-            <span class="cl">New Click to Pay user<small>Show the enrollment step after OTP</small></span>
-            <label class="sw"><input type="checkbox" id="f-c2p-newuser"><span class="tk"></span></label>
-          </div>
-          <div class="ctrl">
-            <span class="cl">Simulate: email not found<small>Login shows an error instead of continuing</small></span>
-            <label class="sw"><input type="checkbox" id="f-c2p-emailerror"><span class="tk"></span></label>
-          </div>
-          <div class="ctrl">
-            <span class="cl">Simulate C2P error<small>Loader ends in "Something went wrong"</small></span>
-            <label class="sw"><input type="checkbox" id="f-c2p-error"><span class="tk"></span></label>
-          </div>
-        </div>
-
-        <div class="group">
-          <div class="hint">The preview shows only what renders <b>inside the merchant's Card method</b> — the merchant draws its own box, total and Pay button around it.</div>
-        </div>
-      </div>
-
-      <!-- ---- STYLE ---- -->
-      <div class="pane on" id="pane-style">
-        <div class="secttl secttl-row"><span>Style</span><button class="mini-reset" id="d-reset-styles" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 109-9 9 9 0 00-7 3.3M3 3v3.3h3.3"/></svg>Reset styles</button></div>
-        <div class="group">
-          <div class="gt">Color</div>
-          <div class="ctrl">
-            <span class="cl">Background<small>The whole widget surface</small></span>
-            <div class="color">
-              <input type="color" class="swatch" id="c-bg" value="#ffffff">
-              <input type="text" class="hex" id="h-bg" value="#FFFFFF" maxlength="7">
-            </div>
-          </div>
-          <div class="ctrl">
-            <span class="cl">Text — primary<small>Values, titles, links, checkbox</small></span>
-            <div class="color">
-              <input type="color" class="swatch" id="c-primary" value="#222222">
-              <input type="text" class="hex" id="h-primary" value="#222222" maxlength="7">
-            </div>
-          </div>
-          <div class="ctrl">
-            <span class="cl">Text — secondary<small>Labels &amp; captions</small></span>
-            <div class="color">
-              <input type="color" class="swatch" id="c-secondary" value="#727272">
-              <input type="text" class="hex" id="h-secondary" value="#727272" maxlength="7">
-            </div>
-          </div>
-          <div class="ctrl">
-            <span class="cl">Input borders<small>Fields, currency rows, dividers</small></span>
-            <div class="color">
-              <input type="color" class="swatch" id="c-border" value="#dfdfdf">
-              <input type="text" class="hex" id="h-border" value="#DFDFDF" maxlength="7">
-            </div>
-          </div>
-          <div class="ctrl">
-            <span class="cl">Box background<small>Fee breakdown &amp; C2P status boxes</small></span>
-            <div class="color">
-              <input type="color" class="swatch" id="c-box" value="#f7f7f7">
-              <input type="text" class="hex" id="h-box" value="#F7F7F7" maxlength="7">
-            </div>
-          </div>
-        </div>
-        <div class="group">
-          <div class="gt">Typography</div>
-          <div class="ctrl">
-            <span class="cl">Font</span>
-            <select class="ctrl-select" id="s-font">
-              <option value="'Inter',-apple-system,system-ui,sans-serif" selected>Inter</option>
-              <option value="-apple-system,system-ui,'Segoe UI',sans-serif">System default</option>
-              <option value="'Poppins',sans-serif">Poppins</option>
-              <option value="'Roboto',sans-serif">Roboto</option>
-              <option value="'Montserrat',sans-serif">Montserrat</option>
-              <option value="'Nunito',sans-serif">Nunito</option>
-            </select>
-          </div>
-          <div class="hint">Colors and font update the live widget instantly via CSS variables — the same tokens a merchant would theme in production.</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="actions">
-      <button id="d-fill" class="primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4.5 13H11l-1 9 8.5-11H12z"/></svg>Autofill card</button>
-      <button id="d-reset"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 109-9 9 9 0 00-7 3.3M3 3v3.3h3.3"/></svg>Reset to defaults</button>
-    </div>
-  </div>
-
-  <!-- ══════════════ PREVIEW ══════════════ -->
-  <div class="stage">
-    <div class="pmode" id="pmode">
-      <button class="pmbtn on" data-mode="widget" type="button">Sam widget</button>
-      <button class="pmbtn" data-mode="cart" type="button">W koszyku (Decathlon)</button>
-    </div>
-
-    <!-- .wcard = the widget surface (== what lives inside the merchant's Card method) -->
     <div class="wcard" id="slot">
       <div class="zen" id="zen">
 
@@ -786,31 +646,8 @@ button{font-family:inherit}
 
       </div>
     </div>
-
-    <div class="cartwrap" id="cartwrap" style="display:none">
-      <iframe id="cartframe" title="Podgląd w koszyku Decathlon"></iframe>
-    </div>
-
-    <div class="resbar" id="resbar" style="display:none">
-      <span>Rozdzielczość</span>
-      <select class="ctrl-select" id="s-res">
-        <option value="1920x1080">1920 &times; 1080</option>
-        <option value="1536x864">1536 &times; 864</option>
-        <option value="1440x900" selected>1440 &times; 900</option>
-        <option value="1366x768">1366 &times; 768</option>
-        <option value="1280x800">1280 &times; 800</option>
-        <option value="1024x768">1024 &times; 768</option>
-      </select>
-    </div>
-
-    <div class="viewbar" id="viewbar">
-      <button class="vbtn on" data-view="desktop" type="button" aria-label="Desktop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 20h8M12 17v3"/></svg></button>
-      <button class="vbtn" data-view="mobile" type="button" aria-label="Mobile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2.5"/><path d="M11 18h2"/></svg></button>
-    </div>
-  </div>
-</div>
-
 <script>
+
 (function () {
   'use strict';
 
@@ -1319,170 +1156,37 @@ button{font-family:inherit}
     pushCartConfig();
   }
 
-  /* ═════════ CUSTOMIZER controls ═════════ */
-  var slot = $('slot');
-
-  Array.prototype.forEach.call($('seg-rec').querySelectorAll('button'), function (b) {
-    b.addEventListener('click', function () { setRecognized(b.dataset.rec === '1'); });
-  });
-
-  Array.prototype.forEach.call($('seg-count').querySelectorAll('button'), function (b) {
-    b.addEventListener('click', function () {
-      Array.prototype.forEach.call($('seg-count').querySelectorAll('button'), function (x) { x.classList.remove('on'); });
-      b.classList.add('on');
-      reset(ALL.slice(0, +b.dataset.count));
-    });
-  });
-
-  $('f-dcc').addEventListener('change', function () { S.dcc = this.checked; $('ctrl-count').classList.toggle('dis', !this.checked); applyDcc(); });
-  $('f-fee').addEventListener('change', function () { AUTH_FEE = this.checked ? 2.00 : 0; reset(); select(S.code); });
-
-  /* Click to Pay demo controls */
-  Array.prototype.forEach.call($('seg-c2p-variant').querySelectorAll('button'), function (b) {
-    b.addEventListener('click', function () {
-      Array.prototype.forEach.call($('seg-c2p-variant').querySelectorAll('button'), function (x) { x.classList.remove('on'); });
-      b.classList.add('on'); c2pVariant = b.dataset.c2p;
-    });
-  });
-  $('f-c2p-newuser').addEventListener('change', function () { c2pNewUser = this.checked; });
-  $('f-c2p-emailerror').addEventListener('change', function () { c2pEmailError = this.checked; });
-  $('f-c2p-error').addEventListener('change', function () { c2pSimError = this.checked; });
-
-  /* colors */
-  function hex(v) { v = (v || '').trim(); if (v[0] !== '#') v = '#' + v; return /^#[0-9a-fA-F]{6}$/.test(v) ? v : null; }
-  function bindColor(swatchId, hexId, cssVar) {
-    var sw = $(swatchId), hx = $(hexId);
-    function set(v, from) {
-      var h = hex(v); if (!h) return;
-      slot.style.setProperty(cssVar, h);
-      if (from !== 'sw') sw.value = h;
-      if (from !== 'hx') hx.value = h.toUpperCase();
-      pushCartConfig();
-    }
-    sw.addEventListener('input', function () { set(sw.value, 'sw'); });
-    hx.addEventListener('input',  function () { set(hx.value, 'hx'); });
+  /* ═════════ embed config: URL params + postMessage {type:'zen:config'} ═════════ */
+  var _root = document.querySelector('.wcard');
+  function _num(v){ v = parseInt(v, 10); return isNaN(v) ? null : v; }
+  function _col(v){ if (v == null || v === '') return null; v = String(v).trim(); if (v[0] !== '#') v = '#' + v; return /^#[0-9a-fA-F]{3,8}$/.test(v) ? v : null; }
+  function applyConfig(cfg){
+    if (!cfg || !_root) return;
+    [['bg','--bg'],['primary','--primary'],['secondary','--secondary'],['border','--s-strong'],['box','--s-light'],['accent','--accent']].forEach(function(p){ var c=_col(cfg[p[0]]); if(c) _root.style.setProperty(p[1], c); });
+    if (cfg.font) _root.style.setProperty('--font', cfg.font);
+    if ('count' in cfg && _num(cfg.count)) reset(ALL.slice(0, _num(cfg.count)));
+    if ('order' in cfg) { var o = parseFloat(cfg.order); if (!isNaN(o) && o > 0) ORDER = o; }
+    if ('dcc' in cfg) { S.dcc = !!cfg.dcc; applyDcc(); }
+    if ('fee' in cfg) { AUTH_FEE = cfg.fee ? 2.00 : 0; renderCharge(); }
+    if ('rec' in cfg) { setRecognized(!!cfg.rec); }
+    renderList(); renderCharge();
   }
-  bindColor('c-bg',        'h-bg',        '--bg');
-  bindColor('c-primary',   'h-primary',   '--primary');
-  bindColor('c-secondary', 'h-secondary', '--secondary');
-  bindColor('c-border',    'h-border',    '--s-strong');
-  bindColor('c-box',       'h-box',       '--s-light');
-
-  $('s-font').addEventListener('change', function () { slot.style.setProperty('--font', this.value); pushCartConfig(); });
-
-  /* autofill / reset */
-  function resetStyles() {
-    ['--bg','--primary','--secondary','--s-strong','--s-light','--font'].forEach(function (v) { slot.style.removeProperty(v); });
-    $('c-bg').value='#ffffff'; $('h-bg').value='#FFFFFF';
-    $('c-primary').value='#222222'; $('h-primary').value='#222222';
-    $('c-secondary').value='#727272'; $('h-secondary').value='#727272';
-    $('c-border').value='#dfdfdf'; $('h-border').value='#DFDFDF';
-    $('c-box').value='#f7f7f7'; $('h-box').value='#F7F7F7';
-    $('s-font').value="'Inter',-apple-system,system-ui,sans-serif";
-    pushCartConfig();
-  }
-  $('d-reset-styles').addEventListener('click', resetStyles);
-
-  $('d-fill').addEventListener('click', function () {
-    if (hideC2P()) applyRecognition();   /* autofill mid-C2P-flow returns to card entry first */
-    if (S.recognized) { $('rec-single').style.display='none'; $('rec-list').style.display='none'; $('fields').style.display=''; $('checks').style.display=''; }
-    fill('5580123100000006', '1228', '745');   /* Luhn-valid Mastercard test PAN */
-  });
-  $('d-reset').addEventListener('click', function () {
-    $('f-dcc').checked = true; S.dcc = true; $('ctrl-count').classList.remove('dis');
-    $('f-fee').checked = false; AUTH_FEE = 0;
-    Array.prototype.forEach.call($('seg-count').querySelectorAll('button'), function (x) { x.classList.toggle('on', x.dataset.count === '20'); });
-    resetStyles();
-    fill('', '', ''); ['w-num','w-e','w-c'].forEach(function (w) { $(w).classList.remove('err'); });
-    reset(ALL.slice(0, 20));
-    exitC2PToManual(); $('mode-c2p-info').style.display = 'none';
-    Array.prototype.forEach.call($('seg-c2p-variant').querySelectorAll('button'), function (x) { x.classList.toggle('on', x.dataset.c2p === 'zen'); });
-    c2pVariant = 'zen';
-    $('f-c2p-newuser').checked = false; c2pNewUser = false;
-    $('f-c2p-emailerror').checked = false; c2pEmailError = false;
-    $('f-c2p-error').checked = false; c2pSimError = false;
-    setRecognized(false); applyDcc(); pushCartConfig();
-  });
-
-  /* ═════════ preview mode: standalone widget vs real cart (Decathlon) ═════════ */
-  var previewMode = 'widget';
-  var cartReady = false;
-  var RES = { '1920x1080':[1920,1080], '1536x864':[1536,864], '1440x900':[1440,900], '1366x768':[1366,768], '1280x800':[1280,800], '1024x768':[1024,768] };
-
-  function cartConfigParams() {
-    var cs = getComputedStyle(slot);
-    var p = new URLSearchParams();
-    p.set('bg', cs.getPropertyValue('--bg').trim());
-    p.set('primary', cs.getPropertyValue('--primary').trim());
-    p.set('secondary', cs.getPropertyValue('--secondary').trim());
-    p.set('border', cs.getPropertyValue('--s-strong').trim());
-    p.set('box', cs.getPropertyValue('--s-light').trim());
-    var f = slot.style.getPropertyValue('--font'); if (f) p.set('font', f);
-    p.set('dcc', S.dcc ? '1' : '0');
-    p.set('fee', AUTH_FEE > 0 ? '1' : '0');
-    p.set('rec', S.recognized ? '1' : '0');
-    p.set('count', String(LIST.length));
-    return p;
-  }
-  pushCartConfig = function () {
-    if (previewMode !== 'cart' || !cartReady) return;
-    var f = $('cartframe');
-    if (!f || !f.contentWindow) return;
-    var cfg = { type:'zen:config' };
-    cartConfigParams().forEach(function (v, k) { cfg[k] = (k==='dcc'||k==='fee'||k==='rec') ? (v==='1') : v; });
-    try { f.contentWindow.postMessage(cfg, '*'); } catch (e) {}
-  };
-  function enterCartMode() {
-    var f = $('cartframe');
-    if (!f.getAttribute('src')) {
-      cartReady = false;
-      f.addEventListener('load', function () { cartReady = true; pushCartConfig(); });
-      f.src = 'cart-demo.html?' + cartConfigParams().toString();
-    } else {
-      pushCartConfig();
-    }
-    applyResolution();
-  }
-  function applyResolution() {
-    var view = document.querySelector('.stage').getAttribute('data-view') || 'desktop';
-    var cw = $('cartwrap');
-    if (view === 'mobile') { cw.style.width = '390px'; cw.style.height = '780px'; return; }
-    var wh = RES[$('s-res').value] || [1440, 900];
-    cw.style.width = wh[0] + 'px'; cw.style.height = wh[1] + 'px';
-  }
-  Array.prototype.forEach.call($('pmode').querySelectorAll('.pmbtn'), function (b) {
-    b.addEventListener('click', function () {
-      Array.prototype.forEach.call($('pmode').querySelectorAll('.pmbtn'), function (x) { x.classList.remove('on'); });
-      b.classList.add('on');
-      previewMode = b.dataset.mode;
-      var isCart = previewMode === 'cart';
-      $('slot').style.display = isCart ? 'none' : '';
-      $('cartwrap').style.display = isCart ? '' : 'none';
-      var view = document.querySelector('.stage').getAttribute('data-view') || 'desktop';
-      $('resbar').style.display = (isCart && view === 'desktop') ? 'flex' : 'none';
-      if (isCart) enterCartMode();
-    });
-  });
-  $('s-res').addEventListener('change', applyResolution);
-
-  /* desktop/mobile preview toggle */
-  Array.prototype.forEach.call($('viewbar').querySelectorAll('.vbtn'), function (b) {
-    b.addEventListener('click', function () {
-      Array.prototype.forEach.call($('viewbar').querySelectorAll('.vbtn'), function (x) { x.classList.remove('on'); });
-      b.classList.add('on');
-      document.querySelector('.stage').setAttribute('data-view', b.dataset.view);
-      settle();   /* re-measure + narrow-class toggle after the width change (don't rely on RO timing) */
-      if (previewMode === 'cart') {
-        $('resbar').style.display = (b.dataset.view === 'desktop') ? 'flex' : 'none';
-        applyResolution();
-      }
-    });
-  });
+  var _qp = new URLSearchParams(location.search);
+  var urlCfg = {};
+  ['bg','primary','secondary','border','box','accent','font'].forEach(function(k){ if (_qp.get(k) !== null) urlCfg[k] = _qp.get(k); });
+  ['dcc','fee','rec'].forEach(function(k){ if (_qp.has(k)) urlCfg[k] = (_qp.get(k) === '1' || _qp.get(k) === 'true'); });
+  if (_qp.has('count')) urlCfg.count = _qp.get('count');
+  if (_qp.has('order')) urlCfg.order = _qp.get('order');
+  var doFill = _qp.get('fill') === '1';
+  addEventListener('message', function(e){ if (e && e.data && e.data.type === 'zen:config') applyConfig(e.data); });
 
   /* ═════════ init ═════════ */
   applyRecognition();
   reset(LIST);
+  applyConfig(urlCfg);
+  if (doFill) { fill('5580123100000006', '1228', '745'); }
 })();
+
 </script>
 </body>
 </html>
