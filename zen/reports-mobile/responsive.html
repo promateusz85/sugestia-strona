@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Report customisation — final (variant 2, responsive)</title>
+<style>
+  :root{
+    --ink:#101112; --ink-soft:#54585d; --line:#e4e5e7; --line-soft:#eef0f1;
+    --bg:#f4f5f6; --panel:#fff; --soft:#f2f3f4; --blue:#2f6fed; --danger:#c0392b;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);color:var(--ink);font-size:15px;-webkit-font-smoothing:antialiased;}
+
+  /* ---------- shell ---------- */
+  .devbar{background:#101112;color:#c9cbcd;font-size:12px;padding:9px 14px;display:flex;
+    gap:14px;align-items:center;flex-wrap:wrap;position:sticky;top:0;z-index:50;}
+  .devbar select{background:#2b2e31;color:#fff;border:1px solid #3a3d40;border-radius:7px;
+    padding:6px 9px;font-size:12px;font-family:inherit;}
+  .devbar label{display:flex;align-items:center;gap:6px;cursor:pointer;}
+  .devbar .seg{display:inline-flex;background:#1e2022;border-radius:8px;padding:3px;}
+  .devbar .seg button{border:none;background:none;color:#b9bcbf;font-family:inherit;font-size:11.5px;
+    padding:6px 12px;border-radius:6px;cursor:pointer;}
+  .devbar .seg button.on{background:#fff;color:#101112;font-weight:700;}
+  .devbar .hint{color:#8b8e91;}
+
+  .app{max-width:412px;margin:0 auto;padding:0 0 40px;}
+  body.force-mobile .app{box-shadow:0 0 0 1px rgba(0,0,0,.08);background:var(--bg);min-height:100vh;}
+
+  .scr{display:none;padding:18px 14px 20px;} .scr.on{display:block;}
+  .navback{display:inline-flex;align-items:center;gap:6px;font-size:14px;color:var(--ink-soft);
+    padding:8px 0;margin-bottom:4px;cursor:pointer;}
+  .navback:hover{color:var(--ink);}
+  h1{font-size:22px;margin:2px 0 6px;letter-spacing:-.01em;}
+  .sub{font-size:13.5px;color:var(--ink-soft);line-height:1.5;margin:0 0 18px;}
+  .card{background:var(--panel);border-radius:14px;padding:14px;margin-bottom:14px;}
+  .card h2{font-size:15px;margin:0 0 4px;}
+  .card .h{font-size:12.5px;color:var(--ink-soft);line-height:1.5;margin:0 0 14px;}
+
+  /* ---------- reports list ---------- */
+  .lh{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:16px;}
+  .ic{width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:#fff;
+    font-size:17px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;}
+  .ic:hover{background:var(--soft);}
+  .ic.hide{display:none;}
+  .rr{display:flex;gap:12px;align-items:center;padding:13px 0;border-bottom:1px solid var(--line-soft);}
+  .rr:last-child{border-bottom:none;}
+  .fic{width:34px;height:40px;background:var(--ink);color:#fff;border-radius:6px;font-size:8.5px;
+    font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .rm{flex:1;min-width:0;}
+  .rt{font-size:13.5px;font-weight:600;line-height:1.35;}
+  .rd{font-size:11.5px;color:#9a9da2;margin-top:3px;}
+  .rb{font-size:11px;color:#b6b8bb;margin-top:2px;}
+  .dlk{color:var(--ink-soft);font-size:17px;cursor:pointer;flex-shrink:0;padding:6px;}
+  .tagm{font-size:11.5px;color:#9a9da2;flex-shrink:0;}
+
+  /* ---------- fields / dropdowns ---------- */
+  .fld{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
+  .fld > label{font-size:12.5px;font-weight:600;color:var(--ink-soft);}
+  input[type=email]{border:1px solid var(--line);border-radius:10px;padding:12px;font-size:15px;
+    font-family:inherit;color:var(--ink);width:100%;}
+  input[type=email]:focus{outline:2px solid var(--blue);outline-offset:1px;}
+  .dd{position:relative;}
+  .ddt{border:1px solid var(--line);border-radius:10px;padding:12px;font-size:15px;background:#fff;
+    cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:10px;min-height:48px;}
+  .ddt:hover{border-color:#cfd2d5;}
+  .ddt .cr{color:var(--ink-soft);font-size:11px;flex-shrink:0;}
+  .ddm{display:none;position:absolute;z-index:30;top:calc(100% + 4px);left:0;right:0;background:#fff;
+    border:1px solid var(--line);border-radius:12px;padding:6px;box-shadow:0 12px 30px rgba(0,0,0,.13);
+    max-height:300px;overflow-y:auto;}
+  .dd.open .ddm{display:block;}
+  body.spec .ddm{display:block;position:static;box-shadow:none;margin-top:6px;border-style:dashed;max-height:none;}
+  .ddo{display:flex;align-items:flex-start;gap:10px;padding:11px 10px;border-radius:8px;
+    font-size:14px;cursor:pointer;min-height:46px;}
+  .ddo:hover{background:var(--soft);}
+  .ddo.sel{font-weight:600;}
+  .ddo .tk{width:15px;flex-shrink:0;}
+  .ddo input{width:22px;height:22px;accent-color:var(--ink);flex-shrink:0;margin-top:1px;}
+  .om{display:flex;flex-direction:column;gap:2px;min-width:0;}
+  .os{font-size:11.5px;color:#9a9da2;font-weight:400;}
+  .dsep{height:1px;background:var(--line-soft);margin:5px 4px;}
+  .dgl{font-size:10.5px;font-weight:700;letter-spacing:.05em;color:#9a9da2;text-transform:uppercase;
+    padding:9px 10px 4px;}
+
+  /* ---------- accordion groups (step 1) ---------- */
+  .grp{border-bottom:1px solid var(--line-soft);}
+  .grp:last-child{border-bottom:none;}
+  .grph{display:flex;align-items:center;gap:11px;padding:13px 2px;min-height:54px;cursor:pointer;}
+  .grpt{flex:1;font-size:14.5px;font-weight:600;line-height:1.3;}
+  .grpc{font-size:12px;color:var(--ink-soft);border:1px solid var(--line);border-radius:999px;
+    padding:3px 9px;flex-shrink:0;}
+  .chev{width:8px;height:8px;border-right:2px solid #9a9da2;border-bottom:2px solid #9a9da2;
+    transform:rotate(45deg);transition:transform .15s;flex-shrink:0;margin-right:2px;}
+  .grp.open .chev{transform:rotate(-135deg);}
+  .grpb{display:none;padding:0 0 10px 28px;}
+  .grp.open .grpb{display:block;}
+  .fi{display:flex;align-items:center;gap:11px;padding:9px 2px;min-height:46px;}
+  .cb{width:22px;height:22px;accent-color:var(--ink);flex-shrink:0;cursor:pointer;}
+  .lab{flex:1;min-width:0;line-height:1.35;cursor:pointer;}
+  .lab b{font-weight:500;font-size:14px;display:block;}
+  .lab i{font-style:normal;font-family:ui-monospace,Menlo,monospace;font-size:11px;color:#a7aaad;display:block;}
+  .fi.na .lab{opacity:.45;cursor:default;}
+  .pn{font-size:10px;color:#a8700f;background:#fff8ea;border-radius:6px;padding:2px 7px;
+    white-space:nowrap;flex-shrink:0;}
+
+  /* ---------- arrange rows (step 2) ---------- */
+  .rows{list-style:none;margin:0;padding:0;}
+  .rw{display:flex;align-items:center;gap:10px;padding:8px 2px;min-height:58px;
+    border-bottom:1px solid var(--line-soft);background:#fff;}
+  .rw:last-child{border-bottom:none;}
+  .rw.lift{background:#f5f8ff;box-shadow:0 8px 22px rgba(0,0,0,.16);border-radius:10px;
+    position:relative;z-index:5;}
+  .hnd{width:38px;min-height:46px;display:flex;align-items:center;justify-content:center;
+    color:#c2c4c7;font-size:18px;flex-shrink:0;touch-action:none;cursor:grab;letter-spacing:1px;}
+  .rw:hover .hnd{color:var(--ink-soft);}
+  .hnd:active{cursor:grabbing;}
+  .pos{font-family:ui-monospace,Menlo,monospace;font-size:12px;font-weight:700;color:var(--ink);
+    background:var(--soft);border-radius:7px;min-width:32px;height:28px;display:flex;
+    align-items:center;justify-content:center;flex-shrink:0;}
+  .gt{font-size:11px;color:#a7aaad;display:none;}
+  .mv{display:flex;gap:3px;flex-shrink:0;}
+  .mv button{width:34px;height:30px;border:1px solid var(--line);background:#fff;border-radius:7px;
+    font-size:12px;color:var(--ink-soft);padding:0;line-height:1;cursor:pointer;}
+  .mv button:hover:not(:disabled){background:var(--soft);color:var(--ink);}
+  .mv button:disabled{opacity:.28;cursor:not-allowed;}
+
+  /* ---------- shared ---------- */
+  .acts{display:flex;gap:14px;font-size:13px;margin:0 2px 12px;flex-wrap:wrap;}
+  .acts a{color:var(--ink);text-decoration:underline;text-underline-offset:3px;padding:6px 0;cursor:pointer;}
+  .acts a:hover{color:var(--blue);}
+  .seg2{display:inline-flex;background:var(--soft);border-radius:999px;padding:3px;margin-bottom:16px;}
+  .seg2 button{border:none;background:none;padding:10px 20px;font-size:13.5px;font-family:inherit;
+    cursor:pointer;color:var(--ink-soft);border-radius:999px;}
+  .seg2 button.on{background:#fff;color:var(--ink);font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,.09);}
+  .csvp{background:#101112;color:#e6e7e8;border-radius:12px;padding:13px;margin-top:16px;
+    font-family:ui-monospace,Menlo,monospace;font-size:11px;line-height:1.85;
+    max-height:130px;overflow:auto;}
+  .csvp .l{display:block;color:#8b8e91;font-family:inherit;font-size:10px;letter-spacing:.05em;
+    text-transform:uppercase;margin-bottom:6px;}
+  .csvp .n{color:#6f7274;}
+  .sum{font-size:13px;color:var(--ink-soft);margin:14px 2px 0;}
+  .sum b{color:var(--ink);}
+  .dirty{color:#a8700f;}
+  .err{color:var(--danger);font-size:12.5px;margin:8px 2px 0;display:none;}
+  .err.on{display:block;}
+  .cta{display:flex;align-items:center;justify-content:space-between;gap:12px;
+    border-top:1px solid var(--line);margin-top:14px;padding-top:14px;}
+  .cta .t{font-size:13.5px;font-weight:600;}
+  .cta .s{font-size:11.5px;color:#9a9da2;margin-top:2px;}
+  .btn{border:1px solid var(--line);background:#fff;border-radius:999px;padding:12px 20px;
+    font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;color:var(--ink);}
+  .btn:hover:not(:disabled){background:var(--soft);}
+  .btn.pri{background:var(--ink);color:#fff;border-color:var(--ink);}
+  .btn.pri:hover:not(:disabled){opacity:.88;background:var(--ink);}
+  .btn.pri:disabled{background:#c7c9cc;border-color:#c7c9cc;cursor:not-allowed;}
+  .savebar{position:sticky;bottom:0;background:linear-gradient(180deg,rgba(244,245,246,0),var(--bg) 36%);
+    padding:16px 14px 18px;display:flex;gap:10px;z-index:20;}
+  .savebar .btn{flex:1;padding:14px;}
+  .info{border-top:1px solid var(--line);padding-top:16px;margin-top:4px;display:flex;
+    justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;}
+  .info .m{font-size:13.5px;} .info .s{font-size:11.5px;color:#9a9da2;margin-top:3px;}
+  .info a{color:var(--ink);font-size:13px;text-decoration:underline;text-underline-offset:3px;cursor:pointer;}
+  .warn{background:#fff8ea;border:1px solid #f0e2c0;color:#7a5f22;border-radius:10px;
+    padding:12px;font-size:12.5px;line-height:1.6;margin-bottom:14px;}
+  .note{background:#f5f8ff;border:1px solid #d8e3fb;color:#2c4478;border-radius:10px;
+    padding:12px;font-size:12.5px;line-height:1.6;margin-bottom:14px;}
+  .lg{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--line-soft);font-size:13px;}
+  .lg:last-child{border-bottom:none;}
+  .lgw{color:#9a9da2;font-size:11.5px;flex-shrink:0;width:96px;}
+  .lgb{font-size:10px;font-weight:700;padding:2px 7px;border-radius:6px;background:var(--soft);
+    color:var(--ink-soft);align-self:flex-start;}
+
+  #toast{position:fixed;left:50%;transform:translateX(-50%) translateY(14px);bottom:22px;
+    background:#101112;color:#fff;padding:12px 20px;border-radius:999px;font-size:13.5px;
+    opacity:0;pointer-events:none;transition:.2s;z-index:90;max-width:90vw;text-align:center;}
+  #toast.on{opacity:1;transform:translateX(-50%) translateY(0);}
+  .mbg{position:fixed;inset:0;background:rgba(16,17,18,.5);display:none;align-items:center;
+    justify-content:center;z-index:80;padding:16px;}
+  .mbg.on{display:flex;}
+  .mdl{background:#fff;border-radius:16px;padding:22px;max-width:400px;width:100%;}
+  .mdl h3{margin:0 0 8px;font-size:17px;}
+  .mdl p{margin:0 0 18px;font-size:13.5px;color:var(--ink-soft);line-height:1.55;}
+  .mdla{display:flex;gap:8px;flex-wrap:wrap;}
+  .mdla .btn{flex:1;padding:11px 12px;font-size:13px;}
+
+  /* ================= DESKTOP ================= */
+  @media (min-width:760px){
+    body:not(.force-mobile) .app{max-width:880px;padding-bottom:60px;}
+    body:not(.force-mobile) .scr{padding:30px 24px 24px;}
+    body:not(.force-mobile) h1{font-size:27px;}
+    body:not(.force-mobile) .card{padding:24px 26px;border:1px solid var(--line);}
+    body:not(.force-mobile) .grpb{display:none;grid-template-columns:1fr 1fr;gap:2px 26px;padding-left:34px;}
+    body:not(.force-mobile) .grp.open .grpb{display:grid;}
+    body:not(.force-mobile) .fi{min-height:40px;padding:6px 2px;}
+    body:not(.force-mobile) .cb{width:18px;height:18px;}
+    body:not(.force-mobile) .ddo input{width:18px;height:18px;}
+    body:not(.force-mobile) .rw{min-height:52px;}
+    body:not(.force-mobile) .gt{display:block;}
+    body:not(.force-mobile) .ddt,body:not(.force-mobile) input[type=email]{font-size:14px;
+      padding:10px 12px;min-height:42px;}
+    body:not(.force-mobile) .row2{display:flex;gap:18px;}
+    body:not(.force-mobile) .row2 > *{flex:1;min-width:0;}
+    body:not(.force-mobile) .savebar{position:static;background:none;padding:8px 0 0;
+      justify-content:flex-end;}
+    body:not(.force-mobile) .savebar .btn{flex:0 0 auto;padding:12px 26px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="devbar">
+  <span>Rola:</span>
+  <select id="role" onchange="applyRole()">
+    <option value="admin">Admin / właściciel</option>
+    <option value="staff">Księgowa — tylko generowanie</option>
+  </select>
+  <span class="hint" id="roleHint"></span>
+  <span style="margin-left:auto;display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+    <span class="seg">
+      <button class="on" onclick="setView('desktop',this)">Desktop</button>
+      <button onclick="setView('mobile',this)">Mobile</button>
+    </span>
+    <label><input type="checkbox" id="specCb" onchange="document.body.classList.toggle('spec',this.checked)">
+      Spec mode</label>
+  </span>
+</div>
+
+<div class="app">
+
+  <!-- ============ 1. REPORTS LIST ============ -->
+  <div class="scr on" id="s-list">
+    <div class="lh">
+      <div><h1>Reports</h1><p class="sub" style="margin:0;">We keep all generated reports for 30 days</p></div>
+      <div style="display:flex;gap:8px;">
+        <button class="ic" id="gear" onclick="go('settings')" title="Report field settings">⚙</button>
+        <button class="ic" onclick="go('generate')" title="Generate report">+</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="rr"><div class="fic">CSV</div><div class="rm">
+        <div class="rt">Asics Store — Settlement report · 01 Jul – 31 Aug 2026</div>
+        <div class="rd">18 Aug 26, 09:12 · 26 columns</div>
+        <div class="rb">Generated by Anna Nowak (Bookkeeper)</div></div><div class="dlk">⤓</div></div>
+      <div class="rr"><div class="fic">CSV</div><div class="rm">
+        <div class="rt">All shops — Authorisation report · 01 Jul – 31 Aug 2026</div>
+        <div class="rd">17 Aug 26, 16:40 · 38 columns</div>
+        <div class="rb">Generated by Mateusz Karbowski (Admin)</div></div><div class="dlk">⤓</div></div>
+      <div class="rr"><div class="fic">CSV</div><div class="rm">
+        <div class="rt">Reebok Shop — Authorisation report · 01 Jul – 31 Aug 2026</div>
+        <div class="rd">17 Aug 26, 16:38</div>
+        <div class="rb">Generated by Anna Nowak (Bookkeeper)</div></div>
+        <span class="tagm">No transactions</span></div>
+    </div>
+  </div>
+
+  <!-- ============ 2. GENERATE ============ -->
+  <div class="scr" id="s-generate">
+    <div class="navback" onclick="go('list')">← Back to reports</div>
+    <h1>Generate report</h1>
+    <p class="sub">Columns come from the saved configuration — nothing to decide here.</p>
+    <div class="card">
+      <div class="row2">
+        <div class="fld"><label>Report type</label>
+          <div class="dd" id="d-type"><div class="ddt" onclick="ddT('d-type')">
+            <span id="l-type">Settlement</span><span class="cr">▾</span></div>
+            <div class="ddm">
+              <div class="ddo sel" onclick="pick('type','Settlement')"><span class="tk">✓</span>
+                <span class="om"><span>Settlement</span><span class="os">Only transactions actually settled</span></span></div>
+              <div class="ddo" onclick="pick('type','Authorisation')"><span class="tk"></span>
+                <span class="om"><span>Authorisation</span><span class="os">Every created transaction — incl. pending and rejected</span></span></div>
+            </div></div></div>
+        <div class="fld"><label>Shops / terminals</label>
+          <div class="dd" id="d-term"><div class="ddt" onclick="ddT('d-term')">
+            <span id="l-term">All shops (5)</span><span class="cr">▾</span></div>
+            <div class="ddm">
+              <label class="ddo"><input type="checkbox" checked class="t-all" onchange="allT(this)">
+                <span class="om"><span>All shops</span></span></label>
+              <div class="dsep"></div>
+              <div class="dgl">STR06695</div>
+              <label class="ddo"><input type="checkbox" checked class="t-i"><span class="om">
+                <span>Asics Store</span><span class="os">asics-store.com · ZEN77586</span></span></label>
+              <label class="ddo"><input type="checkbox" checked class="t-i"><span class="om">
+                <span>Asics Outlet</span><span class="os">outlet.asics-store.com · ZEN77587</span></span></label>
+              <div class="dgl">STR08810</div>
+              <label class="ddo"><input type="checkbox" checked class="t-i"><span class="om">
+                <span>Reebok Shop</span><span class="os">reebok-shop.pl · ZEN90341</span></span></label>
+              <label class="ddo"><input type="checkbox" checked class="t-i"><span class="om">
+                <span>Reebok — in-store POS</span><span class="os">Kraków, Floriańska 12 · ZEN90342</span></span></label>
+              <div class="dgl">STR12045</div>
+              <label class="ddo"><input type="checkbox" checked class="t-i"><span class="om">
+                <span>Puma Store</span><span class="os">puma-store.eu · ZEN10098</span></span></label>
+            </div></div></div>
+      </div>
+      <div class="row2">
+        <div class="fld"><label>Date range</label>
+          <div class="dd" id="d-date"><div class="ddt" onclick="ddT('d-date')">
+            <span id="l-date">Previous month</span><span class="cr">▾</span></div>
+            <div class="ddm">
+              <div class="ddo" onclick="pick('date','Current month')"><span class="tk"></span>
+                <span class="om"><span>Current month</span><span class="os">01 – 18 Aug 2026</span></span></div>
+              <div class="ddo sel" onclick="pick('date','Previous month')"><span class="tk">✓</span>
+                <span class="om"><span>Previous month</span><span class="os">01 – 31 Jul 2026</span></span></div>
+              <div class="ddo" onclick="pick('date','Last 90 days')"><span class="tk"></span>
+                <span class="om"><span>Last 90 days</span><span class="os">21 May – 18 Aug 2026</span></span></div>
+              <div class="ddo" onclick="pick('date','Last 6 months')"><span class="tk"></span>
+                <span class="om"><span>Last 6 months</span><span class="os">18 Feb – 18 Aug 2026 · maximum</span></span></div>
+              <div class="dsep"></div>
+              <div class="ddo" onclick="pick('date','Custom range')"><span class="tk"></span>
+                <span class="om"><span>Custom range…</span><span class="os">Any window up to 6 months</span></span></div>
+            </div></div></div>
+        <div class="fld"><label>File format</label>
+          <div class="dd" id="d-fmt"><div class="ddt" onclick="ddT('d-fmt')">
+            <span id="l-fmt">CSV</span><span class="cr">▾</span></div>
+            <div class="ddm">
+              <div class="ddo sel" onclick="pick('fmt','CSV')"><span class="tk">✓</span>
+                <span class="om"><span>CSV</span><span class="os">For accounting / warehouse imports</span></span></div>
+              <div class="ddo" onclick="pick('fmt','Excel (.xlsx)')"><span class="tk"></span>
+                <span class="om"><span>Excel (.xlsx)</span><span class="os">Summary row — decision pending</span></span></div>
+              <div class="ddo" onclick="pick('fmt','JSON')"><span class="tk"></span>
+                <span class="om"><span>JSON</span><span class="os">Raw data</span></span></div>
+            </div></div></div>
+      </div>
+      <div class="fld"><label>Recipient email addresses (optional)</label>
+        <input type="email" placeholder="e.g. finance@shop.com, ops@shop.com"></div>
+      <div class="info" id="infoBox"></div>
+    </div>
+    <div class="savebar"><button class="btn pri" onclick="toast('Report queued — it will appear in the list shortly.')">Generate</button></div>
+  </div>
+
+  <!-- ============ 3. SETTINGS — STEP 1 ============ -->
+  <div class="scr" id="s-settings">
+    <div class="navback" onclick="leave()">← Back to reports</div>
+    <h1>Report field settings</h1>
+    <p class="sub">Step 1 of 2 — choose which columns the file contains.
+      Applies to every report generated by anyone on this account.</p>
+
+    <div id="locked" style="display:none;">
+      <div class="warn"><b>You don’t have permission to change report field settings.</b><br>
+        Your role can generate and download reports. Column configuration is managed by an account admin.</div>
+    </div>
+
+    <div id="body1">
+      <div class="seg2">
+        <button class="on" onclick="setType('Settlement',this)">Settlement</button>
+        <button onclick="setType('Authorisation',this)">Authorisation</button>
+      </div>
+      <div class="warn" id="authWarn" style="display:none;">
+        <b>Authorisation keeps today’s export 1:1 — 37 columns, nothing added.</b>
+        The four new fields (Tenant ID, Customer email, Integration channel, Process ID) exist only in
+        the Settlement report, which therefore has 41 columns. Column selection and ordering still work
+        here — only the available field list differs.
+      </div>
+
+      <div class="card">
+        <h2>Included columns — <span id="tName">Settlement</span> report</h2>
+        <p class="h">Groups exist so a merchant without cards can switch off all card columns in one
+          click. They do not constrain the order.</p>
+        <div class="acts">
+          <a onclick="selAll(1)">Select all</a>
+          <a onclick="selAll(0)">Deselect all</a>
+          <a onclick="restore()">Restore saved</a>
+          <a onclick="go('audit')">Change history</a>
+        </div>
+        <div id="groups"></div>
+        <div class="sum">Selected <b id="cnt">0</b> of <span id="tot">0</span> available columns
+          <span id="dirty" class="dirty" style="display:none;"> · unsaved changes</span></div>
+        <div class="err" id="err">Select at least one column — a report cannot be generated with zero columns.</div>
+        <div class="cta">
+          <div><div class="t">Column order</div><div class="s" id="ordSum"></div></div>
+          <button class="btn" onclick="go('arrange')">Arrange →</button>
+        </div>
+      </div>
+
+      <div class="savebar">
+        <button class="btn" onclick="leave()">Cancel</button>
+        <button class="btn pri" id="save1" onclick="save()">Save configuration</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 4. ARRANGE — STEP 2 ============ -->
+  <div class="scr" id="s-arrange">
+    <div class="navback" onclick="go('settings')">← Back to column selection</div>
+    <h1>Arrange columns</h1>
+    <p class="sub">Step 2 of 2 — only the columns you selected appear here.
+      <b>Position 1 is the leftmost column in the file.</b> Order is free across groups.</p>
+    <div class="note">
+      Merchants feed these files into accounting and warehouse software that expects an exact column
+      layout. Matching that layout is what this screen is for.
+    </div>
+    <div class="card">
+      <div class="acts">
+        <a onclick="resetOrd()">Reset to standard order</a>
+        <a onclick="tidy()">Group related columns together</a>
+      </div>
+      <ul class="rows" id="arrList"></ul>
+      <div class="csvp" id="csvp"></div>
+    </div>
+    <div class="savebar">
+      <button class="btn" onclick="go('settings')">Back</button>
+      <button class="btn pri" id="save2" onclick="save()">Save configuration</button>
+    </div>
+  </div>
+
+  <!-- ============ 5. CHANGE HISTORY ============ -->
+  <div class="scr" id="s-audit">
+    <div class="navback" onclick="go('settings')">← Back to field settings</div>
+    <h1>Change history</h1>
+    <p class="sub">Who changed the column configuration, when, and what changed.</p>
+    <div class="card"><div id="audit"></div></div>
+  </div>
+
+</div>
+
+<div id="toast"></div>
+<div class="mbg" id="modal">
+  <div class="mdl">
+    <h3>Discard unsaved changes?</h3>
+    <p>You changed the column configuration but haven’t saved it. Leaving now discards those changes.</p>
+    <div class="mdla">
+      <button class="btn" onclick="closeM()">Keep editing</button>
+      <button class="btn" id="bDiscard" onclick="discard()">Discard</button>
+      <button class="btn pri" onclick="saveLeave()">Save &amp; leave</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ================= model ================= */
+/* field entry = [key, label, tooltip?, onlyReportType?]   'S' = Settlement only */
+const GROUPS=[
+ {id:'ident',t:'Identifiers',f:[
+   ['tenant_id','Tenant ID','Top-level account the shop belongs to.','S'],
+   ['merchant_id','Merchant ID'],['shop_id','Shop ID'],['terminal_id','Terminal ID'],
+   ['transaction_id','Transaction ID'],['parent_transaction_id','Parent (original) transaction ID'],
+   ['merchant_transaction_id',"Merchant's transaction ID (order ID)"],
+   ['process_id','Process ID','Identifier of the processing run behind the transaction.','S']]},
+ {id:'txn',t:'Transaction — basics',f:[
+   ['created_at','Created date'],['accepted_at','Accepted date'],
+   ['transaction_type','Transaction type'],['transaction_region','Transaction region']]},
+ {id:'amt',t:'Amounts & settlement',f:[
+   ['transaction_amount','Transaction amount'],['transaction_currency','Transaction currency'],
+   ['authorization_amount','Authorization amount'],['authorization_currency','Authorization currency'],
+   ['stl_amount','Settlement amount'],['stl_currency','Settlement currency'],
+   ['stl_date','Settlement date'],['exchange_rate','Exchange rate']]},
+ {id:'dep',t:'Security deposit',f:[
+   ['secure_deposit_amount','Security deposit amount'],
+   ['secure_deposit_currency','Security deposit currency'],
+   ['secure_deposit_release_date','Security deposit release date']]},
+ {id:'fee',t:'Fees & margins',f:[
+   ['if++','Unknown field ⚠️','Odd column name in the source export — confirm with backend.'],
+   ['transaction_fee','Transaction fee'],['interchange_fee','Interchange fee'],
+   ['card_scheme_fee','Card scheme markup (Visa/Mastercard)'],['cashback_fee','Cashback fee'],
+   ['authorization_fee','Authorization fee'],['authorization_fee_currency','Authorization fee currency']]},
+ {id:'pm',t:'Payment method & channel',f:[
+   ['payment_method','Payment method','Card, BLIK, transfer — not card-specific.'],
+   ['payment_channel','Payment channel','Existing column — values like “Click-to-Pay”.'],
+   ['channel','Integration channel','New field, e.g. PTS_CHECKOUT. Note this is NOT the same as payment_channel above — the two need clearly distinct names before handoff.','S']]},
+ {id:'card',t:'Card details',f:[
+   ['card_type','Card type'],['card_organisation','Card network (Visa/Mastercard)'],
+   ['card_product','Card product'],['card_short_pan','Masked card number']]},
+ {id:'cust',t:'Customer & region',f:[
+   ['customer_country','Customer country'],['card_country','Card issuing country'],
+   ['customer_email','Customer email','Now a merchant-visible Settlement column — previously assumed operator-only.','S']]},
+ {id:'own',t:'Merchant custom field',f:[
+   ['comment','Merchant note / comment','The field previously called “command”.']]}
+];
+const META={};
+GROUPS.forEach(g=>g.f.forEach(([k,l,i,only])=>{META[k]={k,l,i,only,g:g.id,gt:g.t};}));
+const DIS=new Set();                                          // nothing is operator-only any more
+const OFF=new Set(['card_type','card_organisation','card_product','card_short_pan']);
+
+/* Settlement and Authorisation no longer share a field list:
+   Authorisation keeps today's export 1:1, Settlement gains 4 new columns. */
+const code=t=>t==='Settlement'?'S':'A';
+function groupsFor(t){
+  return GROUPS.map(g=>({...g,f:g.f.filter(([,,,only])=>!only||only===code(t))}))
+               .filter(g=>g.f.length);
+}
+function keysFor(t){ return groupsFor(t).flatMap(g=>g.f.map(([k])=>k)); }
+
+function init(t){
+  const keys=keysFor(t);
+  const s=new Set(keys.filter(k=>!OFF.has(k)));
+  return {sel:s,ord:[...keys],ssel:new Set(s),sord:[...keys]};
+}
+const ST={Settlement:init('Settlement'),Authorisation:init('Authorisation')};
+let type='Settlement';
+const open=new Set();
+let AUD=[
+  {w:'17 Aug 26, 16:20',who:'Mateusz Karbowski (Admin)',t:'Settlement — 5 columns removed',
+   d:'card_type, card_organisation, card_product, card_short_pan, customer_email',b:'COLUMNS'},
+  {w:'02 Aug 26, 09:41',who:'System',t:'Default configuration applied',d:'33 of 38 columns',b:'INIT'}
+];
+const S=()=>ST[type];
+const act=()=>S().ord.filter(k=>S().sel.has(k));
+const dirty=()=>{
+  const s=S();
+  if(s.sel.size!==s.ssel.size) return true;
+  for(const k of s.sel) if(!s.ssel.has(k)) return true;
+  return s.ord.join()!==s.sord.join();
+};
+
+/* ================= render ================= */
+function render(){
+  const s=S(), a=act(), KEYS=keysFor(type);
+  /* step 1 — groups */
+  const gh=document.getElementById('groups');
+  gh.innerHTML=groupsFor(type).map(g=>{
+    const use=g.f.filter(([k])=>!DIS.has(k));
+    const on=g.f.filter(([k])=>s.sel.has(k)).length;
+    const all=use.length>0&&use.every(([k])=>s.sel.has(k));
+    return '<div class="grp '+(open.has(g.id)?'open':'')+'">'+
+      '<div class="grph" onclick="tgG(\''+g.id+'\')">'+
+        '<span class="chev"></span>'+
+        '<input type="checkbox" class="cb" '+(all?'checked':'')+(on>0&&!all?' data-i="1"':'')+
+          ' onclick="event.stopPropagation();gAll(\''+g.id+'\',this.checked)">'+
+        '<span class="grpt">'+g.t+'</span><span class="grpc">'+on+'/'+g.f.length+'</span></div>'+
+      '<div class="grpb">'+g.f.map(([k,l,inf])=>
+        '<div class="fi '+(DIS.has(k)?'na':'')+'">'+
+        '<input type="checkbox" class="cb" '+(s.sel.has(k)?'checked':'')+(DIS.has(k)?' disabled':'')+
+        ' onchange="tg(\''+k+'\',this.checked)">'+
+        '<label class="lab"'+(inf?' title="'+inf+'"':'')+'><b>'+l+'</b><i>'+k+'</i></label>'+
+        (DIS.has(k)?'<span class="pn">operator only</span>':'')+'</div>').join('')+
+      '</div></div>';
+  }).join('');
+  gh.querySelectorAll('input[data-i]').forEach(c=>c.indeterminate=true);
+
+  document.getElementById('cnt').textContent=s.sel.size;
+  document.getElementById('tot').textContent=KEYS.length;
+  document.getElementById('dirty').style.display=dirty()?'inline':'none';
+  const empty=s.sel.size===0;
+  document.getElementById('err').classList.toggle('on',empty);
+  document.getElementById('save1').disabled=empty;
+  document.getElementById('save2').disabled=empty;
+  document.getElementById('ordSum').textContent=
+    a.length? a.length+' columns · starts with '+a.slice(0,2).join(', ')+'…' : 'nothing selected';
+
+  /* step 2 — arrange */
+  const ah=document.getElementById('arrList');
+  ah.innerHTML = a.length? a.map((k,i)=>
+    '<li class="rw" data-k="'+k+'">'+
+      '<span class="hnd" title="Drag to reorder">⣿</span>'+
+      '<span class="pos">'+(i+1)+'</span>'+
+      '<span class="lab"><b>'+META[k].l.replace(' ⚠️','')+'</b>'+
+        '<i><span class="gt">'+META[k].gt+' · </span>'+k+'</i></span>'+
+      '<span class="mv">'+
+        '<button onclick="mv(\''+k+'\',-1)" '+(i===0?'disabled':'')+' title="Move up">↑</button>'+
+        '<button onclick="mv(\''+k+'\',1)" '+(i===a.length-1?'disabled':'')+' title="Move down">↓</button>'+
+        '<button onclick="top_(\''+k+'\')" title="Make first column">⤒</button>'+
+      '</span></li>').join('')
+    : '<li class="rw" style="color:#9a9da2;">No columns selected.</li>';
+  wireDrag(ah);
+
+  /* csv preview */
+  document.getElementById('csvp').innerHTML=
+    '<span class="l">Resulting CSV header row — '+a.length+' columns</span>'+
+    (a.length? a.map((k,i)=>'<span class="n">'+(i+1)+'.</span> '+k).join('<span class="n">,</span> ')
+             : '<span class="n">— nothing selected —</span>');
+
+  renderAudit(); updateInfo();
+}
+function renderAudit(){
+  const h=document.getElementById('audit'); if(!h)return;
+  h.innerHTML=AUD.map(a=>'<div class="lg"><div class="lgw">'+a.w+'</div>'+
+    '<div style="flex:1;"><div>'+a.t+'</div>'+
+    '<div style="font-size:11.5px;color:#54585d;margin-top:2px;">'+a.who+
+    ' · <span style="font-family:ui-monospace,Menlo,monospace;font-size:11px;">'+a.d+'</span></div></div>'+
+    '<span class="lgb">'+a.b+'</span></div>').join('');
+}
+
+/* ================= actions ================= */
+function tgG(id){ open.has(id)?open.delete(id):open.add(id); render(); }
+function tg(k,on){ if(DIS.has(k))return; on?S().sel.add(k):S().sel.delete(k); render(); }
+function gAll(id,on){
+  groupsFor(type).find(g=>g.id===id).f.filter(([k])=>!DIS.has(k))
+    .forEach(([k])=> on?S().sel.add(k):S().sel.delete(k));
+  render();
+}
+function selAll(on){ keysFor(type).filter(k=>!DIS.has(k)).forEach(k=> on?S().sel.add(k):S().sel.delete(k)); render(); }
+function restore(){ const s=S(); s.sel=new Set(s.ssel); s.ord=[...s.sord]; render(); toast('Restored the last saved configuration.'); }
+function resetOrd(){ S().ord=[...keysFor(type)]; render(); toast('Reset to the standard export order.'); }
+function tidy(){ const o=[]; groupsFor(type).forEach(g=>g.f.forEach(([k])=>{ if(S().ord.includes(k)) o.push(k); })); S().ord=o; render(); toast('Related columns grouped together.'); }
+function mv(k,d){
+  const s=S(), a=act(), i=a.indexOf(k), j=i+d;
+  if(j<0||j>=a.length) return;
+  const x=s.ord.indexOf(k), y=s.ord.indexOf(a[j]);
+  s.ord.splice(x,1); s.ord.splice(y,0,k); render();
+}
+function top_(k){ const s=S(); s.ord.splice(s.ord.indexOf(k),1); s.ord.unshift(k);
+  render(); toast('“'+META[k].l+'” is now column 1.'); }
+
+/* drag (mouse + touch) */
+let scrollT=null;
+function wireDrag(host){
+  host.querySelectorAll('.hnd').forEach(h=>{
+    h.addEventListener('pointerdown',e=>{
+      const li=h.closest('.rw'); if(!li||!li.dataset.k) return;
+      e.preventDefault(); start(host,li);
+    });
+  });
+}
+function start(host,li){
+  li.classList.add('lift');
+  const move=e=>{
+    li.style.pointerEvents='none';
+    const el=document.elementFromPoint(e.clientX,e.clientY);
+    li.style.pointerEvents='';
+    const over=el&&el.closest?el.closest('.rw'):null;
+    if(over&&over!==li&&over.parentElement===host){
+      const r=over.getBoundingClientRect();
+      host.insertBefore(li, e.clientY>r.top+r.height/2 ? over.nextSibling : over);
+    }
+    const vh=window.innerHeight;
+    if(e.clientY<80) scroll(-13); else if(e.clientY>vh-100) scroll(13); else stop();
+  };
+  const up=()=>{
+    li.classList.remove('lift'); stop();
+    document.removeEventListener('pointermove',move);
+    document.removeEventListener('pointerup',up);
+    document.removeEventListener('pointercancel',up);
+    const keys=[...host.querySelectorAll('.rw')].map(x=>x.dataset.k).filter(Boolean);
+    const s=S(), rest=s.ord.filter(k=>!s.sel.has(k));
+    s.ord=[...keys,...rest]; render();
+  };
+  document.addEventListener('pointermove',move);
+  document.addEventListener('pointerup',up);
+  document.addEventListener('pointercancel',up);
+}
+function scroll(dy){ if(scrollT)return; scrollT=setInterval(()=>window.scrollBy(0,dy),16); }
+function stop(){ if(scrollT){clearInterval(scrollT);scrollT=null;} }
+
+/* type tabs / save / guard */
+function setType(t,btn){
+  if(dirty()){ pend=()=>{type=t;applyTab(btn);}; openM(); return; }
+  type=t; applyTab(btn);
+}
+function applyTab(btn){
+  document.querySelectorAll('.seg2 button').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('tName').textContent=type;
+  document.getElementById('authWarn').style.display=type==='Authorisation'?'block':'none';
+  render();
+}
+function save(){
+  const s=S(); if(!s.sel.size) return;
+  const add=[...s.sel].filter(k=>!s.ssel.has(k)), rem=[...s.ssel].filter(k=>!s.sel.has(k));
+  const oc=s.ord.join()!==s.sord.join();
+  s.ssel=new Set(s.sel); s.sord=[...s.ord];
+  if(add.length||rem.length||oc){
+    const bits=[]; if(add.length)bits.push('+'+add.length+' column(s)');
+    if(rem.length)bits.push('−'+rem.length+' column(s)'); if(oc)bits.push('order changed');
+    AUD.unshift({w:'18 Aug 26, now',who:'Mateusz Karbowski (Admin)',t:type+' — '+bits.join(', '),
+      d:[...add.map(k=>'+'+k),...rem.map(k=>'−'+k)].slice(0,4).join(', ')||'order only',
+      b:(add.length||rem.length)?'COLUMNS':'ORDER'});
+  }
+  render(); toast('Configuration saved. No report was generated.');
+}
+let pend=null;
+function leave(){ if(dirty()){pend=()=>go('list');openM();return;} go('list'); }
+function openM(){ document.getElementById('modal').classList.add('on'); }
+function closeM(){ document.getElementById('modal').classList.remove('on'); pend=null; }
+function discard(){ const s=S(); s.sel=new Set(s.ssel); s.ord=[...s.sord];
+  const p=pend; closeM(); render(); if(p)p(); }
+function saveLeave(){ save(); const p=pend; closeM(); if(p)p(); }
+
+/* dropdowns */
+function ddT(id){
+  const el=document.getElementById(id), was=el.classList.contains('open');
+  document.querySelectorAll('.dd').forEach(d=>d.classList.remove('open'));
+  if(!was) el.classList.add('open');
+}
+document.addEventListener('click',e=>{ if(!e.target.closest('.dd'))
+  document.querySelectorAll('.dd').forEach(d=>d.classList.remove('open')); });
+function pick(which,v){
+  const map={type:['l-type','d-type'],date:['l-date','d-date'],fmt:['l-fmt','d-fmt']};
+  const [lid,did]=map[which];
+  document.getElementById(lid).textContent=v;
+  document.querySelectorAll('#'+did+' .ddo').forEach(o=>{
+    const is=o.querySelector('.om span').textContent.trim()===v.trim();
+    o.classList.toggle('sel',is);
+    const t=o.querySelector('.tk'); if(t)t.textContent=is?'✓':'';
+  });
+  document.getElementById(did).classList.remove('open');
+  if(which==='type') updateInfo();
+}
+function allT(cb){ document.querySelectorAll('.t-i').forEach(t=>t.checked=cb.checked); tLbl(); }
+document.querySelectorAll('.t-i').forEach(cb=>cb.addEventListener('change',()=>{
+  const all=document.querySelectorAll('.t-i').length, on=document.querySelectorAll('.t-i:checked').length;
+  document.querySelector('.t-all').checked=all===on; tLbl();
+}));
+function tLbl(){
+  const all=document.querySelectorAll('.t-i').length, on=document.querySelectorAll('.t-i:checked').length;
+  document.getElementById('l-term').textContent =
+    on===all? 'All shops ('+all+')' : on===0? 'No shops selected' : on+' of '+all+' shops';
+}
+
+/* roles / view / nav */
+function role(){ return document.getElementById('role').value; }
+function applyRole(){
+  const a=role()==='admin';
+  document.getElementById('gear').classList.toggle('hide',!a);
+  document.getElementById('roleHint').textContent = a
+    ? 'widzi ⚙ ustawienia kolumn i + generowanie'
+    : 'widzi tylko + generowanie — ⚙ nie jest renderowane';
+  document.getElementById('body1').style.display=a?'block':'none';
+  document.getElementById('locked').style.display=a?'none':'block';
+  updateInfo();
+}
+function setView(v,btn){
+  document.querySelectorAll('.devbar .seg button').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  document.body.classList.toggle('force-mobile',v==='mobile');
+}
+function updateInfo(){
+  const box=document.getElementById('infoBox'); if(!box)return;
+  const t=document.getElementById('l-type').textContent.trim();
+  const s=ST[t]||ST.Settlement;
+  const cols=s.sord.filter(k=>s.ssel.has(k));
+  box.innerHTML='<div><div class="m"><b>Columns:</b> saved configuration for '+t+'</div>'+
+    '<div class="s">'+cols.length+' of '+keysFor(t).length+' · starts with <span style="font-family:ui-monospace,Menlo,monospace;">'+
+    (cols.slice(0,3).join(', ')||'—')+'</span>…</div></div>'+
+    (role()==='admin'? '<a onclick="go(\'settings\')">Manage columns</a>'
+                     : '<span class="s">Managed by an account admin</span>');
+}
+function go(n){
+  document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));
+  document.getElementById('s-'+n).classList.add('on');
+  window.scrollTo(0,0);
+  if(n==='settings'||n==='arrange') render();
+  if(n==='generate') updateInfo();
+}
+let tt;
+function toast(m){
+  const t=document.getElementById('toast'); t.textContent=m; t.classList.add('on');
+  clearTimeout(tt); tt=setTimeout(()=>t.classList.remove('on'),2400);
+}
+render(); applyRole(); tLbl();
+</script>
+</body>
+</html>
