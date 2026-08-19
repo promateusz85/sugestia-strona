@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>Column config — 3 variants on mobile</title>
+<style>
+  :root{
+    --ink:#101112; --ink-soft:#54585d; --line:#e4e5e7; --line-soft:#eef0f1;
+    --bg:#f4f5f6; --panel:#fff; --soft:#f2f3f4; --blue:#2f6fed; --danger:#c0392b;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:#2a2c2e;color:var(--ink);font-size:15px;-webkit-font-smoothing:antialiased;}
+
+  /* phone frame on desktop, full-bleed on real phones */
+  .device{max-width:412px;margin:0 auto;background:var(--bg);min-height:100vh;
+    position:relative;box-shadow:0 0 0 1px rgba(0,0,0,.2);}
+  @media (min-width:520px){
+    body{padding:20px 0;}
+    .device{border-radius:26px;overflow:hidden;min-height:840px;max-height:92vh;
+      overflow-y:auto;-webkit-overflow-scrolling:touch;}
+  }
+
+  .topbar{position:sticky;top:0;z-index:40;background:#101112;color:#fff;padding:10px 12px;}
+  .topbar .t1{font-size:11px;color:#9a9da2;margin-bottom:8px;letter-spacing:.03em;}
+  .vswitch{display:flex;gap:4px;background:#1e2022;border-radius:10px;padding:4px;}
+  .vswitch button{flex:1;border:none;background:none;color:#b9bcbf;font-family:inherit;
+    font-size:11.5px;padding:9px 4px;border-radius:8px;line-height:1.25;cursor:pointer;}
+  .vswitch button.active{background:#fff;color:#101112;font-weight:700;}
+
+  .scr{display:none;padding:16px 14px 120px;} .scr.on{display:block;}
+  .navback{display:inline-flex;align-items:center;gap:6px;font-size:14px;color:var(--ink-soft);
+    padding:8px 0;margin-bottom:6px;cursor:pointer;}
+  h1{font-size:21px;margin:2px 0 6px;letter-spacing:-.01em;}
+  .sub{font-size:13px;color:var(--ink-soft);line-height:1.5;margin:0 0 16px;}
+  .card{background:var(--panel);border-radius:14px;padding:12px 12px;margin-bottom:14px;}
+  .acts{display:flex;gap:14px;font-size:13px;margin:2px 2px 12px;flex-wrap:wrap;}
+  .acts a{color:var(--ink);text-decoration:underline;text-underline-offset:3px;padding:6px 0;cursor:pointer;}
+
+  /* ---------- accordion groups (selection) ---------- */
+  .grp{border-bottom:1px solid var(--line-soft);}
+  .grp:last-child{border-bottom:none;}
+  .grp-h{display:flex;align-items:center;gap:11px;padding:14px 4px;min-height:56px;cursor:pointer;}
+  .grp-h .cb{flex-shrink:0;}
+  .grp-t{flex:1;font-size:14.5px;font-weight:600;line-height:1.3;}
+  .grp-c{font-size:12px;color:var(--ink-soft);border:1px solid var(--line);border-radius:999px;
+    padding:3px 9px;flex-shrink:0;}
+  .chev{width:9px;height:9px;border-right:2px solid #9a9da2;border-bottom:2px solid #9a9da2;
+    transform:rotate(45deg);transition:transform .15s;flex-shrink:0;margin-right:2px;}
+  .grp.open .chev{transform:rotate(-135deg);}
+  .grp-b{display:none;padding:0 0 10px 30px;}
+  .grp.open .grp-b{display:block;}
+  .fi{display:flex;align-items:center;gap:11px;padding:10px 2px;min-height:48px;}
+  .fi .lab{flex:1;min-width:0;line-height:1.3;}
+  .fi .lab b{font-weight:500;font-size:14px;display:block;}
+  .fi .lab i{font-style:normal;font-family:ui-monospace,Menlo,monospace;font-size:11px;color:#a7aaad;}
+  .fi.na .lab{opacity:.45;}
+  .cb{width:24px;height:24px;accent-color:var(--ink);flex-shrink:0;}
+
+  /* ---------- rows (variant 1 & 2) ---------- */
+  .rows{list-style:none;margin:0;padding:0;}
+  .rw{display:flex;align-items:center;gap:9px;padding:8px 2px;min-height:60px;
+    border-bottom:1px solid var(--line-soft);background:#fff;}
+  .rw:last-child{border-bottom:none;}
+  .rw.off .lab{opacity:.42;}
+  .rw.lift{background:#f5f8ff;box-shadow:0 6px 18px rgba(0,0,0,.14);border-radius:10px;
+    position:relative;z-index:5;transform:scale(1.015);}
+  .hnd{width:40px;min-height:48px;display:flex;align-items:center;justify-content:center;
+    color:#c2c4c7;font-size:19px;flex-shrink:0;touch-action:none;cursor:grab;letter-spacing:1px;}
+  .pos{font-family:ui-monospace,Menlo,monospace;font-size:12px;font-weight:700;color:var(--ink);
+    background:var(--soft);border-radius:7px;min-width:32px;height:28px;display:flex;
+    align-items:center;justify-content:center;flex-shrink:0;}
+  .rw.off .pos{background:transparent;color:#c2c4c7;font-weight:400;}
+  .lab{flex:1;min-width:0;line-height:1.3;}
+  .lab b{font-weight:500;font-size:14px;display:block;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .lab i{font-style:normal;font-family:ui-monospace,Menlo,monospace;font-size:11px;color:#a7aaad;
+    display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .mv{display:flex;flex-direction:column;gap:2px;flex-shrink:0;}
+  .mv button{width:34px;height:27px;border:1px solid var(--line);background:#fff;border-radius:7px;
+    font-size:12px;color:var(--ink-soft);padding:0;line-height:1;cursor:pointer;}
+  .mv button:disabled{opacity:.28;}
+
+  /* ---------- chips (variant 3) ---------- */
+  .chips{display:flex;flex-wrap:wrap;gap:7px;padding:2px 0;}
+  .chip{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:#fff;
+    border-radius:999px;padding:9px 13px 9px 8px;font-size:13px;max-width:100%;min-height:42px;
+    cursor:pointer;touch-action:manipulation;}
+  .chip .cp{font-family:ui-monospace,Menlo,monospace;font-size:11px;font-weight:700;
+    background:var(--soft);border-radius:999px;padding:3px 7px;color:var(--ink-soft);flex-shrink:0;}
+  .chip .cn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .chip.picked{background:var(--ink);border-color:var(--ink);color:#fff;
+    box-shadow:0 4px 14px rgba(0,0,0,.25);}
+  .chip.picked .cp{background:rgba(255,255,255,.22);color:#fff;}
+  .gap{width:4px;min-height:42px;border-radius:999px;background:transparent;
+    display:none;align-items:center;justify-content:center;flex-shrink:0;}
+  .picking .gap{display:flex;background:#dbe6fd;width:26px;position:relative;cursor:pointer;}
+  .picking .gap::after{content:'+';color:var(--blue);font-size:15px;font-weight:700;}
+  .gap:active{background:#b9d0fb;}
+  .pickbar{position:sticky;bottom:0;background:var(--blue);color:#fff;padding:12px 14px;
+    border-radius:12px;font-size:13px;display:none;align-items:center;gap:10px;margin-top:12px;}
+  .picking .pickbar{display:flex;}
+  .pickbar button{margin-left:auto;background:rgba(255,255,255,.2);border:none;color:#fff;
+    border-radius:8px;padding:8px 12px;font-family:inherit;font-size:12.5px;cursor:pointer;}
+
+  /* ---------- shared bits ---------- */
+  .csvp{background:#101112;color:#e6e7e8;border-radius:12px;padding:12px;margin-top:14px;
+    font-family:ui-monospace,Menlo,monospace;font-size:11px;line-height:1.8;
+    max-height:120px;overflow:auto;}
+  .csvp .l{display:block;color:#8b8e91;font-family:inherit;font-size:10px;letter-spacing:.05em;
+    text-transform:uppercase;margin-bottom:6px;}
+  .csvp .n{color:#6f7274;}
+  .sum{font-size:13px;color:var(--ink-soft);margin:12px 2px 0;}
+  .sum b{color:var(--ink);}
+  .cta{display:flex;align-items:center;justify-content:space-between;gap:10px;
+    border-top:1px solid var(--line);margin-top:14px;padding-top:14px;}
+  .cta .t{font-size:13.5px;font-weight:600;}
+  .cta .s{font-size:11.5px;color:#9a9da2;margin-top:2px;}
+  .btn{border:1px solid var(--line);background:#fff;border-radius:999px;padding:11px 18px;
+    font-size:13.5px;font-weight:600;font-family:inherit;cursor:pointer;}
+  .btn.pri{background:var(--ink);color:#fff;border-color:var(--ink);}
+  .savebar{position:sticky;bottom:0;background:linear-gradient(180deg,rgba(244,245,246,0),var(--bg) 34%);
+    padding:16px 14px 18px;display:flex;gap:10px;}
+  .savebar .btn{flex:1;padding:14px;}
+  .note{font-size:11.5px;color:#9a9da2;line-height:1.6;margin:14px 2px 0;}
+  .warn{background:#fff8ea;border:1px solid #f0e2c0;color:#7a5f22;border-radius:10px;
+    padding:11px 12px;font-size:12px;line-height:1.55;margin-bottom:12px;}
+  #toast{position:fixed;left:50%;transform:translateX(-50%) translateY(14px);bottom:20px;
+    background:#101112;color:#fff;padding:11px 18px;border-radius:999px;font-size:13px;
+    opacity:0;pointer-events:none;transition:.2s;z-index:90;}
+  #toast.on{opacity:1;transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+<div class="device" id="device">
+
+  <div class="topbar">
+    <div class="t1">Wariant do przetestowania — ten sam zestaw kolumn we wszystkich trzech</div>
+    <div class="vswitch">
+      <button class="active" onclick="setVar(1,this)">1 · Jedna lista</button>
+      <button onclick="setVar(2,this)">2 · Osobno, lista</button>
+      <button onclick="setVar(3,this)">3 · Osobno, chipsy</button>
+    </div>
+  </div>
+
+  <!-- ========== VARIANT 1 — one flat list ========== -->
+  <div class="scr" id="v1">
+    <h1>Report field settings</h1>
+    <p class="sub">Jedna lista: zaznacz kolumny i ustaw kolejność w tym samym miejscu.
+      Przeciągaj za uchwyt po lewej.</p>
+    <div class="card">
+      <div class="acts">
+        <a onclick="selAll(1)">Select all</a><a onclick="selAll(0)">Deselect all</a>
+        <a onclick="resetOrd()">Reset order</a>
+      </div>
+      <ul class="rows" id="v1list"></ul>
+      <div class="sum">Zaznaczono <b id="v1cnt">0</b> z 38 kolumn</div>
+      <div class="csvp" id="v1csv"></div>
+    </div>
+    <p class="note">Zwróć uwagę, ile wysokości zajmuje 38 wierszy i jak ciasno robi się
+      w wierszu, gdy musi pomieścić uchwyt, numer, checkbox, nazwę i przyciski.</p>
+    <div class="savebar"><button class="btn pri" onclick="toast('Zapisano')">Save configuration</button></div>
+  </div>
+
+  <!-- ========== VARIANT 2 — split, rows ========== -->
+  <div class="scr" id="v2a">
+    <h1>Report field settings</h1>
+    <p class="sub">Krok 1 — wybierz kolumny. Grupy są zwinięte, więc całą strukturę widzisz
+      bez przewijania.</p>
+    <div class="card">
+      <div class="acts"><a onclick="selAll(1)">Select all</a><a onclick="selAll(0)">Deselect all</a></div>
+      <div id="v2groups"></div>
+      <div class="sum">Zaznaczono <b id="v2cnt">0</b> z 38 kolumn</div>
+      <div class="cta">
+        <div><div class="t">Kolejność kolumn</div><div class="s" id="v2ord"></div></div>
+        <button class="btn" onclick="show('v2b')">Ustaw →</button>
+      </div>
+    </div>
+    <div class="savebar"><button class="btn pri" onclick="toast('Zapisano')">Save configuration</button></div>
+  </div>
+
+  <div class="scr" id="v2b">
+    <div class="navback" onclick="show('v2a')">← Wróć do wyboru kolumn</div>
+    <h1>Arrange columns</h1>
+    <p class="sub">Krok 2 — tylko zaznaczone kolumny. Przeciągaj za uchwyt albo używaj strzałek.
+      Pozycja 1 to pierwsza kolumna w pliku.</p>
+    <div class="card">
+      <div class="acts"><a onclick="resetOrd()">Reset order</a><a onclick="tidy()">Pogrupuj powiązane</a></div>
+      <ul class="rows" id="v2list"></ul>
+      <div class="csvp" id="v2csv"></div>
+    </div>
+    <div class="savebar">
+      <button class="btn" onclick="show('v2a')">Wróć</button>
+      <button class="btn pri" onclick="toast('Zapisano')">Save</button>
+    </div>
+  </div>
+
+  <!-- ========== VARIANT 3 — split, chips ========== -->
+  <div class="scr" id="v3a">
+    <h1>Report field settings</h1>
+    <p class="sub">Krok 1 — wybierz kolumny. Identycznie jak w wariancie 2.</p>
+    <div class="card">
+      <div class="acts"><a onclick="selAll(1)">Select all</a><a onclick="selAll(0)">Deselect all</a></div>
+      <div id="v3groups"></div>
+      <div class="sum">Zaznaczono <b id="v3cnt">0</b> z 38 kolumn</div>
+      <div class="cta">
+        <div><div class="t">Kolejność kolumn</div><div class="s" id="v3ord"></div></div>
+        <button class="btn" onclick="show('v3b')">Ustaw →</button>
+      </div>
+    </div>
+    <div class="savebar"><button class="btn pri" onclick="toast('Zapisano')">Save configuration</button></div>
+  </div>
+
+  <div class="scr" id="v3b">
+    <div class="navback" onclick="show('v3a')">← Wróć do wyboru kolumn</div>
+    <h1>Arrange columns</h1>
+    <p class="sub">Krok 2 — <b>dotknij kafelek</b>, żeby go podnieść, potem dotknij miejsca,
+      w które ma trafić. Bez przeciągania, więc nie kłóci się z przewijaniem.</p>
+    <div class="warn" id="v3warn">
+      Na telefonie kafelki są prawie tak szerokie jak ekran, więc mieszczą się mniej więcej
+      po jednym w linii — przewaga „widzę wszystko naraz”, którą mają na desktopie, tu zanika.
+      Właśnie to warto ocenić w tym teście.
+    </div>
+    <div class="card">
+      <div class="acts"><a onclick="resetOrd()">Reset order</a><a onclick="tidy()">Pogrupuj powiązane</a></div>
+      <div class="chips" id="v3chips"></div>
+      <div class="pickbar" id="v3bar">
+        <span id="v3barTxt">Podniesiono kolumnę</span>
+        <button onclick="cancelPick()">Anuluj</button>
+      </div>
+      <div class="csvp" id="v3csv"></div>
+    </div>
+    <div class="savebar">
+      <button class="btn" onclick="show('v3a')">Wróć</button>
+      <button class="btn pri" onclick="toast('Zapisano')">Save</button>
+    </div>
+  </div>
+
+</div>
+<div id="toast"></div>
+
+<script>
+/* ================= model ================= */
+const GROUPS=[
+ {id:'ident',t:'Identifiers',f:[['merchant_id','Merchant ID'],['shop_id','Shop ID'],
+   ['terminal_id','Terminal ID'],['transaction_id','Transaction ID'],
+   ['parent_transaction_id','Parent transaction ID'],['merchant_transaction_id','Order ID']]},
+ {id:'txn',t:'Transaction — basics',f:[['created_at','Created date'],['accepted_at','Accepted date'],
+   ['transaction_type','Transaction type'],['transaction_region','Transaction region']]},
+ {id:'amt',t:'Amounts & settlement',f:[['transaction_amount','Transaction amount'],
+   ['transaction_currency','Transaction currency'],['authorization_amount','Authorization amount'],
+   ['authorization_currency','Authorization currency'],['stl_amount','Settlement amount'],
+   ['stl_currency','Settlement currency'],['stl_date','Settlement date'],['exchange_rate','Exchange rate']]},
+ {id:'dep',t:'Security deposit',f:[['secure_deposit_amount','Deposit amount'],
+   ['secure_deposit_currency','Deposit currency'],['secure_deposit_release_date','Deposit release date']]},
+ {id:'fee',t:'Fees & margins',f:[['if++','Unknown field'],['transaction_fee','Transaction fee'],
+   ['interchange_fee','Interchange fee'],['card_scheme_fee','Card scheme markup'],
+   ['cashback_fee','Cashback fee'],['authorization_fee','Authorization fee'],
+   ['authorization_fee_currency','Auth fee currency']]},
+ {id:'pm',t:'Payment method & channel',f:[['payment_method','Payment method'],
+   ['payment_channel','Payment channel']]},
+ {id:'card',t:'Card details',f:[['card_type','Card type'],['card_organisation','Card network'],
+   ['card_product','Card product'],['card_short_pan','Masked card number']]},
+ {id:'cust',t:'Customer & region',f:[['customer_country','Customer country'],
+   ['card_country','Card issuing country'],['customer_email','Customer email']]},
+ {id:'own',t:'Merchant custom field',f:[['comment','Merchant note / comment']]}
+];
+const META={},ALLK=[];
+GROUPS.forEach(g=>g.f.forEach(([k,l])=>{META[k]={k,l,g:g.id,gt:g.t};ALLK.push(k);}));
+const STD=[...ALLK];
+const OFF=new Set(['card_type','card_organisation','card_product','card_short_pan','customer_email']);
+const DIS=new Set(['customer_email']);
+let sel=new Set(ALLK.filter(k=>!OFF.has(k)));
+let ord=[...ALLK];
+const open=new Set();
+const act=()=>ord.filter(k=>sel.has(k));
+
+/* ================= render ================= */
+function render(){
+  renderRows('v1list',true);
+  renderRows('v2list',false);
+  renderGroups('v2groups'); renderGroups('v3groups');
+  renderChips();
+  const n=sel.size, a=act();
+  ['v1cnt','v2cnt','v3cnt'].forEach(id=>{const e=document.getElementById(id); if(e)e.textContent=n;});
+  ['v2ord','v3ord'].forEach(id=>{const e=document.getElementById(id);
+    if(e)e.textContent = a.length? a.length+' kolumn · zaczyna się od '+a[0] : 'nic nie zaznaczono';});
+  ['v1csv','v2csv','v3csv'].forEach(renderCsv);
+}
+function renderCsv(id){
+  const e=document.getElementById(id); if(!e)return; const a=act();
+  e.innerHTML='<span class="l">Nagłówek CSV — '+a.length+' kolumn</span>'+
+    (a.length? a.map((k,i)=>'<span class="n">'+(i+1)+'.</span> '+k).join('<span class="n">,</span> ')
+             : '<span class="n">— brak —</span>');
+}
+function renderRows(id,withCheck){
+  const host=document.getElementById(id); if(!host)return;
+  const list = withCheck? ord : act();
+  let p=0; const pos={}; ord.forEach(k=>{ if(sel.has(k)) pos[k]=++p; });
+  host.innerHTML=list.map((k,i)=>{
+    const on=sel.has(k), d=DIS.has(k), m=META[k];
+    return '<li class="rw '+(on?'':'off')+'" data-k="'+k+'">'+
+      '<span class="hnd" '+(d?'':'data-h="1"')+'>⣿</span>'+
+      '<span class="pos">'+(on?pos[k]:'—')+'</span>'+
+      (withCheck? '<input type="checkbox" class="cb" '+(on?'checked':'')+(d?' disabled':'')+
+         ' onchange="tog(\''+k+'\',this.checked)">':'')+
+      '<span class="lab"><b>'+m.l+'</b><i>'+k+'</i></span>'+
+      '<span class="mv"><button onclick="mv(\''+k+'\',-1)" '+(i===0?'disabled':'')+'>↑</button>'+
+      '<button onclick="mv(\''+k+'\',1)" '+(i===list.length-1?'disabled':'')+'>↓</button></span>'+
+    '</li>';
+  }).join('');
+  wireRowDrag(host);
+}
+function renderGroups(id){
+  const host=document.getElementById(id); if(!host)return;
+  host.innerHTML=GROUPS.map(g=>{
+    const use=g.f.filter(([k])=>!DIS.has(k));
+    const on=g.f.filter(([k])=>sel.has(k)).length;
+    const all=use.length>0&&use.every(([k])=>sel.has(k));
+    return '<div class="grp '+(open.has(g.id)?'open':'')+'">'+
+      '<div class="grp-h" onclick="tgGrp(\''+g.id+'\')">'+
+        '<span class="chev"></span>'+
+        '<input type="checkbox" class="cb" '+(all?'checked':'')+
+          (on>0&&!all?' data-i="1"':'')+' onclick="event.stopPropagation();togGrp(\''+g.id+'\',this.checked)">'+
+        '<span class="grp-t">'+g.t+'</span><span class="grp-c">'+on+'/'+g.f.length+'</span>'+
+      '</div>'+
+      '<div class="grp-b">'+g.f.map(([k,l])=>
+        '<div class="fi '+(DIS.has(k)?'na':'')+'"><input type="checkbox" class="cb" '+
+        (sel.has(k)?'checked':'')+(DIS.has(k)?' disabled':'')+
+        ' onchange="tog(\''+k+'\',this.checked)">'+
+        '<span class="lab"><b>'+l+'</b><i>'+k+'</i></span></div>').join('')+
+      '</div></div>';
+  }).join('');
+  host.querySelectorAll('input[data-i]').forEach(c=>c.indeterminate=true);
+}
+function renderChips(){
+  const host=document.getElementById('v3chips'); if(!host)return;
+  const a=act();
+  let h='<span class="gap" data-gap="0"></span>';
+  a.forEach((k,i)=>{
+    h+='<span class="chip'+(picked===k?' picked':'')+'" data-k="'+k+'" onclick="chipTap(\''+k+'\')">'+
+       '<span class="cp">'+(i+1)+'</span><span class="cn">'+META[k].l+'</span></span>'+
+       '<span class="gap" data-gap="'+(i+1)+'"></span>';
+  });
+  host.innerHTML = a.length? h : '<span style="color:#9a9da2;font-size:13px;">Nic nie zaznaczono.</span>';
+  host.querySelectorAll('.gap').forEach(g=>g.onclick=()=>dropAt(+g.dataset.gap));
+}
+
+/* ================= actions ================= */
+function tog(k,on){ if(DIS.has(k))return; on?sel.add(k):sel.delete(k); render(); }
+function togGrp(id,on){
+  GROUPS.find(g=>g.id===id).f.filter(([k])=>!DIS.has(k))
+    .forEach(([k])=> on?sel.add(k):sel.delete(k));
+  render();
+}
+function tgGrp(id){ open.has(id)?open.delete(id):open.add(id); render(); }
+function selAll(on){ ALLK.filter(k=>!DIS.has(k)).forEach(k=> on?sel.add(k):sel.delete(k)); render(); }
+function resetOrd(){ ord=[...STD]; render(); toast('Przywrócono standardową kolejność'); }
+function tidy(){ const o=[]; GROUPS.forEach(g=>g.f.forEach(([k])=>{ if(ord.includes(k)) o.push(k); })); ord=o; render(); }
+function mv(k,d){
+  const inV1 = document.getElementById('v1').classList.contains('on');
+  const list = inV1? ord : act();
+  const i=list.indexOf(k), j=i+d;
+  if(j<0||j>=list.length) return;
+  const a=ord.indexOf(k), b=ord.indexOf(list[j]);
+  ord.splice(a,1); ord.splice(b,0,k);
+  render();
+}
+
+/* ---- chips: tap to pick, tap a gap to place ---- */
+let picked=null;
+function chipTap(k){
+  if(picked===k){ cancelPick(); return; }
+  picked=k;
+  document.getElementById('v3chips').parentElement.classList.add('picking');
+  document.getElementById('v3barTxt').textContent='Podniesiono „'+META[k].l+'” — wskaż miejsce';
+  render();
+}
+function cancelPick(){
+  picked=null;
+  document.getElementById('v3chips').parentElement.classList.remove('picking');
+  render();
+}
+function dropAt(gapIndex){
+  if(!picked) return;
+  const a=act(), from=a.indexOf(picked);
+  let to=gapIndex; if(from<to) to--;
+  if(from===to){ cancelPick(); return; }
+  const rest=a.filter(k=>k!==picked);
+  rest.splice(to,0,picked);
+  const others=ord.filter(k=>!sel.has(k));
+  ord=[...rest,...others];
+  const name=META[picked].l;
+  cancelPick();
+  toast('„'+name+'” → pozycja '+(to+1));
+}
+
+/* ---- rows: pointer drag with autoscroll ---- */
+function wireRowDrag(host){
+  host.querySelectorAll('.hnd[data-h]').forEach(h=>{
+    h.addEventListener('pointerdown',e=>{
+      e.preventDefault();
+      const li=h.closest('.rw'); if(!li) return;
+      startDrag(host,li,e);
+    });
+  });
+}
+let scrollTimer=null;
+function startDrag(host,li,e0){
+  li.classList.add('lift');
+  const scroller = document.getElementById('device').scrollHeight>window.innerHeight+40
+    ? document.getElementById('device') : window;
+  const move=e=>{
+    const y=e.clientY;
+    li.style.pointerEvents='none';
+    const el=document.elementFromPoint(e.clientX,y);
+    li.style.pointerEvents='';
+    const over=el&&el.closest?el.closest('.rw'):null;
+    if(over&&over!==li&&over.parentElement===host){
+      const r=over.getBoundingClientRect();
+      const after = y > r.top + r.height/2;
+      host.insertBefore(li, after? over.nextSibling : over);
+    }
+    /* autoscroll near the edges */
+    const vh=window.innerHeight;
+    if(y<90) doScroll(scroller,-14);
+    else if(y>vh-110) doScroll(scroller,14);
+    else stopScroll();
+  };
+  const up=()=>{
+    li.classList.remove('lift'); stopScroll();
+    document.removeEventListener('pointermove',move);
+    document.removeEventListener('pointerup',up);
+    document.removeEventListener('pointercancel',up);
+    commit(host);
+  };
+  document.addEventListener('pointermove',move,{passive:false});
+  document.addEventListener('pointerup',up);
+  document.addEventListener('pointercancel',up);
+}
+function doScroll(s,dy){
+  if(scrollTimer) return;
+  scrollTimer=setInterval(()=>{ s===window? window.scrollBy(0,dy) : s.scrollTop+=dy; },16);
+}
+function stopScroll(){ if(scrollTimer){clearInterval(scrollTimer);scrollTimer=null;} }
+function commit(host){
+  const keys=[...host.querySelectorAll('.rw')].map(li=>li.dataset.k);
+  if(host.id==='v1list'){ ord=keys; }
+  else{ const others=ord.filter(k=>!sel.has(k)); ord=[...keys,...others]; }
+  render();
+}
+
+/* ================= nav ================= */
+let curVar=1;
+function setVar(v,btn){
+  curVar=v;
+  document.querySelectorAll('.vswitch button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  cancelPick();
+  show(v===1?'v1':v===2?'v2a':'v3a');
+}
+function show(id){
+  document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  const d=document.getElementById('device');
+  d.scrollTop=0; window.scrollTo(0,0);
+}
+let tt;
+function toast(m){
+  const t=document.getElementById('toast'); t.textContent=m; t.classList.add('on');
+  clearTimeout(tt); tt=setTimeout(()=>t.classList.remove('on'),2200);
+}
+render(); show('v1');
+</script>
+</body>
+</html>
