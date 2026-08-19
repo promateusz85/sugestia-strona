@@ -104,6 +104,16 @@
   .picking .pickbar{display:flex;}
   .pickbar button{margin-left:auto;background:rgba(255,255,255,.2);border:none;color:#fff;
     border-radius:8px;padding:8px 12px;font-family:inherit;font-size:12.5px;cursor:pointer;}
+  .modesw{display:flex;gap:4px;background:var(--soft);border-radius:10px;padding:4px;margin-bottom:12px;}
+  .modesw button{flex:1;border:none;background:none;font-family:inherit;font-size:12.5px;
+    padding:10px 6px;border-radius:8px;color:var(--ink-soft);cursor:pointer;}
+  .modesw button.active{background:#fff;color:var(--ink);font-weight:700;
+    box-shadow:0 1px 3px rgba(0,0,0,.1);}
+  .chip.dragmode{touch-action:manipulation;}
+  .chip.held{background:var(--ink);border-color:var(--ink);color:#fff;
+    box-shadow:0 8px 22px rgba(0,0,0,.3);transform:scale(1.06);z-index:9;position:relative;}
+  .chip.held .cp{background:rgba(255,255,255,.22);color:#fff;}
+  body.nosel{user-select:none;-webkit-user-select:none;}
 
   /* ---------- shared bits ---------- */
   .csvp{background:#101112;color:#e6e7e8;border-radius:12px;padding:12px;margin-top:14px;
@@ -216,13 +226,12 @@
   <div class="scr" id="v3b">
     <div class="navback" onclick="show('v3a')">← Wróć do wyboru kolumn</div>
     <h1>Arrange columns</h1>
-    <p class="sub">Krok 2 — <b>dotknij kafelek</b>, żeby go podnieść, potem dotknij miejsca,
-      w które ma trafić. Bez przeciągania, więc nie kłóci się z przewijaniem.</p>
-    <div class="warn" id="v3warn">
-      Na telefonie kafelki są prawie tak szerokie jak ekran, więc mieszczą się mniej więcej
-      po jednym w linii — przewaga „widzę wszystko naraz”, którą mają na desktopie, tu zanika.
-      Właśnie to warto ocenić w tym teście.
+    <p class="sub">Krok 2 — przełącz poniżej sposób przestawiania i porównaj oba palcem.</p>
+    <div class="modesw">
+      <button class="active" onclick="setChipMode('drag',this)">Przeciąganie</button>
+      <button onclick="setChipMode('tap',this)">Dotknij i wskaż</button>
     </div>
+    <div class="warn" id="v3warn"></div>
     <div class="card">
       <div class="acts"><a onclick="resetOrd()">Reset order</a><a onclick="tidy()">Pogrupuj powiązane</a></div>
       <div class="chips" id="v3chips"></div>
@@ -335,17 +344,112 @@ function renderGroups(id){
   }).join('');
   host.querySelectorAll('input[data-i]').forEach(c=>c.indeterminate=true);
 }
+let chipMode='drag';
+function setChipMode(m,btn){
+  chipMode=m; cancelPick();
+  document.querySelectorAll('.modesw button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  render();
+}
 function renderChips(){
   const host=document.getElementById('v3chips'); if(!host)return;
+  const warn=document.getElementById('v3warn');
+  if(warn) warn.innerHTML = chipMode==='drag'
+    ? '<b>Tryb przeciągania.</b> Przytrzymaj kafelek przez chwilę (~0,3 s), aż się podniesie, '+
+      'i dopiero wtedy przesuwaj. Ta zwłoka jest konieczna, żeby odróżnić przeciąganie od '+
+      'przewijania strony — bez niej nie da się scrollować listy palcem po kafelkach.'
+    : '<b>Tryb dotknij i wskaż.</b> Stuknij kafelek, żeby go podnieść, potem stuknij szczelinę '+
+      'w miejscu docelowym. Zero konfliktu ze scrollem, duże cele dotykowe.';
+
   const a=act();
-  let h='<span class="gap" data-gap="0"></span>';
-  a.forEach((k,i)=>{
-    h+='<span class="chip'+(picked===k?' picked':'')+'" data-k="'+k+'" onclick="chipTap(\''+k+'\')">'+
-       '<span class="cp">'+(i+1)+'</span><span class="cn">'+META[k].l+'</span></span>'+
-       '<span class="gap" data-gap="'+(i+1)+'"></span>';
+  if(!a.length){ host.innerHTML='<span style="color:#9a9da2;font-size:13px;">Nic nie zaznaczono.</span>'; return; }
+
+  if(chipMode==='tap'){
+    let h='<span class="gap" data-gap="0"></span>';
+    a.forEach((k,i)=>{
+      h+='<span class="chip'+(picked===k?' picked':'')+'" data-k="'+k+'" onclick="chipTap(\''+k+'\')">'+
+         '<span class="cp">'+(i+1)+'</span><span class="cn">'+META[k].l+'</span></span>'+
+         '<span class="gap" data-gap="'+(i+1)+'"></span>';
+    });
+    host.innerHTML=h;
+    host.querySelectorAll('.gap').forEach(g=>g.onclick=()=>dropAt(+g.dataset.gap));
+  } else {
+    host.innerHTML=a.map((k,i)=>
+      '<span class="chip dragmode" data-k="'+k+'">'+
+      '<span class="cp">'+(i+1)+'</span><span class="cn">'+META[k].l+'</span></span>').join('');
+    wireChipDrag(host);
+  }
+}
+
+/* ---- chips: long-press then drag (touch + mouse) ---- */
+function wireChipDrag(host){
+  host.querySelectorAll('.chip').forEach(chip=>{
+    chip.addEventListener('pointerdown',e=>startChipPress(host,chip,e));
   });
-  host.innerHTML = a.length? h : '<span style="color:#9a9da2;font-size:13px;">Nic nie zaznaczono.</span>';
-  host.querySelectorAll('.gap').forEach(g=>g.onclick=()=>dropAt(+g.dataset.gap));
+}
+let chipHeld=null, pressTimer=null, pressStart=null, chipDragging=false;
+function startChipPress(host,chip,e){
+  pressStart={x:e.clientX,y:e.clientY};
+  const isTouch = e.pointerType!=='mouse';
+  const activate=()=>{
+    chipDragging=true; chipHeld=chip;
+    chip.classList.add('held');
+    document.body.classList.add('nosel');
+    if(navigator.vibrate) navigator.vibrate(12);
+  };
+  // finger: wait, so a swipe can still scroll the page. mouse: pick up immediately.
+  if(isTouch) pressTimer=setTimeout(activate,280); else activate();
+
+  const move=ev=>{
+    if(!chipDragging){
+      // moved before the delay elapsed → treat as a scroll, abort the press
+      if(Math.hypot(ev.clientX-pressStart.x, ev.clientY-pressStart.y)>9) cleanup();
+      return;
+    }
+    chipHeld.style.pointerEvents='none';
+    const el=document.elementFromPoint(ev.clientX,ev.clientY);
+    chipHeld.style.pointerEvents='';
+    const over=el&&el.closest?el.closest('.chip'):null;
+    if(over&&over!==chipHeld&&over.parentElement===host){
+      const r=over.getBoundingClientRect();
+      const after = ev.clientX > r.left + r.width/2;
+      host.insertBefore(chipHeld, after? over.nextSibling : over);
+    }
+    const vh=window.innerHeight;
+    if(ev.clientY<90) doScroll(scrollerEl(),-13);
+    else if(ev.clientY>vh-110) doScroll(scrollerEl(),13);
+    else stopScroll();
+  };
+  const blockScroll=ev=>{ if(chipDragging) ev.preventDefault(); };
+  const cleanup=()=>{
+    clearTimeout(pressTimer); stopScroll();
+    document.removeEventListener('pointermove',move);
+    document.removeEventListener('pointerup',up);
+    document.removeEventListener('pointercancel',cleanup);
+    document.removeEventListener('touchmove',blockScroll);
+    document.body.classList.remove('nosel');
+    if(chipHeld) chipHeld.classList.remove('held');
+    chipHeld=null; chipDragging=false;
+  };
+  const up=()=>{
+    const wasDragging=chipDragging;
+    cleanup();
+    if(wasDragging) commitChips(host);
+  };
+  document.addEventListener('pointermove',move);
+  document.addEventListener('pointerup',up);
+  document.addEventListener('pointercancel',cleanup);
+  document.addEventListener('touchmove',blockScroll,{passive:false});
+}
+function commitChips(host){
+  const keys=[...host.querySelectorAll('.chip')].map(c=>c.dataset.k);
+  const others=ord.filter(k=>!sel.has(k));
+  ord=[...keys,...others];
+  render();
+}
+function scrollerEl(){
+  const d=document.getElementById('device');
+  return d.scrollHeight>d.clientHeight+20 ? d : window;
 }
 
 /* ================= actions ================= */
